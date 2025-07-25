@@ -200,7 +200,7 @@ left:-10px;
 position:absolute;
 top:calc(50% - 10px);
 width:0}
-.gp-about_{--notice-color:#6654ad;
+.gp-about_{--notice-color:#000000;
 --notice-background:#ffd0fd;
 --notice-font:"Bold";
 --notice-width:292px;
