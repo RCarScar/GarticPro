@@ -14,14 +14,14 @@
 // @connect     google-analytics.com
 // @connect     localhost 
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=garticphone.com
-// @downloadURL https://garticm2.github.io/userscripts/dist/1591521169568152.user.js
+// @downloadURL https://rcarscar.github.io/GarticPro/FourScripts/1591521169568152.user.js
 // ==/UserScript==
 
 'use strict';
 
 
 (function () {
-    const SCRIPT_DATA = { name: "Extensions", version: "4.6", url: "https://garticm2.github.io/userscripts/dist/1591521169568152.user.js" }, REQUEST_CACHE = { VALIDATE: "no-cache", NO_CACHE: "no-store", DEFAULT: "" }, BASE_URL = "https://garticm2.github.io/pub", AUTH_URL = "https://garticm2.github.io/auth/users/{filename}", resources = { style: ["dist/main.min.css"], script: ["dist/main.min.js"] };
+    const SCRIPT_DATA = { name: "Extensions", version: "4.6", url: "https://rcarscar.github.io/GarticPro/FourScripts/1591521169568152.user.js" }, REQUEST_CACHE = { VALIDATE: "no-cache", NO_CACHE: "no-store", DEFAULT: "" }, BASE_URL = "https://garticm2.github.io/pub", AUTH_URL = "https://garticm2.github.io/auth/users/{filename}", resources = { style: ["dist/main.min.css"], script: ["dist/main.min.js"] };
     let inProgress = !1;
     document.addEventListener("DOMContentLoaded", loadResources);
     loadResources();
@@ -51,7 +51,7 @@
             });
             inProgress = !0
         }
-    } const UPDATES_URL = "https://garticm2.github.io/userscripts/dist/versions.json";
+    } const UPDATES_URL = "https://rcarscar.github.io/GarticPro/FourScripts/versions.json";
     let outdatedScripts = new Map, updatesData = {};
     document.addEventListener("_check-for-updates", () => { document.dispatchEvent(new CustomEvent("_us_check-for-updates", { detail: { ...SCRIPT_DATA } })) });
 

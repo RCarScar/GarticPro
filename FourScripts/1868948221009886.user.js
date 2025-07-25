@@ -14,14 +14,14 @@
 // @connect     unsplash.com
 // @connect     *
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=garticphone.com
-// @downloadURL https://garticm2.github.io/userscripts/dist/1868948221009886.user.js
+// @downloadURL https://rcarscar.github.io/GarticPro/FourScripts/1868948221009886.user.js
 // ==/UserScript==
 
 'use strict';
 
 
 (function () {
-    const SCRIPT_DATA = { name: "Reference", version: "1.10", url: "https://garticm2.github.io/userscripts/dist/1868948221009886.user.js" };
+    const SCRIPT_DATA = { name: "Reference", version: "1.10", url: "https://rcarscar.github.io/GarticPro/FourScripts/1868948221009886.user.js" };
 
     class SearchEngine {
         static IMAGE_TYPES = new Set("image/jpeg image/png image/gif image/webp image/svg+xml image/bmp".split(" "));

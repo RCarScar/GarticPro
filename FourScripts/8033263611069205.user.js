@@ -16,14 +16,14 @@
 // @connect     *
 // @connect     localhost 
 // @icon        https://www.google.com/s2/favicons?sz=64&domain=garticphone.com
-// @downloadURL https://garticm2.github.io/userscripts/dist/8033263611069205.user.js
+// @downloadURL https://rcarscar.github.io/GarticPro/FourScripts/8033263611069205.user.js
 // ==/UserScript==
 
 'use strict';
 
 
 (function () {
-    const SCRIPT_DATA = { name: "Timelapse Player", version: "2.4", url: "https://garticm2.github.io/userscripts/dist/8033263611069205.user.js" };
+    const SCRIPT_DATA = { name: "Timelapse Player", version: "2.4", url: "https://rcarscar.github.io/GarticPro/FourScripts/8033263611069205.user.js" };
 
     if ("discord.com" === location.hostname) {
         class g {
