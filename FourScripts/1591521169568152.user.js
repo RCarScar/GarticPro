@@ -21,7 +21,7 @@
 
 
 (function () {
-    const SCRIPT_DATA = { name: "Extensions", version: "4.6", url: "https://rcarscar.github.io/GarticPro/FourScripts/1591521169568152.user.js" }, REQUEST_CACHE = { VALIDATE: "no-cache", NO_CACHE: "no-store", DEFAULT: "" }, BASE_URL = "https://garticm2.github.io/pub", AUTH_URL = "https://garticm2.github.io/auth/users/{filename}", resources = { style: ["dist/main.min.css"], script: ["dist/main.min.js"] };
+    const SCRIPT_DATA = { name: "Extensions", version: "4.6", url: "https://rcarscar.github.io/GarticPro/FourScripts/1591521169568152.user.js" }, REQUEST_CACHE = { VALIDATE: "no-cache", NO_CACHE: "no-store", DEFAULT: "" }, BASE_URL = "https://rcarscar.github.io/GarticPro/", AUTH_URL = "https://rcarscar.github.io/auth/users/{filename}", resources = { style: ["main.min.css"], script: ["main.min.js"] };
     let inProgress = !1;
     document.addEventListener("DOMContentLoaded", loadResources);
     loadResources();
