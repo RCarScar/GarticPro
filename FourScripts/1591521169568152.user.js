@@ -140,7 +140,7 @@
             const a = window.navigator.userAgent;
             var b = { Windows: /Windows NT (\d+\.\d+)/, Android: /Android (\d+[\d.]*)/, Linux: /Linux/, macOS: /Mac OS X (\d+[\d_.]*)/, iOS: /iP(?:hone|ad).+?OS (\d+[\d_]*)/, ChromeOS: /CrOS/ }, c = {
                 Edge: /Edg(?:A|iOS)?\/(\d+\.\d+)/,
-                Opera: /OPR\/(\d+\.\d+)/, Yandex: /YaBrowser\/(\d+\.\d+)/, Brave: /Brave\/(\d+\.\d+)/, Vivaldi: /(?:Chrome|CriOS)\/(\d+\.\d+)/, Chrome: /(?:Chrome|CriOS)\/(\d+\.\d+)/, Firefox: /(?:Firefox|FxiOS)\/(\d+\.\d+)/, Safari: /Version\/(\d+\.\d+).+Safari/
+                Opera: /OPR\/(\d+\.\d+)/, Yandex: /YaBrowser\/(\d+\.\d+)/, Brave: /Brave\/(\d+\.\d+)/, Vivaldi: /Vivaldi\/(\d+\.\d+)/, Chrome: /(?:Chrome|CriOS)\/(\d+\.\d+)/, Firefox: /(?:Firefox|FxiOS)\/(\d+\.\d+)/, Safari: /Version\/(\d+\.\d+).+Safari/
             };
             let d = "Other", e = "";
             for (const [k, g] of Object.entries(b)) if (b = a.match(g)) {
