@@ -15,13 +15,11 @@
 'use strict';
 
 
-(function(({
-
+(function() {
     const SCRIPT_DATA = { name: "Core", version: "4.1", url: "https://rcarscar.github.io/GarticPro/FourScripts/7314405506749249.user.js" };
 
     class WebSocket1 extends WebSocket {
-        constructor(...a({
-
+        constructor(...a) {
             super(...a);
 
             // MODIFIED: Pass null as authData to disable authentication.
@@ -30,24 +28,21 @@
             document.dispatchEvent(event);
 
         }
-        send(...a({
-
+        send(...a) {
             const b = new CustomEvent("_ws_send_data", { detail: { encodedPacket: a[0] } });
 
             document.dispatchEvent(b);
 
             super.send(...a)
         }
-        set onmessage(a({
-
+        set onmessage(a) {
             super.addEventListener("message", b => { document.dispatchEvent(new CustomEvent("_onmessage_intercept", { detail: { handler: a, e: b } })) })
         }
     }
     WebSocket = WebSocket1;
 
     class XMLHttpRequest1 extends XMLHttpRequest {
-        constructor(...a({
-
+        constructor(...a) {
             super(...a);
 
             this.addEventListener("load", b => {
@@ -60,8 +55,7 @@
     XMLHttpRequest = XMLHttpRequest1;
 
     History.prototype.pushState = new Proxy(History.prototype.pushState, {
-        apply(a, b, c({
-
+        apply(a, b, c) {
             document.dispatchEvent(new CustomEvent("_url_changed", { detail: { path: c[0].url } }));
 
             return a.apply(b, c)
@@ -69,8 +63,7 @@
     });
 
     History.prototype.replaceState = new Proxy(History.prototype.replaceState, {
-        apply(a, b, c({
-
+        apply(a, b, c) {
             document.dispatchEvent(new CustomEvent("_url_changed", { detail: { path: c[0].url } }));
 
             return a.apply(b, c)
