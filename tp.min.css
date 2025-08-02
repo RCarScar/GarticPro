@@ -245,7 +245,8 @@ left:0;
 position:absolute;
 transition:bottom .1s;
 width:100%;
-z-index:1}.timelapse-player_:hover>.controls_{bottom:0}.timelapse-player_.fullscreen_:hover>.controls_{bottom:5px}.timelapse-player_.context-menu_>.controls_{bottom:-34px}.timelapse-player_>.controls_>:not(.progress-bar_){opacity:.8}.timelapse-player_>.controls_>:not(.progress-bar_,.stroke_):hover{cursor:pointer;
+z-index:1}.timelapse-player_:hover>.controls_{bottom:0}.timelapse-player_.fullscreen_:hover>.controls_{bottom:5px}.timelapse-player_.context-menu_>.controls_{bottom:-34px}.timelapse-player_>.controls_>:not(.progress-bar_({
+opacity:.8}.timelapse-player_>.controls_>:not(.progress-bar_,.stroke_):hover{cursor:pointer;
 opacity:1}.timelapse-player_ .progress-bar_{height:20px;
 left:12px;
 position:absolute;
