@@ -1,419 +1,7020 @@
-const DONE_BUTTON_CLASS = "jsx-1e5748a2310b0bd";
-var GAMEDATA = { t: { i: 1, o: 8, h: 3, l: 11, u: 9, m: 15, v: 10, M: 5, A: 7, T: 14, O: 13 }, S: { p: 28, N: 26, C: 27, _: 18, R: 5, D: 6, k: 7, L: 15, I: 23, G: 20, j: 2, $: 3, P: 14, B: 21, U: 22, J: 11, W: 24, F: 25, Y: 12, H: 9, K: 16, V: 17, X: 35, q: 34 } }, _GAMEDATA = {};
-if (Object.keys(GAMEDATA).forEach((t => { _GAMEDATA[t] = {}, Object.keys(GAMEDATA[t]).forEach((e => { _GAMEDATA[t][GAMEDATA[t][e]] = e })) })), window._mod_injected || (window.mod = new function () {
-    this.Z = 0, this.tt = null, this.et = !0, this.it = null, this.nt = !1, this.ot = {}, this.st = {}, this.rt = 1, this.ht = 200, this.lt = .5, this.ct = !1, this.dt = {}, this.wt = {}, this.ft = !1, this.ut = {}, this.gt = 1;
-    let t = [];
-    for (let e = 0;
-        e < 256;
-        e++) {
-        let i = e.toString(16);
-        i.length < 2 && (i = "0" + i), t.push(i)
-    } this.bt = () => { this.ot = {} }, this.vt = (t = "default") => {
-        let e = document.createElement("button");
-        return e.classList = DONE_BUTTON_CLASS + " small fakereadybutton", e.disabled = !1, e.innerHTML = '<i class="jsx-3322258600 pencil fakebtn"></i><strong class="sendingbtnContent">STOP</strong>', e
-    }, this.Mt = (e, i, n) => `#${t[e]}${t[i]}${t[n]}`, this.At = t => fetch(t).then((t => t.text())), this.Et = t => fetch(t).then((t => t.arrayBuffer())), this.Tt = () => Boolean(document.getElementsByClassName("note").length), this.Ot = t => new Promise((e => {
-        let i = document.createElement("img");
-        i.onload = function () { e(i) }, i.src = t
-    })), this.xt = async t => { t && -1 != window.location.href.indexOf("draw") && (this.St(), setTimeout((() => { this.Ot(t).then(this.yt).then((() => { })) }), 500)) }, this.St = t => {
-        let e = document.querySelector("button.small");
-        if (e.style.display = "none", !document.querySelector(".fakebtn")) {
-            let t = this.vt();
-            t.onclick = this.Nt.bind(this), e.parentElement.appendChild(t)
-        } return t
-    }, this.Ct = t => {
-        document.querySelector("button.small").style.display = "";
-        let e = document.querySelector(".fakereadybutton");
-        return e && e.remove(), t
-    }, this._t = t => {
-        if (!t) return !1;
-        let e = t.match(/function\s\w{1,}\(\w{0,}\){[^\{]+{[^\}]{0,}return\[\]\.concat\(Object\(\w{0,}\.*\w{0,}\)\(\w{0,}\),\[\w{0,}\]\)[^\}]{0,}}[^\}]{0,}}/g);
-        if (!e) return !1;
-        let i = e[0].match(/\w{1,}(?=\.setData)/g)[0];
-        return t.replace(/\(\(function\(\){if\(!\w{1,}\.disabled\)/, `((function(){;
-window.setData = ${i}.setData;
-if(!${i}.disabled)`)
-    }, this.Rt = t => { this.it = t.target }, this.Dt = t => { if (0 == t.indexOf("42")) try { this.kt(JSON.parse(t.substr(2, t.length - 2))) } catch (t) { Log(t) } }, this.kt = t => {
-        if (7 == t[1]) {
-            let e = "v".toLowerCase(), i = "d".toLowerCase();
-            1 == t[2][i] || 3 == t[2][i] ? this.ot[t[2][e][1]] = t[2][e] : 2 == t[2][i] && delete this.ot[t[2][e]], t[2]?.[e]?.[1] && (this.gt = t[2][e][1])
+(function () {
+    (() => {
+        console.log("TEst")
+        const a = ({ pos: l, prevPos: m }) => l !== m, b = ({ minScale: l, maxScale: m, scale: n }) => n <= m && n >= l, c = ({ minScale: l, maxScale: m, scale: n }) => ({ pos: r, prevPos: p, translate: q }) => b({ minScale: l, maxScale: m, scale: n }) && a({ pos: r, prevPos: p }) ? q + (r - p * n) * (1 - 1 / n) : q, d = ({ scale: l, minScale: m, maxScale: n, scaleSensitivity: r, deltaScale: p }) => [l, Math.max(m, Math.min(l + p / (r / l), n))], e = ({ scale: l, translateX: m, translateY: n }) => `matrix(${l}, 0, 0, ${l}, ${m}, ${n})`, f = ({ state: l, originX: m, originY: n }) => {
+            l.transformation.translateX += m;
+            l.transformation.translateY +=
+                n;
+            l.element.style.transform = e({ scale: l.transformation.scale, translateX: l.transformation.translateX, translateY: l.transformation.translateY })
+        }, g = l => ({
+            panBy: ({ originX: m, originY: n }) => f({ state: l, originX: m, originY: n }), panTo: ({ originX: m, originY: n, scale: r }) => {
+                l.transformation.scale = r;
+                f({ state: l, originX: m - l.transformation.translateX, originY: n - l.transformation.translateY })
+            }
+        }), k = l => ({
+            zoom: ({ x: m, y: n, deltaScale: r, scaleSensitivity: p }) => {
+                const { left: q, top: t } = l.element.getBoundingClientRect(), { minScale: v, maxScale: w,
+                    defaultScaleSensitivity: u } = l, [y, z] = d({ scale: l.transformation.scale, deltaScale: r, minScale: v, maxScale: w, scaleSensitivity: p || u });
+                r = m - q;
+                p = n - t;
+                n = r / y;
+                m = p / y;
+                const x = c({ scale: y, minScale: v, maxScale: w });
+                r = x({ pos: r, prevPos: l.transformation.originX, translate: l.transformation.translateX });
+                p = x({ pos: p, prevPos: l.transformation.originY, translate: l.transformation.translateY });
+                l.element.style.transformOrigin = `${n / l.containerScale}px ${m / l.containerScale}px`;
+                l.element.style.transform = e({
+                    scale: z, translateX: r / l.containerScale,
+                    translateY: p / l.containerScale
+                });
+                l.transformation = { originX: n, originY: m, translateX: r, translateY: p, scale: z }
+            }
+        }), h = l => ({
+            getScale: () => +l.transformation.scale, setScale: m => { l.transformation.scale = +m }, getScaleSensitivity: () => +l.defaultScaleSensitivity, setScaleSensitivity: m => { l.defaultScaleSensitivity = +m }, setMinScale: m => { l.minScale = +m }, setMaxScale: m => { l.maxScale = +m }, getMinScale: () => +l.minScale, getMaxScale: () => +l.maxScale, setContainerScale: m => { l.containerScale = +m }, reset: () => {
+                f({
+                    state: l, originX: 0 - l.transformation.translateX,
+                    originY: 0 - l.transformation.translateY
+                });
+                l.element.style.transformOrigin = "";
+                l.element.style.transform = "";
+                l.transformation = { originX: 0, originY: 0, translateX: 0, translateY: 0, scale: 1 }
+            }, setState: ({ transformation: m, style: n }) => {
+                l.transformation = Object.assign({}, m);
+                l.element.style.transformOrigin = n.transformOrigin;
+                l.element.style.transform = n.transform
+            }, getState: () => ({ transformation: Object.assign({}, l.transformation), style: { transformOrigin: l.element.style.transformOrigin, transform: l.element.style.transform } })
+        });
+
+        window.renderer = ({ minScale: l, maxScale: m, element: n, containerScale: r = 1, scaleSensitivity: p = 10 }) => {
+            l = { element: n, minScale: l, maxScale: m, defaultScaleSensitivity: p, containerScale: r, transformation: { originX: 0, originY: 0, translateX: 0, translateY: 0, scale: 1 } };
+            return Object.assign({}, k(l), g(l), h(l))
         }
-    }, this.Lt = async (t, e) => {
-        if (this.nt) return;
-        let i = [], n = [];
-        (t => {
-            Object.keys(t).forEach((e => {
-                let o = t[e], s = [o[0], +e, o[2]];
-                for (let t = 3;
-                    t < o.length;
-                    t++)s.push(o[t]);
-                let r = [o[0], +e, o[2], o[3]];
-                n.push(`42[2,7,{"t":${this.tt || 0},"d":1,"v":${JSON.stringify(r)}}]`), n.push(`42[2,7,{"t":${this.tt || 0},"d":3,"v":${JSON.stringify(s)}}]`), i.push(s)
-            }))
-        })(t), this.It() ? window.setData(i) : e && this.Gt(e), this.nt = !0, this.St(), this.jt(n).then((() => this.Ct()))
-    }, this.It = () => "function" == typeof window.setData, this.$t = async t => { }, this.Pt = t => {
-        let e = t[1], i = t[2];
-        if (e == GAMEDATA.S.R && (this.bt(), this.st = {}, this.ut = {}, this.ft = !1), e == GAMEDATA.S.Y && (this.dt = {}), e == GAMEDATA.S.H) {
-            let t, e;
-            if (Log(i), Object.keys(i).forEach((n => { "user" == n && Object.keys(i[n]).forEach((t => { "nick" == t && (e = i[n][t]) })), "data" == n && (t = i[n]) })), e && t instanceof Array) {
-                this.dt[e] = {};
-                for (let i in t) this.dt[e][i] = t[i];
-                document.querySelectorAll(".drawBalloon").forEach((t => {
-                    if (t.querySelector(".nick").innerHTML == e) {
-                        let i = `<div onclick="globalThis.saveAlbumDrawing('${e}')" class="saveimg-${e}" \n                        style="background-color: #301a6b;position: absolute;left: 30rem;top: -0rem;width: 2.5rem;height: 2.5rem;border-radius: 30%;border: 4px solid rgb(95, 110, 231);cursor: pointer;"><img src="${this.wt["saveimg".toLowerCase()]}" style="\n                        width: 1.9rem;\n                        height: 1.9rem;\n                        margin-top: 0.3rem;\n                        margin-left: 0.3rem;\n                        pointer-events: none;\n                        " id="saveAlbumImg-${e}"></div>`, n = document.createElement("div");
-                        n.innerHTML = i, setTimeout((() => { t.querySelector(".content").appendChild(n) }), 500)
+    })();
+    class GPMigration_ {
+        static TASKS = [[[10, 4], [() => {
+            const a = JSON.parse(localStorage.getItem("gp_userlist")) ?? {};
+            a && "banTwitchUsers" in a && (a.userBansSyncWithTwitch = a.banTwitchUsers, delete a.banTwitchUsers, localStorage.setItem("gp_userlist", JSON.stringify(a)))
+        }, () => {
+            const a = localStorage.getItem("gp_update");
+            if (a) {
+                const b = JSON.parse(localStorage.getItem("gp_about")) ?? {};
+                Object.assign(b, { lastNotifiedVersion: a });
+                localStorage.setItem("gp_about", JSON.stringify(b));
+                localStorage.removeItem("gp_update")
+            }
+        }]]];
+        static compareVersion(a,
+            b) {
+            const c = Math.max(a.length, b.length);
+            for (let d = 0;
+                d < c;
+                d++) {
+                const e = a[d] ?? 0, f = b[d] ?? 0;
+                if (e > f) return 1;
+                if (e < f) return -1
+            } return 0
+        } static migrate(a) {
+            a = a.split(".");
+            let b = this.TASKS.length;
+            for (let c = this.TASKS.length - 1;
+                0 <= c;
+                c--)if (-1 === this.compareVersion(a, this.TASKS[c][0])) b = c;
+                else break;
+            this.TASKS.slice(b).forEach(([c, d]) => {
+                try { d.forEach(e => { e() }), console.log(`gpmod: migrating to v${c.join(".")}`) } catch (e) { console.error(`gpmod: migration error to v${c.join(".")} |`, e) }
+            })
+        } static init(a) {
+            let b = localStorage.getItem("gp_latest-version") ||
+                localStorage.getItem("gp_update");
+            b !== a && b && (this.migrate(b), localStorage.setItem("gp_latest-version", a))
+        }
+    };
+    (() => {
+        function a(d, e, f) {
+            c.ws = d;
+            c.mm = new GPModulesManager_(e, f);
+            c.sm = c.mm.getSettingsManager();
+            c.app = b;
+            c.mm.setModules([{ id: 0, name: "GPProxy_", required: !0, hidden: !0 }, { id: 6, name: "GPAbout_", required: !0, hidden: !0 }, { id: 2, name: "GPPlayersManager_" }, { id: 8, name: "GPReference_" }, { id: 4, name: "GPPainter_" }], this, c)
+        } const b = {
+            author: "liliezzzz", name: "", version: "", changelogURL: "https://discord.com/channels/695817156952064041/695817157690392629",
+            summaryURL: "https://discord.com/channels/695817156952064041/695817157690392629", updateNoticeFlag: "true", updateNoticeText: "", discordURL: ""
+        };
+        if (function () { return navigator?.userAgentData?.brands.some(d => "Chromium" === d.brand) || navigator.userAgent.toLowerCase().includes("firefox") }()) {
+            var c = { ws: null, gpproxy: null, ref: null, act: null, av: null, abt: null };
+            document.addEventListener("_ws", ({ detail: { ws: d, authData: e, l10n: f } }) => {
+                c.gpproxy ?
+                    c.gpproxy.setWebSocket(d) : a(d, e, f);
+                window.ws = d
+            });
+            (function () {
+                var d;
+                if (null != (d = document.getElementById("__next"))) {
+                    d = d.classList;
+                    var e = d.toggle;
+                    var f = !!document.querySelector("#__next > .side > div")?.firstElementChild?.getBoundingClientRect().height;
+                    e.call(d, "gp-ad-not-found_", !f)
+                }
+            })();
+            GPMigration_.init(b.version);
+            console.log("gpmod: loaded")
+        } else console.error(`${b.name}: Browser not supported`)
+    })();
+    class GPAbout_ extends EventTarget {
+        static ANALYTICS_CHANNEL_URL = "https://discord.com/channels/695817156952064041/695817157690392629";
+        static BOOSTY_URL = "https://boosty.to/gpmod";
+        static HEADER_MIN_SCALE = .625;
+        static NOTICE_TYPE = { SCRIPTS: "scripts", ANALYTICS: "analytics", DISCONNECTION: "disconnection", SUB_EXPIRED: "sub_expired", UPDATE: "update", TWITCH_OAUTH_TOKEN: "twitch_oauth_token", TWITCH_TOKEN: "twitch_token", TWITCH_TOKEN2: "twitch_token2", RAID: "raid", NORMAL: "normal" };
+        static NOTICE = {
+            [this.NOTICE_TYPE.SCRIPTS]: {
+                priority: 9,
+                unique: !0
+            }, [this.NOTICE_TYPE.ANALYTICS]: { priority: 8, unique: !0, icon: !0 }, [this.NOTICE_TYPE.DISCONNECTION]: { priority: 7, unique: !0, icon: !0 }, [this.NOTICE_TYPE.SUB_EXPIRED]: { priority: 6, unique: !0, icon: !0 }, [this.NOTICE_TYPE.UPDATE]: { priority: 5, unique: !0, icon: !0 }, [this.NOTICE_TYPE.TWITCH_OAUTH_TOKEN]: { priority: 4, unique: !0, icon: !0 }, [this.NOTICE_TYPE.TWITCH_TOKEN]: { priority: 3, unique: !0, icon: !0 }, [this.NOTICE_TYPE.TWITCH_TOKEN2]: { priority: 3, unique: !0, icon: !0 }, [this.NOTICE_TYPE.RAID]: { priority: 2, unique: !0 }, [this.NOTICE_TYPE.NORMAL]: {
+                priority: 1,
+                unique: !1
+            }
+        };
+        static NOTICE_BUTTON_ICONS = {
+            DISCORD: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 127.14 96.36"><path fill="currentColor" d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>',
+            BOOSTY: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 235.6 292.2" transform="scale(1.5)"><path fill="currentColor" d="M44.3 164.5 76.9 51.6H127l-10.1 35-.3.6L90 179.6h24.8c-10.4 25.9-18.5 46.2-24.3 60.9-45.8-.5-58.6-33.3-47.4-72.1m47.6 72.2 60.4-86.9h-25.6L147.8 98c38.2 4 56.2 34.1 45.6 70.5-11.3 39.1-57.1 72.1-101.7 72.1h-1z"/></svg>'
+        };
+        static DEFAULT_SETTINGS = { windowsInkWarning: null, lastNotifiedVersion: null };
+        static MODULE = { title: "About", alias: "abt", settings: { storage: "gp_about", defaultSettings: this.DEFAULT_SETTINGS } };
+        constructor(a,
+            b) {
+            super();
+            this.mm = a.mm;
+            this.l = b;
+            this.s = a.sm.setSettings(this, this.updateSettings);
+            const { name: c, author: d, version: e, changelogURL: f, summaryURL: g, updateNoticeFlag: k, updateNoticeText: h, discordURL: l, donateURL: m } = a.app;
+            this.version = e;
+            this.changelogURL = f;
+            this.summaryURL = g || f;
+            this.updateNoticeFlag = JSON.parse(k);
+            this.updateNoticeText = h;
+            this.notificationQueue = [];
+            this.notificationId = 0;
+            this.noticeDurationTimer = this.currentNotice = null;
+            this.closeNotice = this.closeNotice.bind(this);
+            window.addEventListener("resize",
+                this.resizeHandler.bind(this));
+            document.addEventListener("_gp_notice", ({ detail: n }) => { this.addNotice(n) });
+            document.addEventListener("_outdated-scripts", ({ detail: { outdatedScripts: n } }) => { n.size && (this.printOutdatedScripts(n), this.addNotice({ type: GPAbout_.NOTICE_TYPE.SCRIPTS, scripts: n })) });
+            this.render(c, d, e, f, l, m);
+            this.resizeHandler();
+            this.shouldUpdateNoticeBeShown() && (this.mm.isFirstRun() ? this.s.lastNotifiedVersion = this.version : this.showUpdateNotice());
+            this.s.windowsInkWarning && this.addNotice({
+                type: GPAbout_.NOTICE_TYPE.NORMAL,
+                text: this.l.WINDOWS_INK_WARNING, onClose: () => { this.s.windowsInkWarning = !1 }
+            });
+            this.requestOutdatedScripts()
+        } render(a, b, c, d, e, f) {
+            this.container = document.createElement("div");
+            this.container.className = "gp-about_";
+            this.container.innerHTML = `${a} <span><span class="version_"><a class="changelog-link_" target="_blank" href="${d}" title="${this.l.CHANGELOG_TTL}">${c}</a></span></span>`;
+            this.versionElem = this.container.querySelector(".version_");
+            e && (a = document.createTextNode("\u00a0\u00a0|\u00a0\u00a0"), this.container.appendChild(a),
+                a = document.createElement("a"), a.className = "discord-link_", a.target = "_blank", a.href = e, a.title = this.l.DISCORD_LINK_TTL, a.textContent = e.split("//")[1], this.container.appendChild(a));
+            f && (e = document.createTextNode("\u00a0\u00a0|\u00a0\u00a0"), this.container.appendChild(e), e = document.createElement("a"), e.className = "donate-link_", e.target = "_blank", e.href = f, e.title = this.l.DONATE_LINK_TTL, e.textContent = this.l.DONATE_LINK, this.container.appendChild(e));
+            document.body.appendChild(this.container)
+        } resizeHandler(a) {
+            a =
+                Math.max(GPAbout_.HEADER_MIN_SCALE, this.getContainerScale());
+            this.container.style.fontSize = `${16 * a}px`;
+            this.container.style.lineHeight = `${28 * a}px`;
+            this.updateUpdateNoticePos()
+        } getContainerScale() {
+            let a = (window.innerWidth - 180) / 1150;
+            766 * a > window.innerHeight && (a = window.innerHeight / 766);
+            return a
+        } shouldUpdateNoticeBeShown() { return this.updateNoticeFlag ? this.isNewVersion(this.version, this.s.lastNotifiedVersion || "0.0", 2) : !1 } isNewVersion(a, b, c = 0) {
+            const [d, e] = [a, b].map(f => f.split(".").map(g => +g));
+            a = Math.max(d.length,
+                e.length);
+            a = c && Math.min(a, c) || a;
+            for (c = 0;
+                c < a;
+                c++) {
+                b = d[c] ?? 0;
+                const f = e[c] ?? 0;
+                if (b !== f) return b > f
+            } return !1
+        } updateUpdateNoticePos() {
+            if (this.notice) {
+                var { width: a } = this.versionElem.getBoundingClientRect(), { width: b } = this.notice.getBoundingClientRect();
+                this.notice.style.left = `calc(-${Math.floor((b - a) / 2)}px)`
+            }
+        } requestOutdatedScripts() { document.dispatchEvent(new Event("_get-outdated-scripts")) } printOutdatedScripts(a) { a.size && console.warn(`Outdated Scripts:\n${[...a.values()].map(b => `${b.name} (${b.version} \u2794 ${b.latestVersion}): ${b.url}?${Date.now()}.user.js`).join("\n")}`) } updateScript(a) {
+            document.dispatchEvent(new CustomEvent("_update-script",
+                { detail: { name: a } }))
+        } addNotice(a) {
+            const b = Object.assign({}, a, { id: ++this.notificationId });
+            GPAbout_.NOTICE[b.type].unique ? this.currentNotice?.type === b.type ? b.same && b.duration === this.currentNotice?.duration || (this.closeNotice(), this.notificationQueue.push(b)) : (a = this.notificationQueue.findIndex(c => c.type === b.type), ~a && this.notificationQueue.splice(a, 1), this.notificationQueue.push(b)) : this.notificationQueue.push(b);
+            this.notificationQueue.sort((c, d) => GPAbout_.NOTICE[d.type].priority - GPAbout_.NOTICE[c.type].priority);
+
+            this.currentNotice && GPAbout_.NOTICE[this.currentNotice.type].priority === GPAbout_.NOTICE[this.notificationQueue[0].type].priority || this.showNotice(this.notificationQueue[0])
+        } showNotice(a) {
+            this.currentNotice = a;
+            this.notice?.remove();
+            clearTimeout(this.noticeDurationTimer);
+            this.notice = document.createElement(a.url ? "a" : "div");
+            this.notice.className = "notice_";
+            this.notice.dataset.type = a.type;
+            var b = a.text || (a.type === GPAbout_.NOTICE_TYPE.UPDATE ? this.l.UPDATE_NOTICE : "");
+            if (b) {
+                const d = document.createElement("div");
+
+                d.className = "text-container";
+                b.split("\n\n").forEach(e => {
+                    const f = document.createElement("div");
+                    f.className = "text_";
+                    f.textContent = e;
+                    d.appendChild(f)
+                });
+                this.notice.appendChild(d);
+                b = !1;
+                if (a.buttons) {
+                    const e = document.createElement("div");
+                    e.className = "buttons_";
+                    a.buttons.forEach(([f, g, k]) => {
+                        const h = document.createElement(k ? "a" : "div");
+                        h.className = "btn_";
+                        h.textContent = f;
+                        k && (k.startsWith("https://discord.com/") ? (f = document.createElement("div"), f.classList.add("icon_"), f.innerHTML = GPAbout_.NOTICE_BUTTON_ICONS.DISCORD,
+                            h.appendChild(f)) : k.startsWith("https://boosty.to/") && (f = document.createElement("div"), f.classList.add("icon_"), f.innerHTML = GPAbout_.NOTICE_BUTTON_ICONS.BOOSTY, h.appendChild(f)), h.href = k, h.target = "_blank");
+                        g && h.addEventListener("click", l => {
+                            g();
+                            this.closeNotice()
+                        });
+                        e.appendChild(h)
+                    });
+                    this.notice.appendChild(e);
+                    this.notice.classList.add("with-buttons_");
+                    b = !0
+                } if (GPAbout_.NOTICE[a.type].icon) {
+                    const e = document.createElement("div");
+                    e.className = "icon_";
+                    e.style.gridRowEnd = (b ? 1 : 0) + 2;
+                    this.notice.appendChild(e);
+
+                    this.notice.classList.add("with-icon_");
+                    a.type === GPAbout_.NOTICE_TYPE.UPDATE && (e.dataset.version = `v${this.version.split(".").slice(0, 2).join(".")}`)
+                }
+            } if (a.style) for (var c in a.style) this.notice.style[c] = a.style[c];
+            a.url && (this.notice.href = a.url, this.notice.target = "_blank", this.notice.title = this.l.NOTICE_URL_TTL);
+            a.onClick && (this.notice.classList.add("clickable_"), this.notice.addEventListener("click", a.onClick));
+            (a.url || a.onClick) && this.notice.addEventListener("click", this.closeNotice);
+            a.duration &&
+                (c = document.createElementNS("http://www.w3.org/2000/svg", "svg"), c.classList.add("timer_"), c.setAttribute("viewBox", "0 0 16 16"), c.innerHTML = "<circle></circle>", c.style.setProperty("--duration", `${a.duration}ms`), this.notice.appendChild(c), this.noticeDurationTimer = setTimeout(this.closeNotice, a.duration));
+            a.scripts && (c = this.buildScripts(a.scripts), this.notice.appendChild(c));
+            c = document.createElement("div");
+            c.className = "close-btn_";
+            c.textContent = "\u2716";
+            c.title = "";
+            c.addEventListener("click", d => {
+                if (a.onClose) a.onClose();
+
+                this.closeNotice();
+                d.preventDefault();
+                d.stopPropagation()
+            });
+            this.notice.appendChild(c);
+            this.versionElem.appendChild(this.notice);
+            this.updateUpdateNoticePos()
+        } closeNotice(a = null) {
+            if (a && (this.notificationQueue = this.notificationQueue.filter(c => c.type !== a), a !== this.currentNotice?.type)) return;
+            this.currentNotice.type === GPAbout_.NOTICE_TYPE.UPDATE && (this.s.lastNotifiedVersion = this.version);
+            this.notice.remove();
+            this.notice = null;
+            const b = this.notificationQueue.indexOf(this.currentNotice);
+            ~b && this.notificationQueue.splice(b,
+                1);
+            this.currentNotice = null;
+            clearTimeout(this.noticeDurationTimer);
+            this.showNextNotice()
+        } showNextNotice() { this.notificationQueue.length && this.showNotice(this.notificationQueue[0]) } buildNoticeMessage(a) { return a ? a.split("\n\n").map(b => `<div class="text_">${b}</div>`).join("") : "" } buildScripts(a) {
+            const b = document.createElement("div");
+            b.className = "scripts_";
+            var c = document.createElement("div");
+            c.className = "title_";
+            c.textContent = this.l.UPDATE_SCRIPTS_TITLE;
+            b.appendChild(c);
+            const d = document.createElement("div");
+
+            d.className = "reload-row_";
+            c = document.createElement("a");
+            c.className = "reload-btn_";
+            c.href = "/";
+            c.textContent = this.l.RELOAD_BTN_LBL;
+            c.addEventListener("click", f => {
+                f.preventDefault();
+                window.onbeforeunload = null;
+                location.reload()
+            });
+            c.addEventListener("auxclick", f => { f.preventDefault() });
+            d.appendChild(c);
+            const e = new Set;
+            Array.from(a.values()).forEach((f, g) => {
+                var k = `${f.url}?${Date.now()}.user.js`;
+                const h = document.createElement("div");
+                h.className = "oudated-script_";
+                var l = document.createElement("div");
+                l.textContent =
+                    f.name;
+                h.appendChild(l);
+                l = document.createElement("div");
+                l.textContent = `${f.version} \u2794 ${f.latestVersion}`;
+                h.appendChild(l);
+                l = document.createElement("div");
+                h.appendChild(l);
+                const m = document.createElement("a");
+                m.className = "script-update-link_";
+                m.href = k;
+                m.target = "_blank";
+                m.textContent = this.l.UPDATE_SCRIPT_LBL;
+                k = n => {
+                    e.add(g);
+                    e.size >= a.size && d.classList.add("shown_");
+                    m.closest(".oudated-script_").classList.add("clicked_");
+                    "click" === n.type && (this.updateScript(f.name), n.preventDefault())
+                };
+                m.addEventListener("click",
+                    k);
+                m.addEventListener("auxclick", k);
+                l.appendChild(m);
+                b.appendChild(h)
+            });
+            b.appendChild(d);
+            return b
+        } getVersion() { return this.version } getWindowsInkWarningState() { return this.s.windowsInkWarning } setWindowsInkWarningState(a) { this.s.windowsInkWarning = a } showUpdateNotice() {
+            const [a, b] = this.l.UPDATE_NOTICE.split("|");
+            this.addNotice({ type: GPAbout_.NOTICE_TYPE.UPDATE, text: this.updateNoticeText || a, buttons: [[b, () => { }, this.summaryURL]] })
+        } showAnalyticsNotice() {
+            const [a, b, c] = this.l.ANALYTICS_NOTICE.split("|");
+            this.addNotice({
+                type: GPAbout_.NOTICE_TYPE.ANALYTICS,
+                text: a, buttons: [[b, null, GPAbout_.ANALYTICS_CHANNEL_URL], [c, () => { document.dispatchEvent(new Event("_analytics-consent-granted")) }]]
+            })
+        } showDisconnectionNotice() {
+            const [a, b] = this.l.DISCONNECTION_WARNING.split("|");
+            this.addNotice({ type: GPAbout_.NOTICE_TYPE.DISCONNECTION, text: a, same: !0, buttons: [[b, () => { this.mm.reloadPage() }]] })
+        }
+    }
+    window.GPAbout_ = GPAbout_;
+    class GPCanvasZoomer_ extends EventTarget {
+        static SCALE_FACTOR = 1.05;
+        constructor(a, b, c) {
+            super();
+            this.scaleFactor = c ?? GPCanvasZoomer_.SCALE_FACTOR;
+            this.canvas = a;
+            this.canvas.addEventListener("contextmenu", d => { d.preventDefault() });
+            this.canvas.addEventListener("pointerdown", d => {
+                d.preventDefault();
+                0 !== d.button || d.ctrlKey ? 2 === d.button && this.reset() : (this.canvas.setPointerCapture(d.pointerId), this.lastX = d.offsetX, this.lastY = d.offsetY, this.dragStartPoint = this.ctx.transformedPoint(this.lastX, this.lastY))
+            });
+            this.canvas.addEventListener("pointermove",
+                d => {
+                    this.lastX = d.offsetX;
+                    this.lastY = d.offsetY;
+                    this.dragStartPoint && (d = this.ctx.transformedPoint(this.lastX, this.lastY), this.ctx.translate(d.x - this.dragStartPoint.x, d.y - this.dragStartPoint.y), this.redraw())
+                });
+            this.canvas.addEventListener("pointerup", d => { this.dragStartPoint = null });
+            this.canvas.addEventListener("wheel", d => {
+                this.zoom(-d.deltaY / 40);
+                d.preventDefault()
+            });
+            this.ctx = a.getContext("2d");
+            this.ctx.imageSmoothingQuality = "high";
+            this.trackTransforms(this.ctx);
+            this.image = b;
+            this.lastX = a.width / 2;
+            this.lastY =
+                a.height / 2;
+            this.dragStartPoint;
+            this.mirror = this.mirror.bind(this)
+        } reset() {
+            this.ctx.resetTransform();
+            this.redraw();
+            this.dispatchEvent(new Event("reset"))
+        } redraw() {
+            if (this.image) {
+                var a = this.ctx.transformedPoint(0, 0), b = this.ctx.transformedPoint(this.canvas.width, this.canvas.height);
+                this.ctx.clearRect(a.x, a.y, b.x - a.x, b.y - a.y);
+                this.ctx.drawImage(this.image, -(this.image.width - this.canvas.width) / 2, -(this.image.height - this.canvas.height) / 2);
+                this.dispatchEvent(new Event("change"))
+            }
+        } zoom(a) {
+            const b = this.ctx.transformedPoint(this.lastX,
+                this.lastY);
+            this.ctx.translate(b.x, b.y);
+            a = Math.pow(this.scaleFactor, a);
+            this.ctx.scale(a, a);
+            this.ctx.translate(-b.x, -b.y);
+            this.redraw()
+        } setTransform(a, b, c, d, e, f) {
+            this.ctx.setTransform(a, b, c, d, e, f);
+            this.redraw()
+        } trackTransforms(a) {
+            const b = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            let c = b.createSVGMatrix();
+            a.getTransform = function () { return c };
+            const d = [], e = a.save;
+            a.save = function () {
+                d.push(c.translate(0, 0));
+                return e.call(a)
+            };
+            const f = a.restore;
+            a.restore = function () {
+                c = d.pop();
+                return f.call(a)
+            };
+
+            const g = a.scale;
+            a.scale = function (p, q) {
+                c = c.scaleNonUniform(p, q);
+                return g.call(a, p, q)
+            };
+            const k = a.rotate;
+            a.rotate = function (p) {
+                c = c.rotate(180 * p / Math.PI);
+                return k.call(a, p)
+            };
+            const h = a.translate;
+            a.translate = function (p, q) {
+                c = c.translate(p, q);
+                return h.call(a, p, q)
+            };
+            const l = a.transform;
+            a.transform = function (p, q, t, v, w, u) {
+                const y = b.createSVGMatrix();
+                y.a = p;
+                y.b = q;
+                y.c = t;
+                y.d = v;
+                y.e = w;
+                y.f = u;
+                c = c.multiply(y);
+                return l.call(a, p, q, t, v, w, u)
+            };
+            const m = a.setTransform;
+            a.setTransform = function (p, q, t, v, w, u) {
+                c.a = p;
+                c.b = q;
+                c.c = t;
+                c.d =
+                    v;
+                c.e = w;
+                c.f = u;
+                return m.call(a, p, q, t, v, w, u)
+            };
+            const n = a.resetTransform;
+            a.resetTransform = function () {
+                c = b.createSVGMatrix();
+                d.length = 0;
+                return n.call(a)
+            };
+            const r = b.createSVGPoint();
+            a.transformedPoint = function (p, q) {
+                r.x = p;
+                r.y = q;
+                return r.matrixTransform(c.inverse())
+            }
+        } setImage(a) {
+            this.image = a;
+            this.reset()
+        } setScaleFactor(a) { this.scaleFactor = a } mirror() { this.image && (this.ctx.translate(this.canvas.width, 0), this.ctx.scale(-1, 1), this.ctx.drawImage(this.image, 0, 0), this.redraw()) }
+    };
+    class GPScreenObserver_ extends EventTarget {
+        constructor() {
+            if (GPScreenObserver_.instance) return GPScreenObserver_.instance;
+            super();
+            GPScreenObserver_.instance = this;
+            this.currentScreen = null;
+            this.areModulesLoaded = !1;
+            document.addEventListener("_modules-loaded", () => {
+                this.areModulesLoaded = !0;
+                this.currentScreen && this.dispatchEvent(new CustomEvent("screen-changed", { detail: { screen: this.currentScreen } }))
+            });
+            this.init()
+        } init() {
+            (new MutationObserver((a, b) => {
+                for (const c of a) if (a = c.addedNodes?.[0], a?.classList.contains("screen")) {
+                    a =
+                        [...a.firstElementChild.classList].find(d => !d.startsWith("jsx-"));
+                    if (!a) break;
+                    a !== this.currentScreen && (this.currentScreen = a, this.areModulesLoaded && this.dispatchEvent(new CustomEvent("screen-changed", { detail: { screen: a } })))
+                }
+            })).observe(document.getElementById("content"), { childList: !0 })
+        } getCurrentScreen() { return this.currentScreen }
+    } class GPStaticObserver_ {
+        static MONITOR_INTERVAL = 200;
+        static MAX_ATTEMPTS = 5;
+        static handlers = new Map;
+        static { this.isInitialized = !1, this.timer = null, this.handlers = new Map } static init() {
+            this.so = new GPScreenObserver_;
+            this.so.addEventListener("screen", this.onScreenChange.bind(this));
+            this.isInitialized = !0
+        } static addHandler(a, b, c) {
+            a = [a].flat();
+            a.forEach(d => {
+                const e = this.handlers.get(d) ?? [];
+                e.push([b, c]);
+                this.handlers.set(d, e)
+            });
+            a.find(d => d === this.so.getCurrentScreen()) && this.startMonitor([[b, c]])
+        } static removeHandler(a,
+            b, c) {
+            a = [a].flat();
+            a.forEach(d => {
+                const e = this.handlers.get(d);
+                if (e) {
+                    var f = e.findIndex(([g, k]) => g === b && k === c);
+                    ~f && (e.splice(f, 1), e.length || this.handlers.delete(d))
+                }
+            })
+        } static onScreenChange({ detail: { screen: a } }) { (a = this.handlers.get(a)) ? this.startMonitor([...a]) : this.stopMonitor() } static startMonitor(a, b = 1) {
+            this.stopMonitor();
+            a = a.filter(([c, d]) => {
+                (c = document.querySelector(c)) && d(c);
+                return !c
+            });
+            a.length && b < this.MAX_ATTEMPTS && (this.timer = setTimeout(() => { this.startMonitor(a, b + 1) }, this.MONITOR_INTERVAL))
+        } static stopMonitor() { clearTimeout(this.timer) } static SCREEN = {
+            START: "start",
+            LOBBY: "lobby", FIRST: "first", DRAW: "draw", WRITE: "write", REPLY: "reply", MEMORY: "memory", BOOK: "book", RESULT: "result"
+        };
+        static PRESET = { PAINTER_HEADER: [[this.SCREEN.DRAW], ".screen > .draw .header"], PREVIEW: [[this.SCREEN.WRITE, this.SCREEN.MEMORY], ".screen > :is(.write, .memory) .core > div"] };
+        constructor() { GPStaticObserver_.isInitialized || GPStaticObserver_.init() } addHandler(a, b, c) { GPStaticObserver_.addHandler(a, b, c) } removeHandler(a, b, c) { GPStaticObserver_.removeHandler(a, b, c) }
+    }
+    class GPContentObserver_ {
+        static SCREEN = { START: "start", LOBBY: "lobby", FIRST: "first", DRAW: "draw", WRITE: "write", REPLY: "reply", MEMORY: "memory", BOOK: "book", RESULT: "result" };
+        static STAGE_ID = { LOBBY: 1, GAME: 2, GALLERY_SETTINGS: 5, ALBUM: 3, SCORE: 4 };
+        static ALBUM_ITEM_TYPE = { IMAGE: "image", TEXT: "text", ANIMATION: "animation", MULTI_PIECE: "multi-piece", AI_IMAGE: "ai-image" };
+        constructor(a) {
+            if (GPContentObserver_.instance) return GPContentObserver_.instance;
+            GPContentObserver_.instance = this;
+            this.gpproxy = a;
+            this.playerListHandlers =
+                new Set;
+            this.painterHeaderHandlers = new Set;
+            this.drawingPreviewHandlers = new Set;
+            this.rankingUsersHandlers = new Set;
+            this.albumHeaderHandlers = new Set;
+            this.albumItemsHandlers = new Set;
+            this.albumFooterHandlers = new Set;
+            this.players = new Map;
+            this.albumHeader = this.drawingPreview = this.painterHeader = null;
+            this.albumItems = [];
+            this.albumFooter = null;
+            this.rankingUsers = [];
+            this.nextAlbumItemId = null;
+            this.so = new GPScreenObserver_;
+            this.so.addEventListener("screen-changed", ({ detail: { screen: b } }) => {
+                this.terminate();
+                this.observe(b)
+            });
+
+            this.gpproxy.addEventListener("data", ({ detail: { event: b } }) => { b === GPProxy_.EVENT.ALBUM_INFO && (this.albumItems.length = 0, this.nextAlbumItemId = null) });
+            this.gpproxy.addEventListener("album_item_loading", ({ detail: { id: b } }) => { this.nextAlbumItemId = b });
+            this.observers = {
+                playerList: {
+                    observer: new MutationObserver(this.playerListCallback.bind(this)), config: { childList: !0, subtree: !0 }, selector: "#content > .screen .players", handler: this.handlePlayerList.bind(this), screens: [GPContentObserver_.SCREEN.LOBBY, GPContentObserver_.SCREEN.BOOK,
+                    GPContentObserver_.SCREEN.RESULT], stageIds: [GPContentObserver_.STAGE_ID.LOBBY, GPContentObserver_.STAGE_ID.ALBUM, GPContentObserver_.STAGE_ID.SCORE]
+                }, painterHeader: { static: !0, selector: "#content > .screen .draw .book > .header", handler: this.handlePainterHeader.bind(this), screens: [GPContentObserver_.SCREEN.DRAW], stageIds: [GPContentObserver_.STAGE_ID.GAME] }, drawingPreview: {
+                    static: !0, selector: "#content > .screen > :is(.write, .memory) .core > div", handler: this.handleDrawingPreview.bind(this), screens: [GPContentObserver_.SCREEN.WRITE,
+                    GPContentObserver_.SCREEN.MEMORY], stageIds: [GPContentObserver_.STAGE_ID.GAME]
+                }, album: { observer: new MutationObserver(this.albumCallback.bind(this)), config: { childList: !0, subtree: !0 }, selector: "#content > .screen .timeline", handler: this.handleAlbum.bind(this), screens: [GPContentObserver_.SCREEN.BOOK], stageIds: [GPContentObserver_.STAGE_ID.ALBUM] }, albumHeader: {
+                    observer: new MutationObserver(this.albumHeaderCallback.bind(this)), config: { characterData: !0, subtree: !0 }, selector: "#content > .screen .scrapbook > h4",
+                    handler: this.handleAlbumHeader.bind(this), screens: [GPContentObserver_.SCREEN.BOOK], stageIds: [GPContentObserver_.STAGE_ID.ALBUM]
+                }, rankingUsers: { static: !0, selector: "#content > .screen .ranking", handler: this.handleRankingUsers.bind(this), screens: [GPContentObserver_.SCREEN.RESULT], stageIds: [GPContentObserver_.STAGE_ID.SCORE] }
+            }
+        } observe(a) {
+            Object.values(this.observers).forEach(b => {
+                if (b.screens.includes(a)) {
+                    const c = document.querySelector(b.selector);
+                    b.observer && b.observer?.observe(c, b.config);
+                    c && b.handler(c)
+                }
+            })
+        } addPlayerListHandler(...a) {
+            a.forEach(b => { this.playerListHandlers.add(b) })
+        } addPainterHeaderHandler(...a) { a.forEach(b => { this.painterHeaderHandlers.add(b) }) } addDrawingPreviewHandler(...a) { a.forEach(b => { this.drawingPreviewHandlers.add(b) }) } addAlbumItemsHandler(...a) { a.forEach(b => { this.albumItemsHandlers.add(b) }) } addAlbumHeaderHandler(...a) { a.forEach(b => { this.albumHeaderHandlers.add(b) }) } addAlbumFooterHandler(...a) { a.forEach(b => { this.albumFooterHandlers.add(b) }) } addAlbumRankingHandler(...a) { a.forEach(b => { this.rankingUsersHandlers.add(b) }) } getPlayerItems() { return this.players } getPainterHeader() { return this.painterHeader } getDrawingPreview() { return this.drawingPreview } getAlbumHeader() { return this.albumHeader } getAlbumItems() { return this.albumItems } getAlbumFooter() { return this.albumFooter } getRankingUsers() { return this.rankingUsers } terminate() {
+            this.players.clear();
+
+            this.albumHeader = this.drawingPreview = this.painterHeader = null;
+            this.albumItems.length = 0;
+            this.albumFooter = null;
+            this.rankingUsers.length = 0;
+            this.nextAlbumItemId = null;
+            this.disconnectObservers()
+        } disconnectObservers() { Object.values(this.observers).forEach(a => { a.observer?.disconnect() }) } playerListCallback(a, b) {
+            for (const c of a) if ("childList" === c.type && c.addedNodes.length && c.target.classList.contains("scrollElements") && c.addedNodes[0].matches(".user:not(.empty)")) {
+                const d = c.addedNodes[0];
+                this.cachePlayer(d);
+
+                this.playerListHandlers.forEach(e => e(d))
+            }
+        } albumHeaderCallback(a, b) {
+            for (const c of a) if ("characterData" === c.type) {
+                const d = a[0].target.parentElement;
+                this.albumHeader = d;
+                this.albumHeaderHandlers.forEach(e => e(d))
+            }
+        } albumCallback(a, b) {
+            for (const c of a) if ("childList" === c.type && c.addedNodes.length && 1 === c.addedNodes[0].nodeType) if (c.addedNodes[0].classList.contains("item")) {
+                const d = c.addedNodes[0];
+                this.injectAlbumItemMetadata(d);
+                this.albumItems.push(d);
+                this.albumItemsHandlers.forEach(e => e(d))
+            } else if (c.addedNodes[0].matches("section:has(> .end)")) {
+                const d =
+                    c.addedNodes[0].querySelector(":scope > .end > p");
+                this.albumFooter = d;
+                this.albumFooterHandlers.forEach(e => e(d))
+            }
+        } handlePlayerList(a) {
+            a = a.querySelectorAll(".user:not(.empty)");
+            Array.from(a).forEach(b => {
+                this.cachePlayer(b);
+                this.playerListHandlers.forEach(c => c(b))
+            })
+        } cachePlayer(a) {
+            const b = a.querySelector(".nick")?.textContent;
+            b && this.players.set(b, a)
+        } handlePainterHeader(a) {
+            this.painterHeader = a;
+            this.painterHeaderHandlers.forEach(b => b(a))
+        } handleDrawingPreview(a) {
+            this.drawingPreview = a;
+            this.drawingPreviewHandlers.forEach(b =>
+                b(a))
+        } handleAlbumHeader(a) {
+            this.albumHeader = a;
+            this.albumHeaderHandlers.forEach(b => b(a))
+        } handleAlbum(a) {
+            this.handleAlbumItems(a);
+            this.handleAlbumFooter(a)
+        } handleAlbumItems(a) {
+            a = a.querySelectorAll(".item:has(> :is(.answerBalloon, .drawBalloon, .imgBalloon))");
+            Array.from(a).forEach(b => {
+                this.injectAlbumItemMetadata(b);
+                this.albumItems.push(b);
+                this.albumItemsHandlers.forEach(c => c(b))
+            })
+        } injectAlbumItemMetadata(a) {
+            const b = this.nextAlbumItemId ?? [...a.parentElement.children].filter(d => d.classList.contains("item")).indexOf(a);
+
+            let c = null;
+            a.querySelector(":scope > .drawing") ? c = GPContentObserver_.ALBUM_ITEM_TYPE.IMAGE : a.querySelector(":scope > .answer") ? c = GPContentObserver_.ALBUM_ITEM_TYPE.TEXT : a.querySelector(":scope > section > .animationmode") ? c = GPContentObserver_.ALBUM_ITEM_TYPE.ANIMATION : a.querySelector(":scope > section > .loopmode") ? c = GPContentObserver_.ALBUM_ITEM_TYPE.MULTI_PIECE : a.querySelector(":scope > .img") && (c = GPContentObserver_.ALBUM_ITEM_TYPE.AI_IMAGE);
+            a.dataset.id = b;
+            a.dataset.type = c
+        } handleAlbumFooter(a) {
+            const b =
+                a.querySelector("section > .end > p");
+            b && (this.albumFooter = b, this.albumFooterHandlers.forEach(c => c(b)))
+        } handleRankingUsers(a) {
+            a = a.querySelectorAll(".user");
+            Array.from(a).forEach(b => {
+                this.rankingUsers.push(b);
+                this.rankingUsersHandlers.forEach(c => c(b))
+            })
+        }
+    } window.GPContentObserver_ = GPContentObserver_;
+    class GPLocalization_ {
+        static LANGUAGE = { RU: "ru", EN: "en", ES: "es" };
+        static MISSING_STR = "N/A";
+        static DEFAULT_DATA = { lang: "ru", entries: {} };
+        constructor(a = GPLocalization_.DEFAULT_DATA) {
+            this.lang = a.lang;
+            this.entries = this.initEntries(a.entries)
+        } get(a) { return this.entries[a] } getLang() { return this.lang } initEntries(a = {}) { return new Proxy(a, { get: (b, c) => new Proxy(b[c] ?? {}, { get: (d, e) => "lang" === e ? this.lang : d[e] ?? GPLocalization_.MISSING_STR }) }) }
+    };
+    class GPUtils_ {
+        static async compressImageData(a, b = !0) {
+            const { data: c, background: d, auth: e, meta: f } = a;
+            a = { m: { a: f.author, t: f.title, d: (new Date(f.date)).toISOString() }, d: c };
+            d && (a.b = d);
+            e && (a.a = e);
+            return b ? this.wCompressData(a) : this.compressData(a)
+        } static async compressData(a) {
+            a = JSON.stringify(a);
+            a = this.stringToArrayBuffer(a);
+            a = await this.compressArrayBuffer(a);
+            return this.arrayBufferToBlob(a)
+        } static arrayBufferToBlob(a) { return new Blob([a], { type: "octet/stream" }) } static async compressArrayBuffer(a) {
+            var b =
+                new CompressionStream("deflate"), c = b.writable.getWriter();
+            c.write(a);
+            c.close();
+            a = [];
+            b = b.readable.getReader();
+            for (c = 0;
+                ;
+            ) {
+                const { value: d, done: e } = await b.read();
+                if (e) break;
+                a.push(d);
+                c += d.byteLength
+            } b = new Uint8Array(c);
+            c = 0;
+            for (const d of a) b.set(d, c), c += d.byteLength;
+            return b
+        } static stringToArrayBuffer(a) { return (new TextEncoder).encode(a) } static async decompressFile(a) { return JSON.parse(await this.decompressBlob(a)) } static async decompressBlob(a) {
+            let b = new DecompressionStream("deflate");
+            a = a.stream().pipeThrough(b);
+
+            return await (new Response(a)).text()
+        } static saveBlob(a, b = "") {
+            a = window.URL.createObjectURL(a);
+            const c = document.createElement("a");
+            c.href = a;
+            c.download = b;
+            c.click();
+            window.URL.revokeObjectURL(a)
+        } static wCompressData(a) {
+            return new Promise(b => {
+                const c = this.createWorker(this.compressWorkerBody);
+                c.addEventListener("message", ({ data: d }) => {
+                    c.terminate();
+                    b(d)
+                });
+                c.postMessage(a)
+            })
+        } static compressWorkerBody() {
+            self.work = new async function () { }.constructor("a", 'a=JSON.stringify(a);a = (new TextEncoder).encode(a);var c = new CompressionStream("deflate"), b = c.writable.getWriter();b.write(a);b.close();a = [];c = c.readable.getReader();for (b = 0;;){const { value: d, done: e } = await c.read();if (e) break;a.push(d);b += d.byteLength} c = new Uint8Array(b);b = 0;for (const d of a) c.set(d, b), b += d.byteLength;return new Blob([c], { type: "octet/stream" })'); self.addEventListener("message", async ({ data: a }) => { self.postMessage(await self.work(a)) })
+        } static createWorker(a) { a = URL.createObjectURL(new Blob([this.getFuncBody(a)])); const b = new Worker(a); URL.revokeObjectURL(a); return b } static getFuncBody(a) { a = a.toString(); return a.substring(a.indexOf("{") + 1, a.lastIndexOf("}")) } static setInputFocusBlurHandler(a) { const b = c => { c.target !== a && (a.blur(), document.removeEventListener("pointerdown", b, !0)) }; a.addEventListener("focus", c => { c.target.select(); document.addEventListener("pointerdown", b, !0) }); a.addEventListener("blur", c => { window.getSelection().removeAllRanges() }) } static drawFunctionString = 'function(a,c,d,t,D,f){f&&(a.beginPath(),a.rect(0,0,1,1),a.fill());a.lineCap = a.lineJoin = "round";a.save();if(c){f = [];let E = !0, O = !1, P = void 0;try {for (var C, F = c[Symbol.iterator]();!(E = (C = F.next()).done);E = !0){const x = C.value, w = x[0], b = x.slice(2);if (10 != w){c = void 0;a.save();if (12 == w) t ? a.clearRect(0, 32 * d, 758 * d, 424 * d) : (a.fillStyle = "#FFFFFF", a.beginPath(), a.rect(0, 32 * d, 758 * d, 424 * d), a.fill());else if (8 != w){for (var e = 1;e < b.length;e++)b[e] = [b[e][0] * d, b[e][1] * d];if (2 < b.length) switch (w){case 1: var G = b[0];a.strokeStyle = G[0];a.lineWidth = G[1];a.globalAlpha = G[2];a.lineWidth *= d;c = [b[1][0], b[1][1]];a.beginPath();a.moveTo.apply(a, c);for (e = 2;e < b.length;e++){c = [b[e][0], b[e][1]];var y = [b[e - 1][0], b[e - 1][1]];a.quadraticCurveTo(y[0], y[1], y[0] + (c[0] - y[0]) / 2, y[1] + (c[1] - y[1]) / 2)} a.lineTo(c[0], c[1]);a.stroke();break;case 2: a.strokeStyle = "#FFFFFF";a.lineWidth = b[0] * d;c = [b[1][0], b[1][1]];t && (a.globalCompositeOperation = "destination-out");a.beginPath();a.moveTo.apply(a, c);for (e = 2;e < b.length;e++){c = [b[e][0], b[e][1]];var z = [b[e - 1][0], b[e - 1][1]];a.quadraticCurveTo(z[0], z[1], z[0] + (c[0] - z[0]) / 2, z[1] + (c[1] - z[1]) / 2)} a.lineTo(c[0], c[1]);a.stroke();t && (a.globalCompositeOperation = "source-over");break;case 3: var H = b[0];a.strokeStyle = H[0];a.lineWidth = H[1];a.globalAlpha = H[2];a.lineWidth *= d;a.beginPath();a.moveTo(b[1][0], b[1][1]);a.lineTo(b[2][0], b[2][1]);a.stroke();break;case 4: var I = b[0];a.strokeStyle = I[0];a.lineWidth = I[1];a.globalAlpha = I[2];a.lineWidth *= d;a.beginPath();a.rect(b[1][0], b[1][1], b[2][0] - b[1][0], b[2][1] - b[1][1]);a.stroke();break;case 6: var J = b[0];a.fillStyle = J[0];a.lineWidth = J[1];a.globalAlpha = J[2];a.lineWidth *= d;a.beginPath();a.rect(b[1][0], b[1][1], b[2][0] - b[1][0], b[2][1] - b[1][1]);a.fill();break;case 5: var K = b[0];a.strokeStyle = K[0];a.lineWidth = K[1];a.globalAlpha = K[2];a.lineWidth *= d;var p = (b[2][0] - b[1][0]) / 2, m = (b[2][1] - b[1][1]) / 2, g = Math.round(b[1][0] + p), h = Math.round(b[1][1] + m), u = (Math.sqrt(2) - 1) / 3 * 4;a.beginPath();a.moveTo(g, h - m);a.bezierCurveTo(g + u * p, h - m, g + p, h - u * m, g + p, h);a.bezierCurveTo(g + p, h + u * m, g + u * p, h + m, g, h + m);a.bezierCurveTo(g - u * p, h + m, g - p, h + u * m, g - p, h);a.bezierCurveTo(g - p, h - u * m, g - u * p, h - m, g, h - m);a.stroke();break;case 7: var L = b[0];a.fillStyle = L[0];a.lineWidth = L[1];a.globalAlpha = L[2];a.lineWidth *= d;var q = (b[2][0] - b[1][0]) / 2, n = (b[2][1] - b[1][1]) / 2, k = Math.round(b[1][0] + q), l = Math.round(b[1][1] + n), v = (Math.sqrt(2) - 1) / 3 * 4;a.beginPath();a.moveTo(k, l - n);a.bezierCurveTo(k + v * q, l - n, k + q, l - v * n, k + q, l);a.bezierCurveTo(k + q, l + v * n, k + v * q, l + n, k, l + n);a.bezierCurveTo(k - v * q, l + n, k - q, l + v * n, k - q, l);a.bezierCurveTo(k - q, l - v * n, k - v * q, l - n, k, l - n);a.fill()} else if (![6, 7, 11].includes(w)){switch (w){case 2: a.fillStyle = "#FFFFFF";a.lineWidth = b[0] * d;c = b[1];t && (a.globalCompositeOperation = "destination-out");break;case 10: a.fillStyle = "#FF0000";a.lineWidth = 2 * d;a.globalAlpha = 1;c = b[1];break;default: var M = b[0];a.fillStyle = M[0];a.lineWidth = M[1];a.globalAlpha = M[2];a.lineWidth *= d;c = b[1]}a.beginPath();a.arc(c[0], c[1], a.lineWidth / 2, 0, 2 * Math.PI);a.fill();2 == w && t && (a.globalCompositeOperation = "source-over")}} else {var Q = b[0];a.fillStyle = Q[0];a.globalAlpha = Q[1];a.beginPath();for (c = 1;c < b.length;c += 5)a.rect(b[c] * d, b[c + 1] * d, b[c + 2] * d, b[c + 3] * d);a.fill()} a.restore()} else D && f.push(b)}} catch (x){ O = !0, P = x } finally {try { E || null == F.return || F.return() } finally {if (O) throw P;}} t = !0;D = !1;C = void 0;try {for (var R, N = f[Symbol.iterator]();!(t = (R = N.next()).done);t = !0){var r = R.value;for (f = 1;f < r.length;f++)r[f] = [r[f][0] * d, r[f][1] * d];a.strokeStyle = "#CC0053";a.lineWidth = 2 * d;a.globalAlpha = 1;var A = [r[1][0], r[1][1]];a.beginPath();a.moveTo.apply(a, A);for (f = 2;f < r.length;f++){A = [r[f][0], r[f][1]];var B = [r[f - 1][0], r[f - 1][1]];a.quadraticCurveTo(B[0], B[1], B[0] + (A[0] - B[0]) / 2, B[1] + (A[1] - B[1]) / 2)} a.lineTo(A[0], A[1]);a.stroke()}} catch (x){ D = !0, C = x } finally {try { t || null == N.return || N.return() } finally {if (D) throw C;}}}a.restore()} '; static drawFunction = (new Function(`return ${this.drawFunctionString}`))(); static bindMethods(a, b) { a.forEach(c => { b[c.name] = c.bind(b) }) } static computeHash(a, b = 0) {
+            let c = 3735928559 ^ b;
+            b ^= 1103547991;
+            for (let d = 0, e;
+                d < a.length;
+                d++)e = a.charCodeAt(d), c = Math.imul(c ^ e, 2654435761), b = Math.imul(b ^ e, 1597334677);
+            c = Math.imul(c ^ c >>> 16, 2246822507) ^ Math.imul(b ^ b >>> 13, 3266489909);
+            b = Math.imul(b ^ b >>> 16, 2246822507) ^ Math.imul(c ^ c >>> 13, 3266489909);
+            return 4294967296 * (2097151 & b) + (c >>> 0)
+        }
+    } window.GPUtils_ = GPUtils_;
+    class GPGlobalBanlist_ extends EventTarget {
+        static MODULE = { title: "Global Banlist", alias: "gb" };
+        constructor(a, b) {
+            super();
+            this.gpproxy = a.gpproxy;
+            this.abt = a.abt;
+            this.l = b;
+            this.isSubscribed = !1;
+            this.globalBanlist = new Set;
+            this.globalBanlistIds = new Set;
+            this.twitchUsernamesCache = new Map;
+            this.twitchCachedUsers = new Set;
+            this.addEventListener("global_banlist_updated", c => { this.clearPlayersByGlobalBanlist() });
+            this.gpproxy.addEventListener("data", ({ detail: { event: c } }) => {
+                c === GPProxy_.EVENT.NEW_GAME && this.gpproxy.isAuthorized &&
+                    this.requestGlobalBanlist()
+            });
+            this.gpproxy.addEventListener("users_updated", ({ }) => { this.clearPlayersByGlobalBanlist() });
+            document.addEventListener("_global_banlist_received", ({ detail: { ids: c } }) => {
+                this.globalBanlistIds = new Set(c);
+                this.updateGlobalBanlist()
+            });
+            document.addEventListener("_tw_ids_usernames", ({ detail: { usernamesMap: c } }) => {
+                this.updateTwitchUsernamesCache(c);
+                this.updateGlobalBanlist(c)
+            });
+            document.addEventListener("_subs_status", ({ detail: { status: c, ps: d } }) => {
+                this.isSubscribed = c;
+                2 & d || this.gpproxy.addEventListener("users_updated",
+                    ({ detail: { users: e } }) => { this.requestIdsUsernames(e) })
+            });
+            this.clearPlayersByGlobalBanlist();
+            this.requestGlobalBanlist()
+        } requestGlobalBanlist() { document.dispatchEvent(new CustomEvent("_request_global_banlist")) } clearPlayersByGlobalBanlist() { this.gpproxy.isHost() && this.gpproxy.isTwitchAuth() && this.gpproxy.isGameStage(GPProxy_.GAME_STAGE.LOBBY) && this.gpproxy.getUsers().forEach(a => { !this.gpproxy.isYou(a.nick) && this.globalBanlist.has(this.gpproxy.formatNickname(a.nick)) && this.gpproxy.kickPlayer(a.id) }) } updateGlobalBanlist(a) {
+            a ||
+                this.globalBanlist.clear();
+            const b = a || this.twitchUsernamesCache;
+            if (b.size) {
+                var c = !1;
+                this.globalBanlistIds.forEach(d => {
+                    d = b.get(d);
+                    void 0 !== d && (this.globalBanlist.add(d), c = !0)
+                });
+                c && this.dispatchEvent(new CustomEvent("global_banlist_updated"))
+            }
+        } requestIdsUsernames(a) {
+            this.gpproxy.isHost() && this.gpproxy.isTwitchAuth() && (a = a.filter(b => !this.twitchCachedUsers.has(this.gpproxy.formatNickname(b.nick)) && !this.gpproxy.isYou(b.nick) && !this.gpproxy.isViewer(b)).map(b => this.gpproxy.formatNickname(b.nick)), a.length &&
+                document.dispatchEvent(new CustomEvent("_request_ids_usernames", { detail: { users: a } })))
+        } updateTwitchUsernamesCache(a) {
+            a.forEach((b, c) => {
+                this.twitchUsernamesCache.set(c, b);
+                this.twitchCachedUsers.add(b)
+            })
+        }
+    } window.GPGlobalBanlist_ = GPGlobalBanlist_;
+    class GPPacketParser_ {
+        constructor() {
+            this.socketIOParser = new SocketIOParser_;
+            this.engineIOClient = new EngineIOClient_;
+            return { encodeString: this.socketIOParser.encodeString, add: this.socketIOParser.add, decodeString: this.socketIOParser.decodeString, decodePayload: this.engineIOClient.decodePayload, decode: this.decode.bind(this) }
+        } decode(a, b) {
+            if (b) {
+                const { type: c, data: d } = this.engineIOClient.decodePayload(a);
+                return "message" === c ? this.socketIOParser.add(d).data : null
+            } return this.socketIOParser.add(a).data
+        }
+    }
+    class SocketIOParser_ {
+        constructor() {
+            function a(d) {
+                var e = 0, f = { type: Number(d.charAt(0)) };
+                if (null == c.types[f.type]) return { type: c.ERROR, data: null };
+                if (c.BINARY_EVENT === f.type || c.BINARY_ACK === f.type) {
+                    for (var g = e + 1;
+                        "-" !== d.charAt(++e) && e != d.length;
+                    );
+                    g = d.substring(g, e);
+                    if (g != Number(g) || "-" !== d.charAt(e)) throw Error("Illegal attachments");
+                    f.attachments = Number(g)
+                } if ("/" === d.charAt(e + 1)) {
+                    for (g = e + 1;
+                        ++e;
+                    ) {
+                        var k = d.charAt(e);
+                        if ("," === k) break;
+                        if (e === d.length) break
+                    } f.nsp = d.substring(g, e)
+                } else f.nsp = "/";
+                g = d.charAt(e +
+                    1);
+                if ("" !== g && Number(g) == g) {
+                    for (g = e + 1;
+                        ++e;
+                    ) {
+                        k = d.charAt(e);
+                        if (null == k || Number(k) != k) {
+                            --e;
+                            break
+                        } if (e === d.length) break
+                    } f.id = Number(d.substring(g, e + 1))
+                } "4" === d.charAt(0) && "5" === d.charAt(1) && e++;
+                if (d.charAt(++e)) {
+                    d = d.substr(e);
+                    try { var h = JSON.parse(d) } catch (l) { h = !1 } if (!1 === h || f.type !== c.ERROR && !Array.isArray(h)) return { type: c.ERROR, data: null };
+                    f.data = h
+                } return f
+            } var b = "function" === typeof ArrayBuffer;
+            const c = {
+                protocol: 4, types: "CONNECT DISCONNECT EVENT ACK ERROR BINARY_EVENT BINARY_ACK".split(" "), CONNECT: 0,
+                DISCONNECT: 1, EVENT: 2, ACK: 3, ERROR: 4, BINARY_EVENT: 5, BINARY_ACK: 6
+            };
+            return {
+                add: function (d) {
+                    if ("string" === typeof d) if (d = a(d), c.BINARY_EVENT === d.type || c.BINARY_ACK === d.type) { if (this.reconstructor = new window.BinaryReconstructor(d), 0 === this.reconstructor.reconPack.attachments) return d } else return d;
+                    else {
+                        var e;
+                        if (e = b) (e = d instanceof ArrayBuffer) || (e = "function" === typeof ArrayBuffer.isView ? ArrayBuffer.isView(d) : d.buffer instanceof ArrayBuffer);
+                        if (e || d.base64) if (this.reconstructor) {
+                            if (d = this.reconstructor.takeBinaryData(d)) return this.reconstructor =
+                                null, d
+                        } else throw Error("got binary data when not reconstructing a packet");
+                        else throw Error("Unknown type: " + d);
+
+                    }
+                }, decodeString: a, encodeString: function (d) {
+                    let e, f = !1;
+                    e = "" + d.type;
+                    if (c.BINARY_EVENT == d.type || c.BINARY_ACK == d.type) e += d.attachments, e += "-";
+                    d.nsp && "/" != d.nsp && (f = !0, e += d.nsp);
+                    null != d.id && (f && (e += ",", f = !1), e += d.id);
+                    null != d.data && (f && (e += ","), e += JSON.stringify(d.data));
+                    return e
+                }
+            }
+        }
+    }
+    class EngineIOClient_ {
+        constructor() {
+            function a(e, f, g) {
+                if (void 0 === e) return d;
+                if ("string" === typeof e) {
+                    if ("b" === e.charAt(0)) return g = e.substr(1), e = c[g.charAt(0)], window.base64encoder ? (g = window.base64encoder.decode(g.substr(1)), "blob" === f && Blob && (g = new Blob([g])), f = { type: e, data: g }) : f = { type: e, data: { base64: !0, data: g.substr(1) } }, f;
+                    if (g) {
+                        a: {
+                            f = e;
+                            try { f = window.utf8.decode(f, { strict: !1 }) } catch (k) {
+                                e = !1;
+                                break a
+                            } e = f
+                        } if (!1 === e) return d
+                    } g = e.charAt(0);
+                    return Number(g) == g && c[g] ? 1 < e.length ? { type: c[g], data: e.substring(1) } :
+                        { type: c[g] } : d
+                } g = (new Uint8Array(e))[0];
+                e = e.slice(1);
+                Blob && "blob" === f && (e = new Blob([e]));
+                return { type: c[g], data: e }
+            } function b(e, f, g) {
+                "function" === typeof f && (g = f, f = null);
+                for (var k = [];
+                    0 < e.byteLength;
+                ) {
+                    for (var h = new Uint8Array(e), l = 0 === h[0], m = "", n = 1;
+                        255 !== h[n];
+                        n++) {
+                        if (310 < m.length) return g(d, 0, 1);
+                        m += h[n]
+                    } e = e.slice(2 + m.length);
+                    m = parseInt(m);
+                    h = e.slice(0, m);
+                    if (l) try { h = String.fromCharCode.apply(null, new Uint8Array(h)) } catch (p) {
+                            for (l = new Uint8Array(h), h = "", n = 0;
+                                n < l.length;
+                                n++)h += String.fromCharCode(l[n])
+                        } k.push(h);
+
+                    e = e.slice(m)
+                } var r = k.length;
+                k.forEach(function (p, q) { g(a(p, f, !0), q, r) })
+            } var c = Object.keys({ open: 0, close: 1, ping: 2, pong: 3, message: 4, upgrade: 5, noop: 6 }), d = { type: "error", data: "parser error" };
+            return {
+                decodePayload: function (e, f, g) {
+                    if ("string" !== typeof e) return b(e, f, g);
+                    "function" === typeof f && (f = null);
+                    if ("" === e) return d;
+                    g = "";
+                    for (var k, h, l = 0, m = e.length;
+                        l < m;
+                        l++)if (h = e.charAt(l), ":" !== h) g += h;
+                        else {
+                            if ("" === g || g != (k = Number(g))) return d;
+                            h = e.substr(l + 1, k);
+                            if (g != h.length) return d;
+                            if (h.length) return e = a(h, f, !1), d.type ===
+                                e.type && d.data === e.data ? d : e;
+                            l += k;
+                            g = ""
+                        } if ("" !== g) return d
+                }
+            }
+        }
+    } window.GPPacketParser_ = GPPacketParser_;
+    class GPProxy_ extends EventTarget {
+        static EVENT = { GAME_QUIT: 28, CHANGE_GAME_MODE: 26, CHANGE_LOBBY_SCREEN: 27, CHANGE_GAME_SETTINGS: 18, GAME_STARTED: 5, DESCRIPTION_INPUT: 6, TOOL: 7, READY: 15, GALLERY_SETTINGS: 23, NEW_GAME: 20, PLAYER_JOINED: 2, PLAYER_LEFT: 3, PLAYER_KICKED: 14, PLAYER_LEFT_GAME: 21, PLAYER_RETURNED: 22, TURN_STARTED: 11, TURNS_ENDED: 24, TIMER_STARTED: 25, ALBUM_INFO: 12, ALBUM_ITEM: 9, ALBUM_NEXT: 16, ALBUM_BACK: 17, ALBUM_SCORE: 35, CHANGE_ANIMATION_SETTINGS: 36 };
+        static GAME_TIME = {
+            FAST: 3, NORMAL: 2, SLOW: 1, REGRESSIVE: 5, PROGRESSIVE: 8,
+            DYNAMIC: 4, INFINITE: 6, HOSTS_DECISION: 7, FASTER_FIRST_TURN: 9, SLOWER_FIRST_TURN: 10
+        };
+        static GAME_ORDER = { WRITING_DRAWING: 1, DRAWING_WRITING: 2, ONLY_DRAWINGS: 3, WRITING_ONLY_AT_THE_BEGINNING_AND_THE_END: 4, WRITING_ONLY_AT_THE_BEGINNING: 5, WRITING_ONLY_AT_THE_END: 6, SINGLE_SENTENCE: 7, SINGLE_DRAWING: 8, SOLO_DRAWING: 9, DRAWINGS_WITH_A_BACKGROUND: 10, DRAWINGS_WITH_A_BACKGROUND_NO_PREVIEW: 11 };
+        static INITIAL_STATE = {
+            screen: null, user: { owner: !1 }, users: [], turn: {}, turnNum: 0, turnMax: 0, roundNum: 0, bookAuthor: { id: 0, nick: "" }, bookNum: -1,
+            bookLoaded: !1, bookAutomatic: !0, bookVoice: !1, timeline: [], previous: { user: { id: 0, nick: "" }, type: 2, data: "" }, active: !1, sentence: "", write: "", draw: [], lastDraw: null, background: null, configs: { tab: 1, mode: 1, maxUsers: 14, visible: !0, speed: 2, turns: 3, first: 1, score: 2, animate: 2, keep: 2 }, animationConfigs: { speed: 3, loop: 1 }, timeStarted: !1, elapsedBase: 0, elapsedTime: 0, modList: 0
+        };
+        static PAYLOAD_TYPE = { PRESETS: 1, DATA: 2 };
+        static GAME_STAGE = { LOBBY: 1, GAME: 2, GALLERY_SETTINGS: 5, ALBUM: 3, SCORE: 4 };
+        static ALBUM_ITEM_TYPE = {
+            TEXT: 2, IMAGE: 1,
+            ANIMATION: 5, MULTI_PIECE: 10, AI_IMAGE: 6
+        };
+        static AUTH_TYPE = { DISCORD: "discord", TWITCH: "twitch" };
+        static AUTH_TYPE_IDS = { twitch: 1, discord: 2 };
+        static GAME_MODES_PRESETS = {
+            1: { mode: 1, visible: 1, speed: 2, turns: 3, first: 1, score: 2, animate: 2, keep: 2 }, 2: { mode: 2, speed: 4 }, 3: { mode: 3, visible: 2, speed: 3 }, 4: { mode: 4, turns: 3 }, 5: { mode: 5, first: 4 }, 6: { mode: 6, speed: 3 }, 7: { mode: 7, speed: 3, turns: 1 }, 8: { mode: 8, speed: 5, first: 3 }, 9: { mode: 9, first: 7, turns: 12 }, 10: { mode: 10, score: 1 }, 11: { mode: 11, first: 3, animate: 1 }, 12: {
+                mode: 12, speed: 6, turns: 4, first: 7,
+                animate: 1
+            }, 13: { mode: 13, speed: 4, turns: 7, first: 9, animate: 1 }, 14: { mode: 14, speed: 10, turns: 4, first: 10, animate: 1 }, 15: { mode: 15, speed: 9, turns: 12, first: 11 }, 16: { mode: 16, first: 13, turns: 1 }, 17: { mode: 17, first: 12 }, 18: { mode: 18, speed: 3, turns: 13, first: 7, keep: 1 }, 19: { mode: 19, first: 3, animate: 1, keep: 1 }, 20: { mode: 20, speed: 7, turns: 6, first: 9 }, 21: { mode: 21, first: 3, keep: 3 }, 24: { mode: 24, speed: 1, turns: 11, first: 3, keep: 4 }
+        };
+        static SCREEN = { LOBBY: 1, PHRASE: 3, DESCRIPTION: 4, PAINTER: 5, ALBUM: 7 };
+        static SCREEN_NAMES = {
+            1: "lobby", 3: "phrase", 4: "description",
+            5: "painter", 7: "album"
+        };
+        static REJOIN_STAGES = { LOBBY: ["lobby"], GAME: ["start", "draw", "write", "memory", "reply"], ALBUM: ["book"], SCORE: ["rank"] };
+        static STAGE = { LOBBY: "lobby", GAME: "game", ALBUM: "album", SCORE: "score" };
+        static SEND_QUEUE_DELAY = 130;
+        static MODULE = { title: "GP Proxy", alias: "gpproxy", dependencies: ["GPPacketParser_"] };
+        constructor(a, b) {
+            super();
+            this.abt = null;
+            this.ws;
+            this.l = b;
+            document.addEventListener("_modules-loaded", c => {
+                this.abt = a.abt;
+                window.closeNotice = a.abt?.closeNotice.bind(a.abt);
+                window.addNotice =
+                    a.abt?.addNotice.bind(a.abt)
+            }, { once: !0 });
+            this.state = GPProxy_.INITIAL_STATE;
+            this.albums = [];
+            this.albumsCount = 0;
+            this.isTwitchOAuth = this.isAuthorized = !1;
+            this.twitchOAuthLogin = null;
+            this.gameStage = GPProxy_.GAME_STAGE.LOBBY;
+            this.rejoinFlag = !1;
+            this.rejoinEvent = null;
+            this.isRejoinEventRequested = !1;
+            this.stateUpdateHandler = this.stateUpdateHandler.bind(this);
+            this.wsMessageHandler = this.wsMessageHandler.bind(this);
+            this.wsOpenHandler = this.wsOpenHandler.bind(this);
+            this.dataEventHandler = this.dataEventHandler.bind(this);
+
+            this.rejoinHandler = this.rejoinHandler.bind(this);
+            this.sendQueueHandler = this.sendQueueHandler.bind(this);
+            this.resetSendQueue = this.resetSendQueue.bind(this);
+            this.setAlbumItem = this.setAlbumItem.bind(this);
+            this.parser = new GPPacketParser_;
+            this.localization = {};
+            this.wsMsgMiddlewares = new Map;
+            this.sendQueue = [];
+            this.sendInProcess = !1;
+            this.sendQueueTimeLeft = 0;
+            this.lastSendTime = Date.now();
+            this.sendQueueTimer;
+            document.addEventListener("_xhr_data", ({ detail: { encodedPacket: c } }) => { (c = this.parser.decode(c, !0)) && this.setPresets(c[1]) });
+
+            document.addEventListener("_ws_send_data", ({ detail: { encodedPacket: c } }) => { c && 3 < c.length && (c = this.parser.decode(c)) && this.wsSendHandler(c) });
+            document.addEventListener("_onmessage_intercept", ({ detail: { handler: c, e: d } }) => {
+                if (this.wsMsgMiddlewares.size) if ("string" !== typeof d.data) c(d);
+                else {
+                    var [, e, f] = d.data.match(/4(?:(?:2)|(51-))\[2,(\d+)/) || [];
+                    if (void 0 !== f && this.wsMsgMiddlewares.has(+f)) {
+                        var g = this.wsMsgMiddlewares.get(+f), k = this.parser.decodeString(d.data).data;
+                        if (k) {
+                            var [h, l] = [...g].reduce((m, n) =>
+                                n(m), [k, !1]);
+                            l ? (g = this.encodePacket(h, !!e), d = this.buildMessageEvent(d, g), c(d)) : c(d)
+                        } else c(d)
+                    } else c(d)
+                } else c(d)
+            });
+            this.addEventListener("data", this.stateUpdateHandler);
+            this.addEventListener("data", this.gameStageUpdateHandler);
+            this.addEventListener("data", this.usersUpdateHandler);
+            this.addEventListener("data", this.albumUpdateHandler);
+            this.addEventListener("data", this.dataEventHandler);
+            this.addEventListener("data", this.sendQueueHandler);
+            this.addEventListener("presets", this.resetSendQueue);
+            this.addEventListener("album_reconnect",
+                () => { this.albumsCount = this.getAlbumsCount() });
+            document.addEventListener("_url_changed", this.rejoinHandler, { once: !0 });
+            this.setWebSocket(a.ws);
+            this.requestLocalization("draw").then(({ data: c, type: d }) => {
+                this.localization[d] = c;
+                this.dispatchEvent(new CustomEvent("localization", { detail: { data: c, type: d } }))
+            }).catch(({ err: c, type: d }) => {
+                console.error(c);
+                this.localization[d] = {}
+            })
+        } setWebSocket(a) {
+            this.ws && (this.ws.removeEventListener("message", this.wsMessageHandler), this.ws.removeEventListener("open", this.wsOpenHandler));
+
+            this.ws = a;
+            this.ws.addEventListener("message", this.wsMessageHandler);
+            this.ws.addEventListener("open", this.wsOpenHandler)
+        } addWSMsgMiddleware(a, b) {
+            a.forEach(c => {
+                const d = this.wsMsgMiddlewares.get(c) || new Set;
+                d.add(b);
+                this.wsMsgMiddlewares.set(c, d)
+            })
+        } removeWSMsgMiddleware(a) {
+            this.wsMsgMiddlewares.forEach((b, c) => {
+                b.delete(a);
+                b.size || this.wsMsgMiddlewares.delete(c)
+            })
+        } encodePacket([a, b, c, d], e) {
+            e = e ? "51-" : 2;
+            a = [a, b, c];
+            void 0 !== d && a.push(d);
+            return this.parser.encodeString({ type: 4, nsp: "/", id: e, data: a })
+        } buildMessageEvent(a,
+            b) { return new MessageEvent("message", { data: b, origin: a.origin, lastEventId: a.lastEventId, source: a.source, ports: a.ports }) } setPresets(a) {
+            if (a.error) console.warn("Presets Error:", a);
+            else try {
+                this.state = Object.assign(GPProxy_.INITIAL_STATE, this.state, a);
+                this.state.users.find(c => c.id === a.user.id).you = !0;
+                this.isAuthorized = this.state.user.uid !== this.state.user.authId;
+                this.authTypeId = (this.authType = this.calcAuthType()) ? GPProxy_.AUTH_TYPE_IDS[this.authType] : 0;
+                if (a.users) {
+                    const c = new CustomEvent("users_updated",
+                        { detail: { users: this.state.users } });
+                    this.dispatchEvent(c)
+                } a.timeline?.length && (this.albums[a.bookNum] = { items: [], background: a.background }, a.timeline.forEach(this.setAlbumItem));
+                this.dispatchEvent(new CustomEvent("presets", { detail: { state: this.state } }));
+                if (1 !== a.screen) {
+                    var b = GPProxy_.SCREEN_NAMES[a.screen];
+                    b && this.dispatchEvent(new CustomEvent(`${b}_reconnect`));
+                    this.rejoinFlag = !0
+                }
+            } catch (c) { console.warn("Presets Data Error:", { error: c, data: a }) }
+        } wsMessageHandler({ data: a }) {
+            if ("string" === typeof a && (a = this.parser.decodeString(a).data)) {
+                const [,
+                    b, c] = a;
+                this.dispatchEvent(new CustomEvent("data", { detail: { event: b, data: c } }))
+            }
+        } wsOpenHandler(a) { this.abt?.closeNotice(GPAbout_.NOTICE_TYPE.DISCONNECTION) } wsSendHandler(a) {
+            const [, b, c] = a;
+            b !== GPProxy_.EVENT.CHANGE_GAME_SETTINGS && b !== GPProxy_.EVENT.CHANGE_ANIMATION_SETTINGS && b !== GPProxy_.EVENT.GAME_QUIT || this.dispatchEvent(new CustomEvent("data", { detail: { event: b, data: c } }))
+        } stateUpdateHandler({ detail: { event: a, data: b } }) {
+            switch (a) {
+                case GPProxy_.EVENT.CHANGE_GAME_MODE: a = GPProxy_.GAME_MODES_PRESETS;
+                    b = Object.assign({},
+                        a[1], a[b]);
+                    this.state.configs = Object.assign({}, this.state.configs, b);
+                    break;
+                case GPProxy_.EVENT.CHANGE_LOBBY_SCREEN: b = GPProxy_.GAME_MODES_PRESETS[1];
+                    this.state.configs = Object.assign({}, this.state.configs, b);
+                    break;
+                case GPProxy_.EVENT.CHANGE_GAME_SETTINGS: this.state.configs = Object.assign({}, this.state.configs, b);
+                    break;
+                case GPProxy_.EVENT.GAME_STARTED: this.state = Object.assign({}, this.state, { countDown: !0, previous: null, turnNum: 0, roundNum: this.state.roundNum + 1, bookNum: 0, turnMax: b, timeline: [], background: null });
+
+                    break;
+                case GPProxy_.EVENT.TURN_STARTED: this.state = Object.assign({}, this.state, { draw: [], lastDraw: null }, b);
+                    [3, 4, 9].includes(this.state.screen) ? this.state.write = b.write || "" : this.state.draw = b.draw || [];
+                    break;
+                case GPProxy_.EVENT.TURNS_ENDED: this.state = Object.assign({}, this.state, { screen: 7, bookNum: -1 });
+                    break;
+                case GPProxy_.EVENT.GALLERY_SETTINGS: this.state = Object.assign({}, this.state, { background: null }, b);
+                    break;
+                case GPProxy_.EVENT.ALBUM_INFO: this.state = Object.assign({}, this.state, { timeline: [] }, b);
+                    break;
+                case GPProxy_.EVENT.ALBUM_ITEM: this.state =
+                    Object.assign({}, this.state, { timeline: [...(b.load || !b.type ? this.state.timeline : this.state.timeline.slice(0, this.state.timeline.length - 1)), b] });
+                    break;
+                case GPProxy_.EVENT.NEW_GAME: this.state = Object.assign({}, this.state, { screen: 1, roundNum: 0 });
+                    break;
+                case GPProxy_.EVENT.ALBUM_SCORE: this.state = Object.assign({}, this.state, { screen: 8 });
+                    break;
+                case GPProxy_.EVENT.CHANGE_ANIMATION_SETTINGS: this.state = Object.assign({}, this.state, { animationConfigs: Object.assign({}, this.state.animationConfigs, b) })
+            }
+        } gameStageUpdateHandler({ detail: { event: a } }) {
+            switch (a) {
+                case GPProxy_.EVENT.NEW_GAME: this.gameStage =
+                    GPProxy_.GAME_STAGE.LOBBY;
+                    break;
+                case GPProxy_.EVENT.GAME_STARTED: this.gameStage = GPProxy_.GAME_STAGE.GAME;
+                    break;
+                case GPProxy_.EVENT.TURNS_ENDED: this.gameStage = GPProxy_.GAME_STAGE.GALLERY_SETTINGS;
+                    break;
+                case GPProxy_.EVENT.GALLERY_SETTINGS: this.gameStage = GPProxy_.GAME_STAGE.ALBUM;
+                    break;
+                case GPProxy_.EVENT.ALBUM_SCORE: this.gameStage = GPProxy_.GAME_STAGE.SCORE
+            }
+        } dataEventHandler({ detail: { event: a, data: b } }) {
+            let c = !0, d;
+            switch (a) {
+                case GPProxy_.EVENT.PLAYER_JOINED: d = "player_joined";
+                    break;
+                case GPProxy_.EVENT.TURN_STARTED: d =
+                    "turn_started";
+                    break;
+                case GPProxy_.EVENT.TURNS_ENDED: d = "turns_ended";
+                    break;
+                case GPProxy_.EVENT.GALLERY_SETTINGS: d = "gallery_started";
+                    break;
+                default: c = !1
+            }c && (a = new CustomEvent(d, { detail: { ...b } }), this.dispatchEvent(a))
+        } sendQueueHandler({ detail: { event: a } }) { a !== GPProxy_.EVENT.TURN_STARTED && a !== GPProxy_.EVENT.TURNS_ENDED || this.resetSendQueue() } rejoinHandler({ detail: { path: a } }) {
+            if (this.rejoinFlag) {
+                var b = a.slice(1), c = Object.keys(GPProxy_.REJOIN_STAGES).find(d => GPProxy_.REJOIN_STAGES[d].find(e => e === b));
+                this.gameStage =
+                    GPProxy_.GAME_STAGE[c];
+                this.rejoinEvent = new CustomEvent("rejoin", { detail: { screen: this.state.screen, stage: c?.toLowerCase(), path: a } });
+                this.isRejoinEventRequested && this.dispatchEvent(this.rejoinEvent)
+            }
+        } requestRejoinEvent() { this.rejoinEvent ? this.dispatchEvent(this.rejoinEvent) : this.isRejoinEventRequested = !0 } usersUpdateHandler({ detail: { event: a, data: b } }) {
+            let c = !0, d = !1;
+            switch (a) {
+                case GPProxy_.EVENT.NEW_GAME: this.state.users = this.state.users.filter(h => !h.away).map(h => {
+                    h.viewer = void 0;
+                    h.ready = !1;
+                    return h
+                });
+
+                    break;
+                case GPProxy_.EVENT.ALBUM_SCORE: this.state.users = this.state.users.map(h => {
+                    h.viewer = void 0;
+                    return h
+                });
+                    break;
+                case GPProxy_.EVENT.TURN_STARTED: this.state.user.ready = !1;
+                    this.state.users = this.state.users.map(h => {
+                        h.ready = !1;
+                        return h
+                    });
+                    break;
+                case GPProxy_.EVENT.PLAYER_JOINED: this.state.users.push(b);
+                    break;
+                case GPProxy_.EVENT.PLAYER_LEFT: var { userLeft: e, newOwner: f } = b;
+                    this.state.users = this.state.users.filter(h => h.id !== e);
+                    f && (d = this.state.user.id === f, this.state.user.owner = d, this.state.users = this.state.users.map(h => {
+                        h.owner = h.id === f;
+                        return h
+                    }));
+                    break;
+                case GPProxy_.EVENT.PLAYER_LEFT_GAME: var { userLeft: e, newOwner: f } = b;
+                    this.state.users = this.state.users.map(h => {
+                        h.away = h.id === e || h.away;
+                        return h
+                    });
+                    f && (d = this.state.user.id === f, this.state.user.owner = d, this.state.users = this.state.users.map(h => {
+                        h.owner = h.id === f;
+                        return h
+                    }));
+                    break;
+                case GPProxy_.EVENT.PLAYER_RETURNED: this.state.users = this.state.users.map(h => {
+                    h.away = h.away && h.id !== b;
+                    return h
+                });
+                    break;
+                case GPProxy_.EVENT.PLAYER_KICKED: this.state.users = this.state.users.filter(h =>
+                    h.id !== b);
+                    break;
+                case GPProxy_.EVENT.READY: var { user: g, ready: k } = b;
+                    this.state.users = this.state.users.map(h => {
+                        h.ready = h.id === g ? k : h.ready;
+                        return h
+                    });
+                    g === this.state.user.id && (this.state.user.ready = k);
+                    break;
+                case GPProxy_.EVENT.GAME_QUIT: this.state.users = [];
+                    break;
+                default: c = !1
+            }c && this.dispatchEvent(new CustomEvent("users_updated", { detail: { users: this.state.users } }));
+            d && this.dispatchEvent(new Event("owner_status"))
+        } albumUpdateHandler({ detail: { event: a, data: b } }) {
+            switch (a) {
+                case GPProxy_.EVENT.ALBUM_INFO: this.albums[b.bookNum] =
+                    { items: [], background: b.background, bookAuthor: b.bookAuthor };
+                    b.timeline && b.timeline.forEach(this.setAlbumItem);
+                    break;
+                case GPProxy_.EVENT.ALBUM_ITEM: if (void 0 === b.id) {
+                    this.state.bookNum + 1 >= this.albumsCount && this.dispatchEvent(new Event("albums_ended"));
+                    break
+                } if (b.type === GPProxy_.ALBUM_ITEM_TYPE.ANIMATION || b.type === GPProxy_.ALBUM_ITEM_TYPE.MULTI_PIECE) {
+                        this.dispatchEvent(new CustomEvent("album_item_loading", { detail: { id: null } }));
+                        break
+                    } b.user && !b.data ? this.dispatchEvent(new CustomEvent("album_item_loading",
+                        { detail: { id: b.id } })) : this.setAlbumItem(b);
+                    break;
+                case GPProxy_.EVENT.GALLERY_SETTINGS: this.albumsCount = this.getAlbumsCount()
+            }
+        } getAlbumsCount() { return this.getUsers().filter(a => !a.viewer).length } getAlbum(a = this.state.bookNum) { return this.albums[a] } getAlbumBackground(a = this.state.bookNum) { return this.albums[a]?.background ?? null } setAlbumItem({ user: a, id: b, data: c, type: d, active: e }) {
+            if (e && c && a && (d === GPProxy_.ALBUM_ITEM_TYPE.TEXT || d === GPProxy_.ALBUM_ITEM_TYPE.IMAGE)) {
+                a = a.nick;
+                e = d === GPProxy_.ALBUM_ITEM_TYPE.IMAGE ?
+                    this.getItemTitle(b) : null;
+                var f = (new Date).toISOString(), g = this.albums[this.state.bookNum].background;
+                0 === b && g && !c?.length && (c = g, g = void 0);
+                c = { data: c, background: g, type: d, meta: { author: a, title: e, date: f } };
+                this.isAuthorized && (c.auth = this.authTypeId);
+                this.albums[this.state.bookNum].items[b] = c;
+                this.dispatchEvent(new CustomEvent("album_item", { detail: { itemId: b, albumId: this.state.bookNum, item: c } }))
+            }
+        } getItemTitle(a) {
+            if (!a) return this.l.ITEM_FREE_TITLE;
+            const b = Object.values(this.albums[this.state.bookNum].items),
+                { first: c, animate: d } = this.state.configs;
+            let e;
+            if (1 === d) return this.l.ITEM_ANIM_FRAME_TITLE;
+            if (1 === c || 2 === c) {
+                for (a = b.length;
+                    0 < a--;
+                )if (2 === b[a].type) {
+                        e = b[a].data;
+                        break
+                    } return e || this.l.ITEM_FREE_TITLE
+            } return 3 === c || 6 === c ? this.l.ITEM_REDRAWN_TITLE : 4 === c || 5 === c ? 1 < a ? this.l.ITEM_REDRAWN_TITLE : b[0].data : 7 === c ? b[0].data : 9 === c ? this.l.ITEM_FREE_TITLE : 10 === c || 11 === c ? 0 < a ? this.l.ITEM_COMPLEMENTED_TITLE : this.l.ITEM_FREE_TITLE : this.l.ITEM_FREE_TITLE
+        } getAlbumItem(a, b = this.state.bookNum) {
+            return this.albums[b]?.items[a] ??
+                null
+        } calcAuthType() { return this.isAuthorized ? 17 <= this.state.user.authId.length ? GPProxy_.AUTH_TYPE.DISCORD : GPProxy_.AUTH_TYPE.TWITCH : null } isConnected() { return this.ws?.readyState === WebSocket.OPEN } send(a, b, c = 4, d = 2, e) {
+            c = this.parser.encodeString({ type: c, nsp: "/", id: d, data: [GPProxy_.PAYLOAD_TYPE.DATA, a, b] });
+            if (this.sendQueue.length || e) {
+                if (a = a === GPProxy_.EVENT.TOOL && Number.isInteger(b?.v)) {
+                    const f = b.v;
+                    b = this.sendQueue.findLastIndex(g => g[2] === f);
+                    ~b ? (this.sendQueue.splice(b, 1), this.sendQueueTimeLeft -= GPProxy_.SEND_QUEUE_DELAY) :
+                        this.sendQueue.push([c, a, f])
+                } else this.sendQueue.push([c, a, b.v[1]]), this.sendQueueTimeLeft += GPProxy_.SEND_QUEUE_DELAY;
+                this.sendInProcess || this.delayedSend()
+            } else this.ws.send(c), this.lastSendTime = Date.now()
+        } delayedSend(a = GPProxy_.SEND_QUEUE_DELAY) {
+            if (this.sendQueue.length) {
+                this.sendInProcess = !0;
+                var b = Date.now() - this.lastSendTime;
+                if (b > a || this.sendQueue[0][1]) {
+                    const [c, d] = this.sendQueue.shift();
+                    this.sendQueueTimeLeft -= d ? 0 : GPProxy_.SEND_QUEUE_DELAY;
+                    this.ws.send(c);
+                    this.lastSendTime = Date.now();
+                    this.dispatchEvent(new CustomEvent("send_queue_updated",
+                        { detail: { size: this.sendQueue.length, timeLeft: this.sendQueueTimeLeft } }));
+                    0 < this.sendQueue.length && (this.sendQueueTimer = setTimeout(() => { this.delayedSend() }, d ? 0 : a));
+                    this.sendInProcess = !1
+                } else this.sendQueueTimer = setTimeout(() => { this.delayedSend() }, a - b)
+            } else this.sendInProcess = !1, this.sendQueueTimeLeft = 0, this.dispatchEvent(new CustomEvent("send_queue_updated", { detail: { size: this.sendQueue.length, timeLeft: this.sendQueueTimeLeft } }))
+        } resetSendQueue() {
+            clearTimeout(this.sendQueueTimer);
+            this.sendQueue = [];
+            this.sendInProcess =
+                !1;
+            this.sendQueueTimeLeft = 0
+        } getSendQueueSize() { return this.sendQueue.length } kickPlayer(a) { this.send(GPProxy_.EVENT.PLAYER_KICKED, a) } tool(a, b, c) { this.send(GPProxy_.EVENT.TOOL, { t: this.state.turnNum, d: a, v: b }, void 0, void 0, c) } undo(a, b) { this.tool(2, a, b) } redo(a, b) { this.tool(1, a, b) } ready() { this.send(GPProxy_.EVENT.READY, !this.state.user.ready) } getState() { return this.state } isRejoined() { return this.rejoinFlag } getUser() { return this.state.user } getNickname() { return this.state.user.nick } getUsername() { return this.formatNickname(this.getNickname()) } formatNickname(a) {
+            return this.isDiscordAuth() ?
+                a : a.toLowerCase()
+        } getUsers() { return this.state.users.slice() } requestAuthId() { document.dispatchEvent(new CustomEvent("_auth_id", { detail: { authId: this.state.user.authId, authTypeId: this.authTypeId, isAuthorized: this.isAuthorized } })) } getAuthType() { return this.authType } isTwitchAuth() { return this.authType === GPProxy_.AUTH_TYPE.TWITCH } isDiscordAuth() { return this.authType === GPProxy_.AUTH_TYPE.DISCORD } setTwitchOAuth(a) {
+            this.isTwitchOAuth = !0;
+            this.twitchOAuthLogin = a
+        } getTwitchOAuthLogin() { return this.twitchOAuthLogin } isReady() { return !!this.state.user.ready } isHost() { return !!this.state.user.owner } isViewer(a) { return !!a.viewer } isYou(a) {
+            return void 0 ===
+                a ? !1 : this.state.user["number" === typeof a ? "id" : "nick"] === a
+        } isAnimateMode() { return 1 === this.state.configs.animate } isMultiPieceMode() { return 4 === this.state.configs.keep } isScreen(...a) { return a.some(b => b === this.state.screen) } isGameStage(a) { return this.gameStage === a } isGameStages(...a) { return a.some(b => b === this.gameStage) } isGameTime(a) { return this.state.configs.speed === a } isGameOrder(a) { return this.state.configs.first === a } isAlbumAutoShow() { return this.state.bookAutomatic } isSoloGame() {
+            return this.state.screen ===
+                GPProxy_.SCREEN.PAINTER && 1 === this.state.users.filter(a => !a.viewer).length
+        } getGameConfig() { return Object.assign({}, this.state.configs) } getCurrentAlbumId() { return this.state.bookNum } getCurrentTurnId() { return this.state.turnNum } getAlbumAuthor() { return this.state.bookAuthor.nick } getGameCode() { return this.state.user.access } getPrevImageData() { return this.state.previous.data } getPrevData() { return this.state.previous } getLocalization(a) { return this.localization[a] || {} } requestLocalization(a) {
+            return new Promise((b,
+                c) => { window.__NEXT_DATA__ ? fetch(`${location.origin}/_next/data/${window.__NEXT_DATA__.buildId}/${window.__NEXT_DATA__.locale}/${a}.json`).then(d => d.json()).then(d => { (d = d.pageProps?.texts?.page) ? b({ data: d, type: a }) : c({ error: "localization data not found", type: a }) }).catch(d => { c({ error: d, type: a }) }) : c({ error: "__NEXT_DATA__ is undefined", type: a }) })
+        }
+    } window.GPProxy_ = GPProxy_;
+    class GPModulesManager_ extends EventTarget {
+        static FORCE_RELOAD = !0;
+        static DEFAULT_PERMISSIONS = 65535;
+        static STATE = { ANALYTICS: "analytics", KEY: "key", AUTH: "auth", SUBSCRIBE: "subscribe", SUBSCRIPTION: "subscription", TIME_LEFT: "time-left", EXPIRED: "expired", GIFT: "gift" };
+        static TWITCH_APP_CLIENT_ID = "lxn2nh0bxpwhqnmo840o0pf9bzotgu";
+        static TWITCH_APP_REDIRECT_URI = "https://garticm2.github.io/twitch-token-auth?WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW";
+        static TWITCH_AUTH_URL = `https://id.twitch.tv/oauth2/authorize?client_id=${this.TWITCH_APP_CLIENT_ID}&redirect_uri=${encodeURIComponent(this.TWITCH_APP_REDIRECT_URI)}&response_type=token&scope=`;
+        static LANGUAGES = {
+            ru: "\u0420\u0443\u0441\u0441\u043a\u0438\u0439",
+            en: "English", es: "Espa\u00f1ol"
+        };
+        static RELOAD_BTN_L10N = { ru: "\u041f\u0435\u0440\u0435\u0437\u0430\u0433\u0440\u0443\u0437\u0438\u0442\u044c", en: "Reload page", es: "Recarga la pesta\u00f1a" };
+        static DEFAULT_SETTINGS = { disabledList: [], twitchAuth: null, allowAnalytics: !1, lastAuthSuccess: null };
+        static MODULE = { title: "Modules Manager", alias: "mm", settings: { storage: "gp_mm", defaultSettings: this.DEFAULT_SETTINGS } };
+        constructor(a, b) {
+            super();
+            this.loc = new GPLocalization_(b);
+            this.l = this.loc.get(this.constructor.name);
+            this.lang =
+                this.loc.getLang();
+            this.settingsManager = new GPSettingsManager_(this, this.loc.get("GPSettingsManager_"));
+            this.s = this.settingsManager.setSettings(this);
+            this.disabledList = new Set(this.s.disabledList);
+            this.modules = [];
+            this.lm = [];
+            this.hiddenSettings = new Set;
+            this.initialState = {};
+            this.rootThis;
+            this.publicKey;
+            this.pasteKey = null;
+            this.onMListClick = this.onMListClick.bind(this);
+            this.renderModulesList = this.renderModulesList.bind(this);
+            this.renderError = this.renderError.bind(this);
+            this.toggleSettingsVisibility = this.toggleSettingsVisibility.bind(this);
+
+            this.reloadBtnClickHandler = this.reloadBtnClickHandler.bind(this);
+            this.addEventListener("modules-loaded", ({ detail: { decryptedData: c, authTypeId: d, isAuthorized: e, isSubscribed: f } }) => {
+                this.settingsManager.initImporterExporter(this.root.abt.getVersion(), this.root.gpproxy.getNickname());
+                this.root.gpproxy.requestRejoinEvent();
+                document.dispatchEvent(new Event("_modules-loaded"));
+                document.dispatchEvent(new CustomEvent("_analytics-report", {
+                    detail: {
+                        mv: this.root.abt.getVersion(), kh: this.root.act.getKeyHash(), ke: c.e ??
+                            null, kg: Number(c.g ?? !1), km: Number(c.m ?? !1), at: d, af: Number(e), ss: Number(f)
                     }
                 }))
-            }
-        } if (e == GAMEDATA.S.J) {
-            let t;
-            if (this.bt(), this.st = {}, this.ct = !1, Object.keys(i).forEach((e => { "previous" == e && (t = i[e], this.ct = !0), "background" == e && (t = { data: i[e] }) })), t && t.data) for (let e in t.data) this.st[e] = t.data[e]
-        }
-    }, this.Bt = t => {
-        let e = t;
-        if (e.data && "string" == typeof e.data && e.data.includes("[")) {
-            let t = JSON.parse(e.data.replace(/[^\[]{0,}/, ""))[2];
-            t && t.hasOwnProperty("turnNum") && Object.keys(t).forEach((e => { "turnNum" == e && (this.tt = t[e]) }))
-        } e.data && e.data.indexOf && 0 == e.data.indexOf("42") && this.Pt(JSON.parse(e.data.substr(2, e.data.length - 2)))
-    }, this.Ut = !1, this.Jt = () => {
-        window.mod.drawScriptLoaded || this.Ut || document.body.querySelectorAll("script").forEach((async t => {
-            if (-1 != t.src.indexOf("blob:") || -1 != t.src.indexOf("draw")) {
-                this.Ut = !0;
-                let e = document.createElement("script"), i = await window.mod.At(t.src);
-                i = window.mod._t(i), e.classList.add("draw_script");
-                let n = new Blob([i]);
-                e.src = URL.createObjectURL(n), t.remove(), this.it && (document.body.appendChild(e), window.mod.drawScriptLoaded = !0, Log("Draw script loaded"))
-            }
-        }))
-    }, this.Gt = t => {
-        let e = document.querySelector(".jsx-187140558"), i = document.querySelector("#drawPreviewCanvas");
-        i || (i = e.cloneNode(!0), i.classList.remove("jsx-187140558"), i.style.width = "758px", i.style.height = "424px", i.id = "drawPreviewCanvas", i.background = "transparent", e.parentNode.insertBefore(i, e)), e.parentNode.childNodes[1];
-        var n = new Image;
-        n.onload = function () { i.getContext("2d").drawImage(n, 0, 0, i.width, i.height) }, n.src = t
-    }, this.Wt = (t, e, i, n, o) => {
-        for (let s = e;
-            s < e + n;
-            s++)for (let e = i;
-                e < i + o;
-                e++)t[`${s}_${e}`] = !0
-    }, this.Ft = (t, e, i, n) => !(e > n.width || e < 0 || i > n.height || i < 0 || !t[`${e}_${i}`]), this.Yt = (t, e, i, n, o) => {
-        let s = 0, r = 0;
-        for (let a = 0;
-            a < e * i;
-            a++) {
-            if (!this.Ft(t, s, r, o)) return [s, r];
-            s += n, s > e - 1 && (r += n, s = 0)
-        } return null
-    }, this.Nt = () => { this.Ht && (this.Ht = !1) }, this.yt = async (t, e = "stretch", i = 758, n = 424, o = 2) => {
-        Log("Drawing image"), this.Ht = !0;
-        let s = this.lt || .4;
-        Math.round(2 / s), origWidth = i, origHeight = n, i = Math.round(origWidth * s), n = Math.round(origHeight * s);
-        let r = document.querySelector(".jsx-470877037"), a = r.getContext("2d"), h = document.createElement("canvas");
-        i = Math.ceil(r.width), n = Math.ceil(r.height), h.width = i, h.height = n;
-        let l = h.getContext("2d");
-        l.imageSmoothingQuality = "high", l.fillStyle = "white", l.fillRect(0, 0, i, n), l.fillStyle = "black";
-        let c = 0, d = 0, w = i, f = n;
-        if ("stretch" != e) {
-            const o = t.width / t.height, s = h.width / h.height;
-            "zoom" == e ? o > s ? (w = t.width * (n / t.height), c = (i - w) / 2) : o < s && (f = t.height * (i / t.width), d = (n - f) / 2) : o < s ? (w = t.width * (n / t.height), c = (i - w) / 2) : o > s && (f = t.height * (i / t.width), d = (n - f) / 2)
-        } l.drawImage(t, c, d, w, f);
-        let u = {}, g = 0, m = [], b = (t, e, i) => {
-            for (let n of m) if (t > n[0] - 3 && t < n[0] + 3 && e > n[1] - 3 && e < n[1] + 3 && i > n[2] - 3 && i < n[2] + 3) return n;
-            return m.push([t, e, i]), [t, e, i]
-        }, v = t => new Promise((e => { setTimeout((() => { e() }), t) }));
-        a.beginPath(), a.rect(0, 0, r.width, r.height), a.fillStyle = "#000000", a.fill();
-        let M = 20, A = [];
-        for (let t = 0;
-            t < Math.ceil(r.width / M);
-            t++)for (let e = 0;
-                e < Math.ceil(r.height / M);
-                e++) {
-                let i = {};
-                for (let n = 0;
-                    n < M;
-                    n++)for (let o = 0;
-                        o < M;
-                        o++) {
-                        let s = t * M + n, r = e * M + o;
-                        const [a, h, c, d] = l.getImageData(s, r, 1, 1).data, w = this.Mt(a, h, c);
-                        i[w] ??= 0, i[w]++
-                    } let n = [];
-                for (const t of Object.keys(i)) {
-                    const e = i[t];
-                    n.push({ color: t, count: e })
-                } n = n.sort(((t, e) => t.count - e.count)), A.push({ cx: t, cy: e, Kt: n, x: Math.floor(t * M + 10), y: Math.floor(e * M + 10) })
-            } A = A.filter((t => t.x < r.width && t.x > 0 && t.y < r.height && t.y > 0)).sort(((t, e) => t.Kt.length - e.Kt.length)), a.beginPath(), a.rect(0, 0, r.width, r.height), a.fillStyle = "#000000", a.fill();
-        let E = `42[2,7,{"t":${this.tt || 0},"d":1,"v":` + JSON.stringify([8, this.gt++, ["#000000", 1], 0, 0, 758, 424, 0]) + "}]";
-        this.it.send(E);
-        let T = 200;
-        for (let t = 0;
-            t < Math.ceil(r.width / T);
-            t++)for (let e = 0;
-                e < Math.ceil(r.height / T);
-                e++) {
-                let i = {};
-                for (let n = 0;
-                    n < T;
-                    n++)for (let o = 0;
-                        o < T;
-                        o++) {
-                        let s = t * T + n, r = e * T + o;
-                        const [a, h, c, d] = l.getImageData(s, r, 1, 1).data, w = this.Mt(a, h, c);
-                        i[w] ??= { c: 0, r: a, g: h, b: c }, i[w].c++
-                    } let n = [];
-                for (const t of Object.keys(i)) {
-                    const e = i[t].c, { r: o, g: s, b: r } = i[t];
-                    o > 20 || s > 20 || r > 20 || o < 8 || s < 8 || r < 8 || n.push({ color: t, count: e, r: o, g: s, b: r })
-                } if (n.length <= 0) continue;
-                n = n.sort(((t, e) => t.count - e.count)), A.push({ cx: t, cy: e, Kt: n, x: Math.floor(t * T + 100), y: Math.floor(e * T + 100) }), a.beginPath(), a.rect(t * T, e * T, T, T), a.fillStyle = n[0].color, a.fill();
-                let o = `42[2,7,{"t":${this.tt || 0},"d":1,"v":` + JSON.stringify([8, this.gt++, [n[0].color, 1], t * T, e * T, T, T, 0]) + "}]";
-                this.it.send(o), await v(100)
-            } (async () => {
-                let t = 0;
-                for (;
-                    this.Ht;
-                ) {
-                    let e = A[t++];
-                    if (!e) break;
-                    let [o, s] = [e.x, e.y];
-                    if (this.Ft(u, o, s, r)) continue;
-                    const [h, c, d, w] = l.getImageData(o, s, 1, 1).data, f = this.Mt(...b(h, c, d)).toUpperCase();
-                    let m = null;
-                    try { m = Fill(l, o, s, "white", i, n, u, this.Ft.bind(this), r) } catch (t) { console.error(t) } if (!m) continue;
-                    g += m.length, this.Wt(u, o, s, 1, 1);
-                    const M = 2, E = 5, T = Math.ceil(m.length / E);
-                    for (let t = 0;
-                        t < T;
-                        t++) {
-                        const e = t * E, i = Math.ceil(m[e] * M), n = Math.ceil(m[e + 1] * M), o = Math.ceil(m[e + 2] * M), s = Math.ceil(m[e + 3] * M);
-                        m[e + 4], this.Wt(u, i, n, o, s), l.beginPath(), l.rect(i, n, o, s), l.fillStyle = f, l.fill(), a.beginPath(), a.rect(i, n, o, s), a.fillStyle = f, a.fill()
-                    } if (m.length / 5 < 10) continue;
-                    if (h < 33 && c < 33 && d < 33) {
-                        this.Wt(u, o, s, 1, 1);
-                        continue
-                    } await v(250);
-                    let O = [8, this.gt++, [f, 1], ...m], x = `42[2,7,{"t":${this.tt || 0},"d":1,"v":` + JSON.stringify(O) + "}]";
-                    this.it.send(x)
-                } this.Ct()
-            })(), this.zt = setInterval((() => { }), 250)
-    }, this.Vt = (t = 0, e = 0, i = null) => {
-        let n = [8, this.gt + 1, ["#FF0013", 1]];
-        i && (n = i);
-        let o = [];
-        for (let t = 0;
-            t < o.length;
-            t++) {
-            let e = null;
-            t + 1 < o.length - 1 && (e = o[t + 1])
-        } let s = `42[2,7,{"t":${this.tt || 0},"d":1,"v":` + JSON.stringify(n) + "}]";
-        this.it.send(s)
-    }, this.jt = (t, e) => (this.nt = !0, new Promise((e => {
-        let i = 0, n = 0, o = 2, s = this.rt || 2e3, r = this.ht || 250, a = 0;
-        const h = t => { "3" == t.data && (a++, a >= o && (this.it.removeEventListener("message", h), e())) };
-        this.it.addEventListener("message", h), this.it.send("2");
-        let l = setInterval((() => { this.it.send("2"), o++ }), 1e4);
-        const c = o => {
-            let a = document.querySelector(".sendingbtnContent");
-            if (a) {
-                let e = Math.round(i / t.length * 100);
-                a.innerHTML = "Sending (" + e + "%)"
-            } if (Log(`Sending: ${i} / ${t.length}`), this.it.readyState != WebSocket.OPEN) return Log("Reconnecting", this.it.readyState), void setTimeout((() => c(s)), r);
-            if (i >= t.length) return clearInterval(l), this.it.send("2"), this.nt = !1, Log("Finished sending packets"), void this.it.addEventListener("close", e);
-            let h = o;
-            for (h > t.length - i && (h = t.length - i);
-                h > 0;
-            )Log(t[i]), this.it.send(t[i]), h--, n += t[i].length, i++;
-            setTimeout((() => c(s)), r)
-        };
-        c(s)
-    })))
-}), !window._mod_injected) {
-    globalThis.debugfill = window.mod.Vt, globalThis.Nt = window.mod.Nt, globalThis.setmoddata = t => {
-        window.mod.wt = t;
-        let e = {};
-        e["event".toLowerCase()] = 4, chrome.runtime.sendMessage(t.id, e), t.opened && window.mod.ft && (window.mod.ft = !1, Object.values(window.mod.ut).forEach((t => {
-            let e = document.querySelector(`#saveAlbumImg-${t.nickname}`);
-            e.src = window.mod.wt.saveimg, e.style.transform = "", e.classList.remove("loadingImageRotate"), globalThis.saverecord(t.id, t.canvas, t.points)
-        })), window.mod.ut = {})
-    }, Node.prototype.appendChild = new Proxy(Node.prototype.appendChild, {
-        async apply(t, e, [i]) {
-            if ("SCRIPT" == i.tagName && -1 != i.src.indexOf("draw")) {
-                let t = await window.mod.At(i.src);
-                if (t = window.mod._t(t), t) {
-                    let e = new Blob([t]);
-                    i.src = URL.createObjectURL(e), i.classList.add("draw_script"), window.mod.drawScriptLoaded = !0
+            });
+            document.addEventListener("_auth_id", async ({ detail: { authId: c, authTypeId: d, isAuthorized: e } }) => {
+                function f(q) {
+                    this.lm = this.lm.filter(t => 1 << t.id & q ? (t.disabled || t.initialized || this.initModuleInstance(t, this.root, this.loc.get(t.name)), t.locked = !1) : t.locked = !0);
+                    this.renderModulesList()
+                } async function g(q, t) {
+                    t = (new TextEncoder).encode(t);
+                    var v = await crypto.subtle.digest("SHA-256", t);
+                    t = window.atob(q).slice(0, 12);
+                    t = {
+                        name: "AES-GCM",
+                        iv: new Uint8Array(Array.from(t).map(w => w.charCodeAt(0)))
+                    };
+                    v = await crypto.subtle.importKey("raw", v, t, !1, ["decrypt"]);
+                    q = window.atob(q).slice(12);
+                    q = new Uint8Array(Array.from(q).map(w => w.charCodeAt(0)));
+                    try {
+                        const w = await crypto.subtle.decrypt(t, v, q);
+                        return (new TextDecoder).decode(w)
+                    } catch (w) {
+                        throw new GPDecryptError_;
+                    }
+                } function k(q) { document.dispatchEvent(new CustomEvent("_auth_perms", { detail: { ps: q } })) } async function h(q) {
+                    q = await g(q, l());
+                    return fetch("https://id.twitch.tv/oauth2/validate", {
+                        headers: { Authorization: `OAuth ${q}` },
+                        credentials: "omit", cache: "no-cache"
+                    }).then(t => {
+                        if (t.ok) return t.json();
+                        throw Error();
+                    }).then(t => [t.user_id, t.login]).catch(() => [])
+                } function l() {
+                    function q(x, A) {
+                        const C = t();
+                        return q = function (I, M) {
+                            I -= 195;
+                            let B = C[I];
+                            void 0 === q.IvNImK && (q.biwoho = function (D) {
+                                let F = "", H = "";
+                                for (let J = 0, L, K, N = 0;
+                                    K = D.charAt(N++);
+                                    ~K && (L = J % 4 ? 64 * L + K : K, J++ % 4) ? F += String.fromCharCode(255 & L >> (-2 * J & 6)) : 0)K = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789+/=".indexOf(K);
+                                for (let J = 0, L = F.length;
+                                    J < L;
+                                    J++)H += "%" + ("00" + F.charCodeAt(J).toString(16)).slice(-2);
+
+                                return decodeURIComponent(H)
+                            }, x = arguments, q.IvNImK = !0);
+                            const G = I + C[0], E = x[G];
+                            return E ? B = E : (B = q.biwoho(B), x[G] = B), B
+                        }, q(x, A)
+                    } function t() {
+                        const x = "mZmYvMvlr1vW yxrVyG ndq1mJu4offSB0n4Aa mJqZnZKYvwvXC0TJ yJnoAMni uNbIv1zhyJnkDa vMHAmLu9 yuDgEvPi zgHKrZL5 EeLAv2XUyuHrpq yKDgDvOZ mJmZmtvWze92EgO EdjAv1jqy0HsCa uKDgmfPw BwfW mJm0BNnKqvHr zfHoBgnR yvCXmwjb nZyYmZG4ohvMwM96ra rM5AvZuWuKDgma zgHJBvzeyJi1AG sw50Ba nM9RwxbMEq mJCZody2mhjjweLLrq y21wEMiY y0D4Agrh wvHrpq mZu3m1nVA1f5Bq zeDSDfPw wvHAAgfx wKDwmMfx y2HHCKnVzgvbDa mZy4mZCXu1LtDvvr yM1gmMfx".split(" ");
+
+                        t = function () { return x };
+                        return t()
+                    } (function (x, A) {
+                        const C = q;
+                        for (x = x();
+                            ;
+                        )try {
+                            if (parseInt(C(219)) / 1 + parseInt(C(202)) / 2 * (-parseInt(C(214)) / 3) + -parseInt(C(221)) / 4 * (-parseInt(C(198)) / 5) + parseInt(C(209)) / 6 * (parseInt(C(223)) / 7) + -parseInt(C(205)) / 8 + -parseInt(C(224)) / 9 + parseInt(C(210)) / 10 === A) break;
+                            else x.push(x.shift())
+                        } catch (I) { x.push(x.shift()) }
+                    })(t, 545929);
+                    const v = q, w = [v(220) + v(195), v(203) + (v(206) + "YQ=="), "", "", v(212) + "Zvcm0=", v(228) + (v(207) + "dXJyZW5jeQ=="), "c2NyZWVu", v(216) + "xXaWR0aA==", "YXZhaW" + v(196),
+                    v(197) + v(227), "", v(225) + "U=", v(217) + "NlTWVtb3J5", v(200) + (v(226) + v(213)), v(211) + (v(199) + "b25z"), v(215) + "pvbmU=", v(204) + "=="][v(201)](window[v(222)]), u = JSON.stringify([window[w[0]][w[1]]?.[w[4]], window[w[0]][w[5]], window[w[6]][w[7]], window[w[6]][w[8]], window[w[0]][w[9]], window[w[0]][w[4]], window[w[0]][w[11]], window[w[0]][w[12]], (new (window[v(208)]?.[w[13]]))[w[14]]()[w[15]]]);
+                    let y = -559038803, z = 1103547925;
+                    for (let x = 0, A;
+                        x < u.length;
+                        x++)A = u[v(218)](x), y = Math[w[16]](y ^ A, 2654435761), z = Math[w[16]](z ^ A, 1597334677);
+
+                    return y = Math[w[16]](y ^ y >>> 16, 2246822507) ^ Math[w[16]](z ^ z >>> 13, 3266489909), z = Math[w[16]](z ^ z >>> 16, 2246822507) ^ Math[w[16]](y ^ y >>> 13, 3266489909), String(4294967296 * (2097151 & z) + (y >>> 0))
+                } if (this.s.allowAnalytics) {
+                    var m = !1, n = {};
+                    if (this.lm.length) {
+                        var r = GPModulesManager_.DEFAULT_PERMISSIONS, p = null;
+                        try {
+                            if (!a || !this.publicKey) throw p = [GPModulesManager_.STATE.KEY], new GPAuthError_;
+                            if (!d) if (this.s.twitchAuth) {
+                                d = 1;
+                                const [v, w] = await h(this.s.twitchAuth);
+                                if (c = v) this.root.gpproxy.setTwitchOAuth(w);
+                                else throw this.s.twitchAuth =
+                                null, this.root.abt?.showTwitchOAuthTokenNotice({ onButtonClick: () => { this.requestTwitchToken() } }), new GPAuthError_;
+
+                            } else throw new GPAuthError_;
+                            const q = 1 === d ? "t" : "d";
+                            n = JSON.parse(await g(a, this.publicKey));
+                            const t = JSON.parse(await g(n[q], c));
+                            n.e && this.setEditionTitle(n.e, n.m);
+                            n.g && (p = [GPModulesManager_.STATE.GIFT]);
+                            if (t.ed) {
+                                if (t.ed < Date.now()) throw p = [GPModulesManager_.STATE.EXPIRED], 2 & t.p && (r |= 16), new GPAuthError_;
+                                p = [GPModulesManager_.STATE.TIME_LEFT, t.ed - Date.now()]
+                            } else n.g || (p = [GPModulesManager_.STATE.SUBSCRIPTION]);
+
+                            p && this.setEditionState(...p);
+                            f.call(this, r | t.p);
+                            k.call(this, r | t.p);
+                            this.renderModulesList();
+                            m = !0
+                        } catch (q) { q instanceof GPAuthError_ || q instanceof GPDecryptError_ || console.error(q), e ? p ??= [GPModulesManager_.STATE.SUBSCRIBE] : this.publicKey && (p ??= [GPModulesManager_.STATE.AUTH]), p && this.setEditionState(...p), f.call(this, r), k.call(this, r) } this.dispatchEvent(new CustomEvent("modules-loaded", { detail: { decryptedData: n, authTypeId: d, isAuthorized: e, isSubscribed: m } }));
+                        this.handleSubExpiration(p)
+                    } else this.dispatchEvent(new CustomEvent("modules-loaded",
+                        { detail: { decryptedData: n, authTypeId: d, isAuthorized: e, isSubscribed: m } }))
+                } else this.setEditionState(GPModulesManager_.STATE.ANALYTICS), this.root.abt?.showAnalyticsNotice()
+            });
+            document.addEventListener("_auth_key_changed", c => { this.container.classList.add("reload-required_") });
+            document.addEventListener("_auth_key", ({ detail: { publicKey: c } }) => { this.publicKey = c });
+            document.addEventListener("_act_init", ({ detail: { pasteKey: c } }) => { this.pasteKey = c });
+            document.addEventListener("_analytics-consent-granted", () => {
+                this.s.allowAnalytics =
+                    !0;
+                this.reloadPage(!0)
+            });
+            window.addEventListener("message", c => { "https://garticm2.github.io" !== c.origin && "https://localhost" !== c.origin || "gp-twitch-auth" !== c.data?.type || (this.twitchAuthWindow.postMessage({ type: "close" }, c.origin), this.twitchAuthWindow = null, this.s.twitchAuth = c.data.token, this.reloadPage()) });
+            this.firstRunInit();
+            this.render()
+        } getElement() { return this.container } getSettingsManager() { return this.settingsManager } render() {
+            this.container = document.createElement("div");
+            this.container.className =
+                "gp-mm_";
+            this.container.style.setProperty("--icon-analytics-label", `'${this.l.ICON_ANALYTICS_LBL}'`);
+            this.container.style.setProperty("--icon-key-label", `'${this.l.ICON_KEY_LBL}'`);
+            this.container.style.setProperty("--icon-auth-label", `'${this.l.ICON_AUTH_LBL}'`);
+            this.container.style.setProperty("--icon-sign-in-label", `'${this.l.ICON_SIGN_IN_LBL}'`);
+            this.container.style.setProperty("--icon-subscribe-label", `'${this.l.ICON_SUBSCRIBE_LBL}'`);
+            this.container.style.setProperty("--icon-subscription-label",
+                `'${this.l.ICON_SUBSCRIPTION_LBL}'`);
+            this.container.style.setProperty("--icon-expired-label", `'${this.l.ICON_EXPIRED_LBL}'`);
+            this.container.style.setProperty("--icon-gift-label", `'${this.l.ICON_GIFT_LBL}'`);
+            this.edition = document.createElement("div");
+            this.edition.className = "edition_ hidden";
+            this.edition.addEventListener("click", g => {
+                switch (this.container.dataset.state) {
+                    case GPModulesManager_.STATE.SUBSCRIBE: case GPModulesManager_.STATE.EXPIRED: g = document.createElement("a");
+                        g.href = "https://boosty.to/gpmod";
+
+                        g.target = "_blank";
+                        g.click();
+                        break;
+                    case GPModulesManager_.STATE.AUTH: this.requestTwitchToken();
+                        break;
+                    case GPModulesManager_.STATE.KEY: this.container.classList.contains("key-input-opened_") || this.keyBtn.click()
                 }
-            } return Reflect.apply(...arguments)
-        }
-    });
-    var _waitforlinkchange = !1;
-    setInterval((() => { document.head.querySelectorAll("._execute_script").forEach((v => { v.remove(), eval(v.innerHTML) })), window.mod.Z += .3, window.mod.Z > 360 && (window.mod.Z = 0), document.querySelectorAll(".loadingImageRotate").forEach((t => { t.style.transform = `rotate(${window.mod.Z}deg)` })) }), 10);
-    var onsendorig = WebSocket.prototype.send;
-    WebSocket.prototype.send = function (...t) { return window.mod.Dt(...t), onsendorig.call(this, ...t) }, window.onopengetter = Object.getOwnPropertyDescriptor(WebSocket.prototype, "onopen").get, window.onopensetter = Object.getOwnPropertyDescriptor(WebSocket.prototype, "onopen").set, Object.defineProperty(window.WebSocket.prototype, "onopen", {
-        get() { return window.onopengetter.apply(this) }, set() {
-            let t = arguments[0];
-            return arguments[0] = function (...e) {
-                globalThis.draw = window.mod.xt, globalThis.story = window.mod.Lt, globalThis.getrecord = () => console.log(JSON.stringify(window.mod.ot)), globalThis.saveAlbumDrawing = t => {
-                    let e = window.mod.dt[t];
-                    document.querySelectorAll(".drawBalloon").forEach((i => {
-                        if (i.querySelector(".nick").innerHTML == t) {
-                            let n = document.querySelector(`#saveAlbumImg-${t}`);
-                            n.src = window.mod.wt.loadingicon, n.classList.add("loadingImageRotate"), window.mod.ut[t] = { id: window.mod.wt.id, canvas: i.querySelector("canvas"), points: e, nickname: t }, window.mod.ft = !0
+            });
+            this.container.appendChild(this.edition);
+            this.editionTitle = document.createElement("div");
+            this.editionTitle.className = "edition-title_";
+            this.edition.appendChild(this.editionTitle);
+            this.setEditionTitle("base");
+            var a = document.createElement("div");
+            a.className = "ribbon_";
+            this.edition.appendChild(a);
+
+            this.modulesList = document.createElement("div");
+            this.modulesList.className = "modules-list_";
+            this.modulesList.addEventListener("pointerup", this.onMListClick);
+            this.container.appendChild(this.modulesList);
+            this.reloadBtn = document.createElement("div");
+            this.reloadBtn.className = "gp-ui-btn_ reload-btn_";
+            this.reloadBtn.classList.add("disabled_");
+            this.reloadBtn.textContent = this.l.RELOAD_BTN_LBL;
+            this.reloadBtn.addEventListener("click", this.reloadBtnClickHandler);
+            this.container.appendChild(this.reloadBtn);
+            a = document.createElement("div");
+
+            a.className = "footer_";
+            this.container.appendChild(a);
+            var b = document.createElement("div");
+            b.className = "buttons_";
+            a.appendChild(b);
+            const c = document.createElement("div");
+            c.className = "show-btn_ gp-module-btn_ btn_";
+            c.title = this.l.MODULE_BTN_TTL;
+            c.addEventListener("pointerup", g => {
+                g = this.container.classList.contains("shown_");
+                this.container.classList.toggle("shown_", !g);
+                g && (this.settingsManager.close(), this.settingsManager.closeImporter());
+                c.classList.toggle("pressed_", !g)
+            });
+            b.appendChild(c);
+            this.settingsBtn =
+                document.createElement("div");
+            this.settingsBtn.className = "settings-btn_ btn_";
+            this.settingsBtn.title = this.l.SETTINGS_BTN_TTL;
+            this.settingsBtn.addEventListener("pointerup", g => { this.settingsManager.toggle(void 0, void 0, g.ctrlKey || 1 === g.button) });
+            b.appendChild(this.settingsBtn);
+            this.langBtn = document.createElement("div");
+            this.langBtn.className = "lang-btn_ btn_";
+            this.langBtn.title = this.l.LANGUAGE_BTN_TTL;
+            this.langBtn.dataset.lang = this.lang;
+            this.langBtn.addEventListener("pointerdown", g => { 0 === g.button && (this.langBtn.classList.add("shown_"), this.settingsManager.close(), this.langBtn.classList.contains("shown_") && document.addEventListener("click", k => { document.addEventListener("pointerdown", h => { this.langBtn.classList.remove("shown_") }, { once: !0, capture: !0 }) }, { once: !0 })) });
+            b.appendChild(this.langBtn);
+            const d = document.createElement("div");
+            d.className = "lang-list_";
+            d.addEventListener("click", g => { this.langBtn.classList.remove("shown_") });
+            d.addEventListener("pointerup", g => {
+                if (g.target.classList.contains("btn_")) {
+                    var k = g.target.dataset.lang, h = k !== this.lang;
+                    this.langBtn.dataset.lang = k;
+                    h && (this.setLanguage(k), Array.from(d.children).forEach(l => { l.classList.toggle("selected_", l === g.target) }), this.langBtn.classList.remove("shown_"))
+                }
+            });
+
+            Object.entries(GPModulesManager_.LANGUAGES).forEach(([g, k]) => {
+                const h = document.createElement("div");
+                h.className = "btn_";
+                h.title = k;
+                h.dataset.lang = g;
+                d.appendChild(h);
+                g === this.lang && h.classList.add("selected_")
+            });
+            this.langBtn.appendChild(d);
+            const e = document.createElement("div");
+            e.className = "dots-btn_ btn_";
+            e.addEventListener("pointerdown", g => {
+                0 === g.button && (e.classList.add("shown_"), this.settingsManager.close(), e.classList.contains("shown_") && document.addEventListener("click", k => {
+                    document.addEventListener("pointerdown",
+                        h => { e.classList.remove("shown_") }, { once: !0, capture: !0 })
+                }, { once: !0 }))
+            });
+            b.appendChild(e);
+            b = document.createElement("div");
+            b.className = "dots-menu_";
+            b.addEventListener("click", g => { e.classList.remove("shown_") });
+            b.addEventListener("pointerup", g => { g.target.classList.contains("btn_") && e.classList.remove("shown_") });
+            e.appendChild(b);
+            var f = document.createElement("div");
+            f.className = "export-btn_ btn_";
+            f.title = this.l.EXPORT_SETTIGNS_TTL;
+            f.addEventListener("pointerup", g => { this.settingsManager.exportSettings() });
+
+            b.appendChild(f);
+            f = document.createElement("div");
+            f.className = "import-btn_ btn_";
+            f.title = this.l.IMPORT_SETTIGNS_TTL;
+            f.addEventListener("pointerup", g => { this.settingsManager.importSettings() });
+            b.appendChild(f);
+            b = document.createElement("div");
+            b.className = "title_";
+            b.textContent = this.l.WIN_TITLE;
+            a.appendChild(b);
+            document.body.appendChild(this.container)
+        } setEditionTitle(a, b = !1) {
+            this.editionTitle.textContent = `${a} ed.`;
+            this.edition.classList.toggle("demo_", !!b);
+            this.edition.classList.remove("hidden")
+        } setEditionState(a,
+            b) {
+            this.container.dataset.state = a;
+            this.edition.title = "";
+            switch (a) {
+                case GPModulesManager_.STATE.TIME_LEFT: this.edition.dataset.timeLeft = this.formatTimeLeft(b);
+                    break;
+                case GPModulesManager_.STATE.EXPIRED: this.edition.title = this.l.BOOSTY_ICON_TTL;
+                    break;
+                case GPModulesManager_.STATE.KEY: this.edition.title = this.l.KEY_BTN_TTL
+            }
+        } formatTimeLeft(a) {
+            const b = this.l.SUB_DAYS_LEFT.split("|");
+            a = Math.trunc(a / 864E5);
+            switch (this.l.lang) {
+                case GPLocalization_.LANGUAGE.RU: const d = a % 100;
+                    var c = d % 10;
+                    let e;
+                    if (10 <= d && 20 > d) e =
+                        2;
+                    else if (1 === c) e = 0;
+                    else if (1 < c && 5 > c) e = 1;
+                    else if (!c || 4 < c) e = 2;
+                    c = [b[2], b[3], b[4]];
+                    return `${e ? b[1] : b[0]} ${1 > d ? b[5] : `${a} ${c[e]}`}`;
+                case GPLocalization_.LANGUAGE.ES: return 1 > a ? b[3] : `${b[0]} ${a} ${1 === a ? b[1] : b[2]}`;
+                default: return 1 > a ? b[3] : `${a} ${1 === a ? b[1] : b[2]} ${b[0]}`
+            }
+        } onMListClick(a) { 2 === a.button ? a.preventDefault() : a.target.matches(":not(.no-settings_) > :is(.name_, .settings_)") && this.settingsManager.toggle(!0, a.target.dataset.module, a.ctrlKey || 1 === a.button) } compareToInitialState() {
+            const a = [...this.modulesList.querySelectorAll(".gp-ui-cb_")].some(b =>
+                b.checked !== this.initialState[b.name]);
+            this.reloadBtn.classList.toggle("alert_", a);
+            this.reloadBtn.classList.toggle("disabled_", !a)
+        } reloadBtnClickHandler(a) { this.reloadPage(GPModulesManager_.FORCE_RELOAD) } reloadPage(a = !0) {
+            a && (window.onbeforeunload = null);
+            if (1 < this.root.gpproxy.getUsers().length) {
+                a = location.pathname.indexOf("/", 1);
+                a = location.pathname.slice(1, ~a ? a : void 0);
+                a = 2 === a.length ? a : "en";
+                const b = this.root.gpproxy.getUser().access;
+                location.replace(`${location.origin}/${a}/?c=${b}`)
+            } else location.reload()
+        } setModules(a,
+            b, c) {
+            this.modules = a;
+            this.rootThis = b;
+            this.root = c;
+            this.initDisabledList();
+            this.initHiddenSettings();
+            const d = this.initModule(this.modules.find(e => "GPProxy_" === e.name), b, c);
+            d.addEventListener("presets", () => {
+                this.initModules(this.modules, b, c).then(() => {
+                    this.renderModulesList();
+                    d.requestAuthId()
+                }).catch(e => {
+                    console.error(e);
+                    e instanceof GPModuleError_ && this.renderError(e)
+                })
+            }, { once: !0 })
+        } async initModules(a, b, c) { a.forEach(d => { this.initModule(d, b, c) }) } initModule(a, b, c) {
+            if (!a.initialized) {
+                b = window[a.name];
+
+                this.initialState[a.name] = this.disabledList.has(a.name) && !a.required ? !1 : !0;
+                var d = a.name in window;
+                d && (a.title = b.MODULE.title);
+                a.loaded = d;
+                if (a.loaded) {
+                    if (a.required) return this.initModuleInstance(a, c, this.loc.get(a.name));
+                    a.locked = !0;
+                    this.lm.push(a)
+                } else if (!d) {
+                    if (a.required) throw new GPModuleError_(`\u041e\u0431\u044f\u0437\u0430\u0442\u0435\u043b\u044c\u043d\u044b\u0439 \u043c\u043e\u0434\u0443\u043b\u044c "${a.name}" \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d`);
+                    console.error(`\u041c\u043e\u0434\u0443\u043b\u044c "${a.name}" \u043d\u0435 \u043d\u0430\u0439\u0434\u0435\u043d`)
+                }
+            }
+        } initModuleInstance(a,
+            b, c) {
+            const d = window[a.name];
+            d.MODULE?.useCSS && window.content?.classList.add(`gpm-${d.MODULE.alias}_`);
+            b = b[d.MODULE.alias] = new d(b, c);
+            d.toggleSettingsVisibility = this.toggleSettingsVisibility(a);
+            a.initialized = !0;
+            return b
+        } toggleSettingsVisibility(a) { return b => { a.hiddenSettings === b && (a.hiddenSettings = !b, a.hidden || a.hiddenSettings ? this.hiddenSettings.add(a.name) : this.hiddenSettings.delete(a.name), this.renderModulesList(), this.settingsManager.updateSettingsList()) } } initDisabledList() {
+            let a = !1;
+            this.modules.forEach(b => { b.disabled ? (this.disabledList.add(b.name), a = !0) : this.disabledList.has(b.name) && (b.disabled = !0) });
+            a && (this.s.disabledList = Array.from(this.disabledList))
+        } initHiddenSettings() {
+            this.hiddenSettings.clear();
+            this.modules.forEach(a => { (a.hidden || a.hiddenSettings) && this.hiddenSettings.add(a.name) })
+        } renderModulesList() {
+            const a = document.createDocumentFragment(), b = new Intl.Collator("us", { sensitivity: "base" });
+            this.modules.sort((c, d) => {
+                const [e, f] = [!c.locked, !d.locked];
+                return e && f || !e && !f ? b.compare(c.title, d.title) :
+                    e && !f ? -1 : 1
+            });
+            this.modules.forEach((c, d) => {
+                if (!c.hidden) {
+                    var e = this.settingsManager.hasSettings(c.name), f = document.createElement("div");
+                    f.className = "module_";
+                    f.classList.toggle("locked_", !!c.locked);
+                    f.classList.toggle("not-loaded_", !c.loaded);
+                    f.classList.toggle("no-settings_", !!c.hiddenSettings || !e);
+                    e = document.createElement("div");
+                    e.className = "desc_";
+                    e.textContent = "?";
+                    e.addEventListener("pointerenter", h => {
+                        let l = window.gpSettingsTooltip;
+                        l || (l = document.createElement("div"), l.className = "gp-ui-tooltip_",
+                            document.body.appendChild(l), window.gpSettingsTooltip = l);
+                        l.textContent = this.loc.get(c.name).DESCRIPTION;
+                        const { x: m, y: n, width: r, height: p } = h.target.getBoundingClientRect();
+                        ({ height: h } = l.getBoundingClientRect());
+                        l.style.cssText = `top: ${n - (h - p) / 2}px;
+ left: ${m + r + 12}px`;
+                        window.gpSettingsTooltip = l
+                    });
+                    e.addEventListener("pointerleave", h => { window.gpSettingsTooltip && (window.gpSettingsTooltip.remove(), window.gpSettingsTooltip = null) });
+                    f.appendChild(e);
+                    e = document.createElement("div");
+                    e.className = "name_";
+                    e.title =
+                        c.loaded ? "" : "\u041c\u043e\u0434\u0443\u043b\u044c \u043d\u0435 \u0437\u0430\u0433\u0440\u0443\u0436\u0435\u043d";
+                    e.dataset.module = c.name;
+                    e.textContent = c.title;
+                    f.appendChild(e);
+                    e = document.createElement("div");
+                    e.className = "settings_";
+                    e.dataset.module = c.name;
+                    e.textContent = "\ue92d";
+                    f.appendChild(e);
+                    var g = this.initialState[c.name];
+                    e = document.createElement("div");
+                    e.className = "checkbox_";
+                    var k = document.createElement("input");
+                    k.className = "gp-ui-cb_";
+                    k.id = `module-${d}_`;
+                    k.type = "checkbox";
+                    k.checked = g;
+                    k.toggleAttribute("checked",
+                        !!g);
+                    k.toggleAttribute("disabled", !!c.required);
+                    k.addEventListener("change", h => { c.required || (h.target.checked && this.disabledList.has(c.name) ? (c.disabled = !1, this.disabledList.delete(c.name)) : (c.disabled = !0, this.disabledList.add(c.name)), this.s.disabledList = Array.from(this.disabledList), this.compareToInitialState()) });
+                    e.appendChild(k);
+                    g = document.createElement("label");
+                    g.className = "gp-ui-cb-label_";
+                    g.setAttribute("for", `module-${d}_`);
+                    e.appendChild(g);
+                    f.appendChild(e);
+                    a.appendChild(f)
+                }
+            });
+            this.settingsBtn.classList.toggle("hidden",
+                !this.settingsManager.hasModulesSettings());
+            this.modulesList.innerHTML = "";
+            this.modulesList.appendChild(a)
+        } renderError(a) {
+            const b = document.createElement("div");
+            b.className = "error_";
+            b.innerHTML = `<div class="error-msg_">${a.message}</div>`;
+            this.modulesList.before(b);
+            this.modulesList.remove()
+        } handleSubExpiration(a) {
+            a && (a[0] === GPModulesManager_.STATE.SUBSCRIPTION || a[0] === GPModulesManager_.STATE.TIME_LEFT || a[0] === GPModulesManager_.STATE.GIFT ? this.s.lastAuthSuccess = !0 : a[0] === GPModulesManager_.STATE.EXPIRED &&
+                (!0 === this.s.lastAuthSuccess && this.root.abt?.showSubExpiredNotice(), this.s.lastAuthSuccess = !1))
+        } requestTwitchToken() {
+            this.twitchAuthWindow?.close();
+            this.twitchAuthWindow = window.open(GPModulesManager_.TWITCH_AUTH_URL)
+        } areHiddenSettings(a) { return this.hiddenSettings.has(a) } setLanguage(a) {
+            this.lang = a;
+            var b = this.lang !== this.loc.getLang();
+            this.reloadBtn.classList.toggle("alert_", b);
+            this.reloadBtn.classList.toggle("disabled_", !b);
+            if (b = GPModulesManager_.RELOAD_BTN_L10N[a]) this.reloadBtn.textContent = b;
+            localStorage.setItem("gp_localization",
+                JSON.stringify({ lang: a }))
+        } firstRunInit() {
+            let a = JSON.parse(localStorage.getItem("gp_first-run"));
+            !1 !== a && (a = !a, localStorage.setItem("gp_first-run", JSON.stringify(a)));
+            this.firstRun = a
+        } isFirstRun() { return this.firstRun }
+    } class GPModuleError_ extends Error {
+        constructor(a) { super(a) }
+    } class GPAuthError_ extends Error {
+        constructor(a) { super(a) }
+    } class GPDecryptError_ extends Error {
+        constructor(a) { super(a) }
+    };
+    class GPSettingsImporterExporter_ extends EventTarget {
+        static CATEGORIES = {
+            "internal settings": ["gp_latest-version", "gp_first-run", "gp_localization", "avatar", "gp_about"], key: ["gp_activation"], background: ["gp_background", "gp_background_db"], modules: {
+                "anti-cheat": ["gp_anti-cheat"], "art broadcaster": ["gp_art-broadcaster"], avatars: ["gp_avatars"], "global banlist": ["gp_global-banlist"], moderation: ["ul_banlist", "gp_userlist", "gp_users_db"], painter: ["gp_painter", "gp_painter_bindings", "gp_custom-palettes", "gp_painter_custom-palette"],
+                reference: ["gp_reference"], "timelapse player": ["gp_timelapse-player", "gp-timelapse-player-speed"], timer: ["gp_timer"], "modules manager": ["gp_mm"]
+            }
+        };
+        static UNSPECIFIED_CATEGORY = "internal settings";
+        static IGNORED_STORAGES = ["gp_auth-filename", "gp_update"];
+        static STATIC_STORAGES = ["avatar", "ul_banlist"];
+        static STATIC_DATABASES = ["gp_background_db", "gp_users_db"];
+        constructor(a) {
+            super();
+            this.l = a;
+            this.categoryMap = this.sortingMap = this.importer = null
+        } init(a, b, c) {
+            this.mm = a;
+            this.appVersion = b;
+            this.username = c
+        } exportSettings() {
+            const a =
+                Object.keys(localStorage).filter(b => (b.startsWith("gp_") && !GPSettingsImporterExporter_.IGNORED_STORAGES.includes(b) || GPSettingsImporterExporter_.STATIC_STORAGES.includes(b)) && this.filterStorage(b)).map(b => this.cleanStorage(b));
+            window.indexedDB.databases().then(b => {
+                b = b.filter(c => GPSettingsImporterExporter_.STATIC_DATABASES.includes(c.name)).map(c => {
+                    const d = window.indexedDB.open(c.name, c.version);
+                    return new Promise(e => {
+                        d.onsuccess = f => {
+                            const g = f.target.result;
+                            f = this.filterDBStores(g).map(k => new Promise(h => {
+                                const l = g.transaction(k, "readonly").objectStore(k);
+                                l.getAll().onsuccess = m => {
+                                    h({
+                                        name: l.name, keyPath: l.keyPath, autoIncrement: l.autoIncrement, indexes: [...l.indexNames].map(n => {
+                                            const { name: r, keyPath: p, unique: q, multiEntry: t } = l.index(n);
+                                            return { name: r, keyPath: p, unique: q, multiEntry: t }
+                                        }), entries: m.target.result
+                                    })
+                                }
+                            }));
+                            Promise.all(f).then(k => e({ name: g.name, version: g.version, stores: k }))
                         }
-                    }))
-                }, globalThis.saverecord = (t, e, i) => {
-                    let n, o = 0, s = document.querySelector(".drawingContainer")?.querySelectorAll("canvas")[0], r = document.querySelector(".core")?.querySelectorAll("canvas")[0];
-                    if (s ? n = s : (n = r, o = 1), e && i && (n = e, o = 2), !n) return;
-                    let a = n.getContext("2d"), h = a.getImageData(0, 0, n.width, n.height), l = a.globalCompositeOperation;
-                    a.globalCompositeOperation = "destination-over", a.fillStyle = "#fff", a.fillRect(0, 0, n.width, n.height), a.globalCompositeOperation;
-                    let c = n.toDataURL("image/jpeg");
-                    a.clearRect(0, 0, n.width, n.height), a.putImageData(h, 0, 0), a.globalCompositeOperation = l;
-                    let d = {};
-                    d["event".toLowerCase()] = 2, 0 == o ? d["points".toLowerCase()] = JSON.stringify(window.mod.ot) : 1 == o ? d["points".toLowerCase()] = JSON.stringify(window.mod.st) : 2 == o && (d["points".toLowerCase()] = JSON.stringify(i)), d["image".toLowerCase()] = c, chrome.runtime.sendMessage(t, d)
-                }, window.mod.Rt(...e), t.call(this, ...e)
-            }, window.onopensetter.apply(this, arguments)
+                    })
+                });
+                Promise.all(b).then(async c => {
+                    var d = await this.serializeSettings(a, c);
+                    c = `gpmod settings (${this.username}).gpset`;
+                    d = URL.createObjectURL(d);
+
+                    const e = document.createElement("a");
+                    e.href = d;
+                    e.download = c;
+                    e.click();
+                    URL.revokeObjectURL(d)
+                })
+            })
+        } filterStorage(a) {
+            switch (a) {
+                case "gp_mm": return a = JSON.parse(localStorage.getItem(a) || null), !!a && !(1 === Object.keys(a).length && a.disabledList && !a.disabledList.length);
+                case "gp_auth-filename": return !!JSON.parse(localStorage.getItem(a) || null);
+                case "ul_banlist": return !!JSON.parse(localStorage.getItem(a) || null)?.length;
+                default: return !0
+            }
+        } cleanStorage(a) {
+            switch (a) {
+                case "gp_localization": const b = JSON.parse(localStorage.getItem("gp_localization")).lang;
+
+                    return [a, JSON.stringify({ lang: b })];
+                default: return [a, localStorage.getItem(a)]
+            }
+        } filterDBStores(a) {
+            const b = Array.from(a.objectStoreNames);
+            switch (a.name) {
+                case "gp_background_db": if (1 < b.length && b.indexOf("backgrounds_v3")) return a = b.indexOf("backgrounds"), ~a && b.splice(a, 1), b;
+                default: return b
+            }
+        } serializeSettings(a, b) {
+            return new Promise(c => {
+                const d = [];
+                b = b.filter(e => e.stores.every(f => {
+                    f.entries.forEach(g => { g.blob && d.push(this.convertBlobToBase64(g.blob, g)) });
+                    return f.entries.length
+                }));
+                Promise.all(d).then(async e => {
+                    e.forEach(([f, g]) => { g.blob = f });
+                    e = { storages: a, databases: b, meta: { username: this.username, version: this.appVersion, timestamp: Date.now() } };
+                    e = await GPUtils_.compressData(e);
+                    c(e)
+                })
+            })
+        } convertBlobToBase64(a, b) {
+            return new Promise(c => {
+                const d = new FileReader;
+                d.readAsDataURL(a);
+                d.onloadend = () => { c([d.result, b]) }
+            })
+        } importSettings() {
+            const a = document.createElement("input");
+            a.type = "file";
+            a.accept = ".gpset";
+            a.addEventListener("change", async b => {
+                if (b = b.target.files?.[0]) {
+                    const { storages: c, databases: d, meta: e } = await this.deserializeSettings(b);
+
+                    this.openImporter(c, d, e)
+                }
+            });
+            this.closeImporter();
+            a.click()
+        } deserializeSettings(a) {
+            return new Promise(async b => {
+                const { storages: c, databases: d, meta: e } = await GPUtils_.decompressFile(a), f = [];
+                d.forEach(g => { g.stores.forEach(k => { k.entries.forEach(h => { h.blob && f.push(this.convertBase64ToBlob(h.blob, h)) }) }) });
+                Promise.all(f).then(g => {
+                    g.forEach(([k, h]) => { h.blob = k });
+                    b({ storages: c, databases: d, meta: e })
+                })
+            })
+        } applySettings(a, b) {
+            a && a.forEach(([c, d]) => {
+                ("gp_update" !== c || this.shouldUpdateStorageBeImported()) && localStorage.setItem(c,
+                    d)
+            });
+            b && (a = b.map(c => new Promise((d, e) => {
+                const f = window.indexedDB.open(c.name, c.version), g = c.stores;
+                f.onupgradeneeded = k => {
+                    const h = k.target.result;
+                    g.map(l => {
+                        const m = h.createObjectStore(l.name, { keyPath: l.keyPath, autoIncrement: l.autoIncrement });
+                        l.indexes.forEach(n => {
+                            const { name: r, keyPath: p, ...q } = n;
+                            m.createIndex(r, p, q)
+                        })
+                    })
+                };
+                f.onsuccess = k => {
+                    const h = k.target.result;
+                    k = g.map(l => new Promise(m => {
+                        const n = h.transaction(l.name, "readwrite");
+                        n.oncomplete = m;
+                        const r = n.objectStore(l.name);
+                        r.clear().onsuccess = () => {
+                            l.entries.forEach((p,
+                                q) => { r.add(p, l.keyPath ? void 0 : q) })
+                        }
+                    }));
+                    Promise.all(k).then(d)
+                };
+                f.onerror = e
+            })), Promise.allSettled(a).then(() => { this.mm.reloadPage() }))
+        } convertBase64ToBlob(a, b) { return fetch(a).then(c => c.blob()).then(c => [c, b]) } convertBlobToJSON(a) {
+            return new Promise(b => {
+                const c = new FileReader;
+                c.readAsText(a);
+                c.onloadend = () => { b(JSON.parse(c.result)) }
+            })
+        } shouldUpdateStorageBeImported() { return !localStorage.getItem("gp_update") } initImporter() {
+            this.sortingMap = new Map;
+            this.categoryMap = this.buildCategoryMap(GPSettingsImporterExporter_.CATEGORIES);
+
+            this.renderImporter()
+        } openImporter(a, b, c) {
+            this.importer ? this.importer.classList.remove("hidden") : this.initImporter();
+            const d = this.getImportedSettingsMap(a, b);
+            this.renderImporterSettings(d, c);
+            this.importBtn.onclick = () => {
+                var e = new Set([...this.categories.elements].filter(f => f.checked).map(f => f.name));
+                e = this.filterImporterSettings(a, b, d, e);
+                this.applySettings(...e)
+            }
+        } filterImporterSettings(a, b, c, d) {
+            const e = new Set([...c].filter(([f]) => d.has(f)).map(([, f]) => f).flat());
+            return [a.filter(f => e.has(f[0])), b.filter(f =>
+                e.has(f.name))]
+        } getImportedSettingsMap(a, b) {
+            a = a.map(d => d[0]);
+            b = b.map(d => d.name);
+            const c = new Map;
+            [a, b].forEach(d => {
+                d.forEach(e => {
+                    const f = this.categoryMap.get(e) ?? GPSettingsImporterExporter_.UNSPECIFIED_CATEGORY, g = c.get(f);
+                    g ? g.push(e) : c.set(f, [e])
+                })
+            });
+            return c
+        } renderImporterSettings(a, b) {
+            b = `${b.username} (${(new Date(b.timestamp)).toLocaleDateString()})`;
+            this.importer.style.setProperty("--imported-settings-meta", `'${b}'`);
+            this.categories.innerHTML = "";
+            const c = document.createDocumentFragment();
+            Array.from(a.keys()).sort((d,
+                e) => this.sortingMap.get(d) - this.sortingMap.get(e)).forEach((d, e) => {
+                    const f = !(d in GPSettingsImporterExporter_.CATEGORIES), g = "internal settings" === d;
+                    var k = f ? d : this.l[`IMPORTER_${d.toUpperCase().replace(/\s/g, "_")}`];
+                    const h = document.createElement("div");
+                    h.className = "category_";
+                    h.classList.toggle("disabled_", g);
+                    h.classList.toggle("module_", f);
+                    h.dataset.name = d;
+                    const l = document.createElement("div");
+                    l.className = "name_";
+                    l.textContent = k;
+                    l.addEventListener("click", n => {
+                        g || (n.ctrlKey ? this.single\u0421ontrolClickHandler(n,
+                            m) : m.click())
+                    });
+                    l.addEventListener("auxclick", n => { g || 2 === n.button && this.single\u0421ontrolClickHandler(n, m) });
+                    h.appendChild(l);
+                    e = `gp-imp-cat-${e}_`;
+                    k = document.createElement("div");
+                    k.className = "checkbox_";
+                    h.appendChild(k);
+                    const m = document.createElement("input");
+                    m.type = "checkbox";
+                    m.id = e;
+                    m.className = "gp-ui-cb_";
+                    m.name = d;
+                    m.checked = !0;
+                    k.appendChild(m);
+                    g && (m.disabled = !0);
+                    d = document.createElement("label");
+                    d.className = "gp-ui-cb-label_";
+                    d.htmlFor = e;
+                    d.addEventListener("click", n => {
+                        n.ctrlKey && this.single\u0421ontrolClickHandler(n,
+                            n.target.control)
+                    });
+                    d.addEventListener("auxclick", n => { 2 === n.button && this.single\u0421ontrolClickHandler(n, n.target.control) });
+                    k.appendChild(d);
+                    f ? c.appendChild(h) : this.categories.appendChild(h)
+                });
+            c.childElementCount && (a = document.createElement("div"), a.className = "modules-label_", a.textContent = this.l.IMPORTER_MODULES, this.categories.appendChild(a), this.categories.appendChild(c))
+        } "single\u0421ontrolClickHandler"(a, b) {
+            a.preventDefault();
+            const c = Array.from(this.categories.elements).every(d => d !== b ? d.disabled ||
+                !d.checked : d.checked);
+            Array.from(this.categories.elements).forEach(d => { d.disabled || (d.checked = d === b ? c ? !d.checked : !0 : !1) })
+        } renderImporter() {
+            const { x: a, width: b } = this.mm.getElement().getBoundingClientRect();
+            var c = a + b + 24;
+            this.importer = document.createElement("div");
+            this.importer.className = "settings-importer_";
+            this.importer.style.left = `${c}px`;
+            c = document.createElement("div");
+            c.className = "gp-ui-close-btn_";
+            c.addEventListener("click", this.closeImporter.bind(this));
+            this.importer.appendChild(c);
+            var d = document.createElement("div");
+
+            d.className = "title_";
+            this.importer.appendChild(d);
+            c = document.createElement("div");
+            c.className = "label_";
+            c.textContent = this.l.IMPORTER_TITLE;
+            d.appendChild(c);
+            c = document.createElement("div");
+            c.className = "icon-wrapper_";
+            d.appendChild(c);
+            d = document.createElement("div");
+            d.className = "ribbon_";
+            c.appendChild(d);
+            d = document.createElement("div");
+            d.className = "icon_";
+            c.appendChild(d);
+            this.categories = document.createElement("form");
+            this.categories.className = "categories_";
+            this.categories.addEventListener("contextmenu",
+                e => { e.preventDefault() });
+            this.importer.appendChild(this.categories);
+            this.importBtn = document.createElement("div");
+            this.importBtn.className = "import-btn_ gp-ui-btn_";
+            this.importBtn.textContent = this.l.IMPORTER_IMPORT_BTN;
+            this.importer.appendChild(this.importBtn);
+            document.body.appendChild(this.importer)
+        } closeImporter() { this.importer?.classList.add("hidden") } buildCategoryMap(a, b = new Map, c = 0) {
+            Object.entries(a).forEach(([d, e]) => {
+                Array.isArray(e) ? e.forEach(f => {
+                    b.set(f, d);
+                    this.sortingMap.set(d, c++)
+                }) : b = new Map([...b,
+                ...this.buildCategoryMap(e, b, c)])
+            });
+            return b
         }
-    }), window.onmessagegetter = Object.getOwnPropertyDescriptor(WebSocket.prototype, "onmessage").get, window.onmessagesetter = Object.getOwnPropertyDescriptor(WebSocket.prototype, "onmessage").set, Object.defineProperty(window.WebSocket.prototype, "onmessage", {
-        get() { return window.onmessagegetter.apply(this) }, set() {
-            let t = arguments[0];
-            return arguments[0] = function (...e) { window.mod.Bt(...e), t.call(this, ...e) }, window.onmessagesetter.apply(this, arguments)
+    } window.GPSettingsImporterExporter_ = GPSettingsImporterExporter_;
+    class GPSettingsManager_ extends EventTarget {
+        static POINTER_SLIDER_PREVIEW_CHANGE_SENSITIVITY = Math.round(window.screen.height / 1080 * 15);
+        constructor(a, b) {
+            super();
+            this.mm = a;
+            this.l = b;
+            this.views = new Set;
+            this.viewsData = new Map;
+            this.isRendered = !1;
+            this.currentLabels = new Map;
+            this.ie = new GPSettingsImporterExporter_(b);
+            this.close = this.close.bind(this);
+            this.addEventListener("update", ({ detail: { source: c, storage: d, settings: e, changedSettings: f } }) => {
+                c.dispatchEvent(new CustomEvent("settings_updated", { detail: { settings: f } }));
+
+                this.saveSettings(d, Object.assign({}, e, f))
+            })
+        } setSettings(a, b) {
+            const { name: c, MODULE: { title: d, settings: { storage: e, defaultSettings: f, ui: g = {} } } } = a.constructor;
+            b && a.addEventListener("settings_updated", b.bind(a));
+            b = Object.assign({}, f, JSON.parse(localStorage.getItem(e)) || {});
+            a.settings = b;
+            const k = [...Object.values(g)].some(l => !l.hidden), h = this.copy(b);
+            this.viewsData.set(c, { title: d, source: a, storage: e, settings: b, defaultSettings: f, initialSettings: h, ui: g, hasVisibleSettings: k });
+            return this.buildSettingsAPI(c,
+                b, g, e, a)
+        } hasSettings(a) { return this.viewsData.has(a) && this.hasVisibleSettings(a) } hasModulesSettings() { return !!this.viewsData.size } buildSettingsAPI(a, b, c, d, e) {
+            const f = this;
+            return new Proxy(b, {
+                set(g, k, h) {
+                    h = { [k]: h };
+                    Object.assign(g, h);
+                    k = !(!c[k] || !0 === c[k].hidden);
+                    f.dispatchEvent(new CustomEvent("update", { detail: { source: e, storage: d, settings: g, changedSettings: h } }));
+                    k && f.updateViews(a);
+                    return !0
+                }, get(g, k) { return g[k] }
+            })
+        } render(a, b = !1) {
+            this.container = document.createElement("div");
+            this.container.className =
+                "gp-settings-manager_";
+            this.container.classList.toggle("load-btn-shown_", b);
+            b = document.createElement("div");
+            b.className = "close-btn_ gp-ui-close-btn_";
+            b.addEventListener("click", this.close);
+            this.container.appendChild(b);
+            this.modulesMenu = document.createElement("select");
+            this.modulesMenu.className = "modules-menu_";
+            this.modulesMenu.addEventListener("change", c => { this.selectModule(c.target.value) });
+            this.renderSettingsList(a);
+            this.container.appendChild(this.modulesMenu);
+            a = document.createElement("div");
+            a.className =
+                "modules-menu-buttons_";
+            this.container.appendChild(a);
+            this.labelsBtn = document.createElement("div");
+            this.labelsBtn.className = "labels-btn_ btn_";
+            this.labelsBtn.title = this.l.CATEGORY_LIST_TTL;
+            this.labelsBtn.addEventListener("pointerdown", c => {
+                this.container.classList.toggle("labels_");
+                this.container.classList.contains("labels_") && (this.labelList.value = "", document.addEventListener("pointerdown", d => { d.target.parentElement !== this.labelList && d.target !== this.labelsBtn && this.container.classList.remove("labels_") },
+                    { once: !0, capture: !0 }))
+            });
+            a.appendChild(this.labelsBtn);
+            this.labelList = document.createElement("select");
+            this.labelList.className = "label-list_";
+            this.labelList.addEventListener("change", c => {
+                this.selectLabel(c.target.value);
+                this.container.classList.remove("labels_");
+                this.labelList.value = ""
+            });
+            this.container.appendChild(this.labelList);
+            b = document.createElement("div");
+            b.className = "search-btn_ btn_";
+            b.title = this.l.SEARCH_TTL;
+            b.addEventListener("pointerdown", c => {
+                this.container.classList.toggle("search_");
+
+                this.container.classList.contains("search_") ? setTimeout(() => { this.searchField.focus() }, 1) : this.searchField.value && (this.searchField.value = "", this.filter(null))
+            });
+            a.appendChild(b);
+            this.searchField = document.createElement("input");
+            this.searchField.className = "search-field_ gp-ui-input_";
+            this.searchField.type = "search";
+            this.searchField.placeholder = this.l.SEARCH_INPUT_PH;
+            this.searchField.setAttribute("spellcheck", "false");
+            this.searchField.setAttribute("autocomplete", "off");
+            this.searchField.toggleAttribute("incremental",
+                !0);
+            this.searchField.addEventListener("search", c => { this.filter(c.target.value) });
+            this.searchField.addEventListener("keydown", c => {
+                switch (c.key) {
+                    case "Escape": c.target.classList.add("hidden");
+                    case "Enter": c.target.blur()
+                }
+            });
+            GPUtils_.setInputFocusBlurHandler(this.searchField);
+            this.container.appendChild(this.searchField);
+            document.body.appendChild(this.container);
+            this.renderSettings(this.modulesMenu.value);
+            this.isRendered = !0
+        } renderSettingsList(a) {
+            this.modulesMenu.innerHTML = "";
+            const b = new Intl.Collator("us",
+                { sensitivity: "base" });
+            Array.from(this.viewsData).filter(([c]) => !this.isHiddenModule(c) && this.hasVisibleSettings(c)).sort(([, c], [, d]) => b.compare(c.title, d.title)).forEach(([c, d]) => {
+                const e = document.createElement("option");
+                e.value = c;
+                e.textContent = d.title;
+                this.modulesMenu.appendChild(e)
+            });
+            a && (this.modulesMenu.value = a)
+        } shouldModuleBeRendered(a) { return this.viewsData.has(a) && !this.isHiddenModule(a) } selectModule(a) {
+            this.updateView(this.view, a);
+            this.updateHeader(a)
+        } renderSettings(a) {
+            this.view = this.insertView(a,
+                this.container);
+            this.updateHeader(a)
+        } updateHeader(a) {
+            this.labelsBtn.classList.toggle("empty_", !this.view.labels.size);
+            this.updateLabelList(this.view.labels);
+            this.searchField.value = "";
+            this.container.classList.remove("search_");
+            this.modulesMenu.value = a
+        } updateViews(a, b = null) { this.views.forEach(c => { c.moduleName === a && c !== b && c.offsetParent && this.updateView(c) }) } insertView(a, b) { if (this.shouldModuleBeRendered(a)) return this.renderView(a, b) } renderView(a, b) {
+            const { view: c, controls: d } = this.buildView(a);
+            b.appendChild(c);
+
+            this.handleControlsScrollbar(d);
+            this.handleControlsOverflow(d);
+            return c
+        } buildView(a, b = null) {
+            const { source: c, storage: d, settings: e, ui: f } = this.viewsData.get(a);
+            b ? b.innerHTML = "" : (b = document.createElement("div"), b.className = "gp-settings_", b.dataset.index = this.views.size, b.addEventListener("animationend", r => { "gp-set-highlight_" === r.animationName && r.target.classList.remove("highlight_") }), this.views.add(b));
+            b.moduleName = a;
+            b.labels = new Map;
+            b.scrollPos = 0;
+            const g = document.createElement("div");
+            g.className = "controls_ gp-ui-scrollbar_";
+
+            g.view = b;
+            g.addEventListener("scroll", r => {
+                b.scrollPos = r.target.scrollTop;
+                this.handleControlsOverflow(r.target)
+            });
+            b.appendChild(g);
+            var k = document.createElement("div");
+            k.className = "buttons_";
+            b.appendChild(k);
+            const h = document.createElement("div");
+            h.className = "load-btn_ btn_ gp-ui-btn_";
+            h.textContent = "\ud83e\udc45";
+            h.title = this.l.LOAD_JSON_TTL;
+            h.addEventListener("click", () => {
+                b.classList.toggle("json-data_");
+                l.focus()
+            });
+            h.addEventListener("animationend", r => {
+                r.target.classList.remove("failure_");
+                r.target.classList.remove("success_")
+            });
+
+            k.appendChild(h);
+            const l = document.createElement("input");
+            l.className = "json-data-input_ gp-ui-input_";
+            l.placeholder = this.l.JSON_INPUT_PH;
+            l.spellcheck = !1;
+            l.autocomplete = "off";
+            l.addEventListener("keydown", r => { "Escape" === r.key && (b.classList.remove("json-data_"), r.target.blur()) });
+            l.addEventListener("input", r => { this.jsonDataInputHandler(a, r.target, h) });
+            GPUtils_.setInputFocusBlurHandler(l);
+            k.appendChild(l);
+            var m = document.createElement("div");
+            m.className = "restore-btn_ btn_ gp-ui-btn_";
+            m.textContent = this.l.RESTORE_BTN_LBL;
+
+            m.title = this.l.RESTORE_BTN_TTL;
+            m.addEventListener("click", () => { this.restore(a) });
+            k.appendChild(m);
+            m = document.createElement("div");
+            m.className = "default-btn_ btn_ gp-ui-btn_";
+            m.textContent = this.l.RESET_BTN_LBL;
+            m.title = this.l.RESET_BTN_TTL;
+            m.addEventListener("click", () => { this.reset(a) });
+            k.appendChild(m);
+            k = document.createDocumentFragment();
+            for (let r in f) if (m = f[r] ?? {}, this.isLabel(r)) {
+                var n = document.createElement("div");
+                n.className = "label_";
+                n.textContent = m.text;
+                k.appendChild(n);
+                b.labels.set(m.text, n)
+            } else if (this.isSeparator(r)) n =
+                document.createElement("div"), n.className = "separator_", n.classList.toggle(`${m.size}_`, !!m.size), k.appendChild(n);
+            else if (m.type && !m.hidden) switch (m.type) {
+                    case "component": n = document.createElement("div");
+                        n.className = "component_";
+                        n.dataset.name = r;
+                        n.appendChild(m.getElement());
+                        k.appendChild(n);
+                        this.setControlStateAndDependents(f, r, e, n);
+                        break;
+                    case "buttons": const p = document.createElement("div");
+                        p.className = "buttons_";
+                        p.dataset.name = r;
+                        m.getButtons().forEach(t => {
+                            t.classList.add("btn_");
+                            p.appendChild(t)
+                        });
+
+                        k.appendChild(p);
+                        this.setControlStateAndDependents(f, r, e, p);
+                        break;
+                    default: n = document.createElement("div");
+                        n.className = "setting_";
+                        n.dataset.name = r;
+                        const q = this.buildTooltip(m.description);
+                        n.appendChild(q);
+                        m = this.buildName(r, m.description);
+                        n.appendChild(m);
+                        m = this.buildControl(f, r, e[r], c, d, e, g);
+                        n.appendChild(m);
+                        k.appendChild(n);
+                        this.setControlStateAndDependents(f, r, e, n)
+                }g.appendChild(k);
+            return { view: b, controls: g }
+        } updateView(a, b = null) {
+            b ??= a.moduleName;
+            const c = +a.scrollPos;
+            ({ controls: a } = this.buildView(b,
+                a));
+            this.handleControlsScrollbar(a);
+            this.handleControlsOverflow(a);
+            a.scrollTop = c
+        } handleControlsScrollbar(a) { a.scrollHeight > a.clientHeight && (a.parentElement.clientHeight - 41 > a.scrollHeight ? a.style.paddingBottom = `${a.scrollHeight - a.clientHeight}px` : a.classList.add("scrollbar_")) } handleControlsOverflow(a) {
+            a.parentElement.classList.toggle("of-top_", 0 < a.scrollTop);
+            a.parentElement.classList.toggle("of-bottom_", a.offsetHeight + a.scrollTop < a.scrollHeight)
+        } isLabel(a) { return /^_\d+/.test(a) } isSeparator(a) { return /^_+$/.test(a) } buildTooltip(a) {
+            const b =
+                document.createElement("div");
+            b.className = "tooltip_";
+            b.textContent = "?";
+            if (!a) return b.classList.add("disabled_"), b;
+            b.addEventListener("pointerenter", c => {
+                let d = window.gpSettingsTooltip;
+                d || (d = document.createElement("div"), d.className = "gp-ui-tooltip_", document.body.appendChild(d), window.gpSettingsTooltip = d);
+                d.textContent = a;
+                const { x: e, y: f, width: g, height: k } = c.target.getBoundingClientRect();
+                ({ height: c } = d.getBoundingClientRect());
+                d.style.cssText = `top: ${f - (c - k) / 2}px;
+ left: ${e + g + 12}px`;
+                window.gpSettingsTooltip =
+                    d
+            });
+            b.addEventListener("pointerleave", c => { window.gpSettingsTooltip && (window.gpSettingsTooltip.remove(), window.gpSettingsTooltip = null) });
+            return b
+        } buildName(a, b) {
+            const c = document.createElement("div");
+            c.className = "name_";
+            c.title = b || "";
+            c.textContent = a.split(/(?<![A-Z])(?=[A-Z])|(?=[A-Z]\B)/).join(" ");
+            return c
+        } buildControl(a, b, c, d, e, f, g) {
+            const { type: k, args: h, formatter: l, inputTrigger: m, beforeActivation: n } = a[b], r = document.createElement("div");
+            r.className = "control_";
+            let p;
+            switch (k) {
+                case "switch": p = document.createElement("div");
+
+                    p.className = "gp-ui-switch_";
+                    var q = `ctrl-${g.view.dataset.index}-${b}_`;
+                    const t = document.createElement("input");
+                    t.id = q;
+                    t.type = "checkbox";
+                    t.name = b;
+                    t.checked = c;
+                    if (n) {
+                        let B = !1;
+                        t.addEventListener("click", async G => {
+                            G.preventDefault();
+                            if (!B) {
+                                if (t.checked && (B = !0, G = await n(), B = !1, !G)) return;
+                                requestAnimationFrame(() => {
+                                    t.checked = !t.checked;
+                                    t.dispatchEvent(new Event("change", { bubbles: !0 }))
+                                })
+                            }
+                        })
+                    } p.appendChild(t);
+                    const v = document.createElement("label");
+                    v.setAttribute("for", q);
+                    p.appendChild(v);
+                    r.appendChild(p);
+
+                    break;
+                case "slider": const { min: w, max: u, step: y, reverse: z } = h;
+                    p = document.createElement("input");
+                    p.className = "gp-ui-slider_";
+                    p.type = "range";
+                    p.min = w;
+                    p.max = u;
+                    p.step = y;
+                    p.value = c;
+                    p.name = b;
+                    z && (p.style.direction = "rtl");
+                    p.addEventListener("input", B => { x.textContent = l ? l(Number.parseFloat(B.target.value)) : B.target.value });
+                    const x = document.createElement("div");
+                    x.className = "gp-ui-slider-preview_";
+                    x.textContent = l ? l(c) : c;
+                    x.addEventListener("pointerdown", B => {
+                        let G = B.clientY;
+                        const E = D => {
+                            var F = D.clientY - G;
+                            const H = 0 > F;
+
+                            Math.abs(F) >= GPSettingsManager_.POINTER_SLIDER_PREVIEW_CHANGE_SENSITIVITY && (F = p.valueAsNumber, F += (z ? !H : H) ? y : -y, F = Math.max(Math.min(F, u), w), F = Math.round(1E3 * F) / 1E3, p.value = F, x.textContent = l ? l(F) : F, p.dispatchEvent(new Event("change", { bubbles: !0 })), G = D.clientY)
+                        };
+                        B.currentTarget.setPointerCapture(B.pointerId);
+                        B.currentTarget.addEventListener("pointermove", E);
+                        B.currentTarget.addEventListener("pointerup", D => {
+                            D.currentTarget.removeEventListener("pointermove", E);
+                            p.focus()
+                        }, { once: !0 })
+                    });
+                    r.appendChild(p);
+                    r.appendChild(x);
+
+                    break;
+                case "input": q = h?.secure;
+                    p = document.createElement("input");
+                    p.className = "gp-ui-input_";
+                    p.classList.toggle("secure-input_", !!q);
+                    p.spellcheck = !1;
+                    p.autocomplete = "off";
+                    p.value = c;
+                    p.name = b;
+                    p.addEventListener("keydown", B => {
+                        switch (B.key) {
+                            case "Escape": B.target.value = B.target.dataset.initialValue;
+                            case "Enter": B.target.blur()
+                        }
+                    });
+                    p.addEventListener("focus", B => { B.target.dataset.initialValue = B.target.value });
+                    p.addEventListener("blur", B => { delete B.target.dataset });
+                    GPUtils_.setInputFocusBlurHandler(p);
+                    r.appendChild(p);
+
+                    break;
+                case "dropdown": p = document.createElement("select");
+                    p.className = "gp-ui-dropdown_";
+                    p.autocomplete = "off";
+                    p.name = b;
+                    const { items: A, itemsProxySetting: C } = h;
+                    (C && f[C] || (A?.length ? A : [c])).forEach((B, G) => {
+                        const E = document.createElement("option");
+                        E.value = B;
+                        E.textContent = l ? l(B, G) : B;
+                        p.appendChild(E)
+                    });
+                    p.value = c;
+                    r.appendChild(p);
+                    break;
+                case "list-ms": case "list-md": q = "list-ms" === k ? h.items : c;
+                    p = document.createElement("form");
+                    p.className = "gp-ui-list-m_";
+                    p.name = b;
+                    q.forEach((B, G) => {
+                        const E = `ctrl-${g.view.dataset.index}-${b}-${G}_`;
+
+                        var D = document.createElement("input");
+                        D.id = E;
+                        D.type = "checkbox";
+                        D.value = B;
+                        D.name = b;
+                        D.checked = c.includes(B);
+                        p.appendChild(D);
+                        D = document.createElement("label");
+                        D.textContent = l ? l(B, G) : B;
+                        D.setAttribute("for", E);
+                        p.appendChild(D)
+                    });
+                    r.appendChild(p);
+                    break;
+                case "list-i": const { icons: I } = h;
+                    p = document.createElement("form");
+                    p.className = "gp-ui-list-i_";
+                    p.name = b;
+                    const M = [];
+                    Object.keys(I).forEach((B, G) => {
+                        G = `ctrl-${g.view.dataset.index}-${b}-${G}_`;
+                        const E = document.createElement("input");
+                        E.id = G;
+                        E.type = "checkbox";
+
+                        E.name = b;
+                        E.value = B;
+                        E.checked = c === B;
+                        E.addEventListener("click", F => { M.forEach(H => { H.checked = H === E }) });
+                        p.appendChild(E);
+                        M.push(E);
+                        const D = document.createElement("label");
+                        D.className = "gp-ui-list-i-icon_";
+                        D.title = B.split("-").map(F => F[0].toUpperCase() + F.slice(1)).join(" ");
+                        D.style.backgroundImage = `url("${I[B]}")`;
+                        D.setAttribute("for", G);
+                        p.appendChild(D)
+                    });
+                    r.appendChild(p);
+                    break;
+                case "color": p = document.createElement("input"), p.className = "gp-ui-color_", p.type = "color", p.value = c, p.name = b, r.appendChild(p)
+            }q =
+                ["change", "input"];
+            for (let t = 0;
+                t < (m ? 2 : 1);
+                t++)p.addEventListener(q[t], v => {
+                    v = { [v.target.name]: this.parseValue(v.target, k) };
+                    this.dispatchEvent(new CustomEvent("update", { detail: { source: d, storage: e, settings: Object.assign(f, v), changedSettings: v } }));
+                    0 === t && this.updateViews(g.view.moduleName, g.view)
+                });
+            p.addEventListener("change", t => { a[b].dependents && a[b].dependents.forEach(v => { this.updateControlState(v, a, f, g) }) });
+            return r
+        } updateControlState(a, b, c, d) {
+            b[a].requires && (b = this.calcControlState(b[a], c), d.querySelector(`:scope > [data-name="${a}"]`)?.classList.toggle("disabled_",
+                !b))
+        } calcControlState(a, b) { return Object.entries(a.requires).every(([c, d]) => b[c] === d) } parseValue(a, b) {
+            switch (a.type) {
+                case "range": return Number.parseFloat(a.value);
+                case "checkbox": return a.form ? "list-i" === b ? a.value : [...a.form].filter(c => c.checked).map(c => c.value) : a.checked;
+                default: return a.value
+            }
+        } jsonDataInputHandler(a, b, c) {
+            c.classList.remove("failure_");
+            c.classList.remove("success_");
+            try {
+                let d = JSON.parse(b.value);
+                const { settings: e, source: f, storage: g } = this.viewsData.get(a);
+                d = this.filterSettings(d,
+                    e);
+                if (Object.keys(d).length) {
+                    const k = this.copy(d);
+                    Object.assign(e, k);
+                    this.updateViews(a);
+                    this.dispatchEvent(new CustomEvent("update", { detail: { source: f, storage: g, settings: e, changedSettings: k } }));
+                    c.classList.add("success_")
+                } else c.classList.add("failure_")
+            } catch (d) { c.classList.add("failure_") } b.value = ""
+        } filterSettings(a, b) {
+            for (let c in a) c in b || delete a[c];
+            return a
+        } setControlStateAndDependents(a, b, c, d) {
+            if (a[b].requires) {
+                let e = !1;
+                Object.entries(a[b].requires).forEach(([f, g]) => {
+                    c[f] !== g && (e = !0);
+                    f in
+                        c && (a[f].dependents ? a[f].dependents.add(b) : a[f].dependents = new Set([b]))
+                });
+                d.classList.toggle("disabled_", e)
+            }
+        } selectLabel(a) { if (a = this.view.labels.get(a)) a.classList.add("highlight_"), a.scrollIntoView({ behavior: "smooth" }) } updateLabelList(a) {
+            this.labelList.innerHTML = "";
+            const b = document.createDocumentFragment();
+            b.appendChild(document.createElement("option"));
+            a.forEach((c, d) => {
+                c = document.createElement("option");
+                c.value = d;
+                c.textContent = d;
+                b.appendChild(c)
+            });
+            this.labelList.appendChild(b);
+            this.labelList.size =
+                a.size + 1;
+            this.labelList.style.height = `${26 * a.size}px`;
+            this.container.classList.remove("labels_")
+        } filter(a) {
+            a = a?.replace(/\s/g, "").toLowerCase();
+            Array.from(this.view.firstElementChild.children).forEach(b => {
+                if (a) {
+                    const c = b.dataset.name?.replace(/\s/g, "").toLowerCase();
+                    c && ~c.indexOf(a) ? b.style.display = "" : b.style.display = "none"
+                } else b.style.display = ""
+            })
+        } initImporterExporter(a, b) { this.ie.init(this.mm, a, b) } exportSettings() { this.ie.exportSettings() } importSettings() { this.ie.importSettings() } closeImporter() { this.ie.closeImporter() } reset(a) {
+            const { settings: b,
+                defaultSettings: c, source: d, storage: e } = this.viewsData.get(a), f = this.copy(c);
+            Object.assign(b, f);
+            for (let g in b) g in f || delete b[g];
+            this.updateViews(a);
+            this.dispatchEvent(new CustomEvent("update", { detail: { source: d, storage: e, settings: b, changedSettings: f } }))
+        } restore(a) {
+            const { settings: b, initialSettings: c, source: d, storage: e } = this.viewsData.get(a), f = this.copy(c);
+            Object.assign(b, f);
+            this.updateViews(a);
+            this.dispatchEvent(new CustomEvent("update", { detail: { source: d, storage: e, settings: b, changedSettings: f } }))
+        } copy(a) { return window.structuredClone(a) } toggle(a,
+            b, c = !1) { this.isRendered ? (this.container.classList.toggle("hidden", void 0 === a ? a : !a), this.container.classList.toggle("load-btn-shown_", c), this.view.classList.remove("json-data_"), a && b && this.selectModule(b)) : !1 !== a && this.render(b, c) } close() { this.isOpened() && this.toggle(!1) } isOpened() { return !this.container?.classList.contains("hidden") } isHiddenModule(a) { return this.mm.areHiddenSettings(a) } hasVisibleSettings(a) { return this.viewsData.get(a).hasVisibleSettings } updateSettingsList() { this.isRendered && this.renderSettingsList() } saveSettings(a,
+                b) { localStorage.setItem(a, JSON.stringify(b)) }
+    } window.GPSettingsManager_ = GPSettingsManager_;
+    class GPAcoDecoder_ {
+        static COLOR_MODE = { RGB: 0, HSB: 1, LAB: 7, GRAYSCALE: 8 };
+        static COLOR_MODES_SIGNS = { [this.COLOR_MODE.RGB]: [0, 0, 0, 0], [this.COLOR_MODE.HSB]: [0, 0, 0, 0], [this.COLOR_MODE.LAB]: [0, -1, -1, 0], [this.COLOR_MODE.GRAYSCALE]: [0, 0, 0, 0] };
+        static decode(a) {
+            try { return this.parseACO(a) } catch (b) { return null }
+        } static parseACO(a) {
+            a = new DataView(a);
+            const b = a.getUint16(2), c = a.getUint16(4), d = [];
+            for (let e = 0;
+                e < b;
+                e++) {
+                const [f, g, k] = this.readData(a, 6 + 10 * e, c);
+                let h;
+                switch (c) {
+                    case this.COLOR_MODE.RGB: h = {
+                        r: Math.trunc(f /
+                            256), g: Math.trunc(g / 256), b: Math.trunc(k / 256), a: 1
+                    };
+                        break;
+                    case this.COLOR_MODE.HSB: h = { h: Math.trunc(f / 182.04), s: Math.trunc(g / 655.35), b: Math.trunc(k / 655.35) };
+                        break;
+                    case this.COLOR_MODE.LAB: h = { l: Math.round(f / 100), a: Math.round(g / 100), b: Math.round(k / 100) };
+                        break;
+                    case this.COLOR_MODE.GRAYSCALE: h = { r: Math.trunc(f / 39.0625), g: Math.trunc(f / 39.0625), b: Math.trunc(f / 39.0625), a: 1 }
+                }h && d.push(h)
+            } return d.length ? this.convertToHex(d, c) : null
+        } static readData(a, b, c) {
+            const d = [];
+            for (let f = 0;
+                4 > f;
+                f++) {
+                var e = b + 2 * f;
+                e = ~this.COLOR_MODES_SIGNS[c][f] ?
+                    a.getUint16(e) : a.getInt16(e);
+                d.push(e)
+            } return d
+        } static convertToHex(a, b) {
+            switch (b) {
+                case this.COLOR_MODE.RGB: case this.COLOR_MODE.GRAYSCALE: return a.map(c => this.rgbToHex(c));
+                case this.COLOR_MODE.LAB: return a.map(c => this.labToHex(c));
+                case this.COLOR_MODE.HSB: return a.map(c => this.hsvToHex(c))
+            }
+        } static componentToHex(a) { return Math.floor(a).toString(16).padStart(2, "0") } static rgbToHex({ r: a, g: b, b: c }) { return `${this.componentToHex(a)}${this.componentToHex(b)}${this.componentToHex(c)}` } static hsvToHex({ h: a,
+            s: b, v: c }) {
+            a = this.hsvToRgb(a / 360, b / 100, c / 100);
+            return this.rgbToHex(a)
+        } static hsvToRgb(a, b, c) {
+            let d, e, f;
+            const g = Math.floor(6 * a), k = 6 * a - g;
+            a = c * (1 - b);
+            const h = c * (1 - k * b);
+            b = c * (1 - (1 - k) * b);
+            switch (g % 6) {
+                case 0: d = c;
+                    e = b;
+                    f = a;
+                    break;
+                case 1: d = h;
+                    e = c;
+                    f = a;
+                    break;
+                case 2: d = a;
+                    e = c;
+                    f = b;
+                    break;
+                case 3: d = a;
+                    e = h;
+                    f = c;
+                    break;
+                case 4: d = b;
+                    e = a;
+                    f = c;
+                    break;
+                case 5: d = c, e = a, f = h
+            }return { r: Math.round(255 * d), g: Math.round(255 * e), b: Math.round(255 * f) }
+        } static labToHex({ l: a, a: b, b: c }) {
+            a = this.labToRgb([a, b, c]);
+            return this.rgbToHex(a)
+        } static labToRgb(a) {
+            var b =
+                (a[0] + 16) / 116;
+            let c = a[1] / 500 + b, d = b - a[2] / 200, e;
+            c = .95047 * (.008856 < c * c * c ? c * c * c : (c - 16 / 116) / 7.787);
+            b = .008856 < b * b * b ? b * b * b : (b - 16 / 116) / 7.787;
+            d = 1.08883 * (.008856 < d * d * d ? d * d * d : (d - 16 / 116) / 7.787);
+            a = 3.2406 * c + -1.5372 * b + -.4986 * d;
+            e = -.9689 * c + 1.8758 * b + .0415 * d;
+            b = .0557 * c + -.204 * b + 1.057 * d;
+            a = .0031308 < a ? 1.055 * Math.pow(a, 1 / 2.4) - .055 : 12.92 * a;
+            e = .0031308 < e ? 1.055 * Math.pow(e, 1 / 2.4) - .055 : 12.92 * e;
+            b = .0031308 < b ? 1.055 * Math.pow(b, 1 / 2.4) - .055 : 12.92 * b;
+            return {
+                r: 255 * Math.max(0, Math.min(1, a)), g: 255 * Math.max(0, Math.min(1, e)), b: 255 * Math.max(0,
+                    Math.min(1, b))
+            }
         }
-    }), CanvasRenderingContext2D.prototype.stroke = new Proxy(CanvasRenderingContext2D.prototype.stroke, { async apply(t, e, [i]) { if (window.mod.et) return Reflect.apply(...arguments) } }), CanvasRenderingContext2D.prototype.fill = new Proxy(CanvasRenderingContext2D.prototype.fill, { async apply(t, e, [i]) { if (window.mod.et) return Reflect.apply(...arguments) } }), CanvasRenderingContext2D.prototype.clearRect = new Proxy(CanvasRenderingContext2D.prototype.clearRect, { async apply(t, e, [i]) { if (window.mod.et) return Reflect.apply(...arguments) } });
-    var ismodinjectedel = document.createElement("div");
-    ismodinjectedel.id = "_mod_injected", document.head.appendChild(ismodinjectedel), console.log("%c GarticPhone Mod by", 'font-family: "Comic Sans MS", "Comic Sans", cursive; color: rgb(173 202 255 / 80%); font-size: 3rem; -webkit-text-stroke: 2px black;'), console.log("%c Pudgergun   ", 'font-family: "Comic Sans MS", "Comic Sans", bold; color: rgb(173 202 255 / 80%); font-size: 3rem; -webkit-text-stroke: 2px black;font-size: 3rem; color: red');
-    let errorCss = 'font-family: "Century Gothic",Verdana,sans-serif;color: black;font-size: 1rem;-webkit-text-stroke: 0.2px red;text-shadow: 2px 2px 3px gray', defaultCss = 'font-family: "Century Gothic",Verdana,sans-serif;color: black;font-size: 1rem;-webkit-text-stroke: 0.2px green;text-shadow: 2px 2px 3px gray';
-    function Log(t, e = !1) { console.log("%c [MOD] " + t, e ? errorCss : defaultCss) } function LogRaw(...t) { console.log(...t) } function Distance(t, e, i, n) { return Math.hypot(i - t, n - e) } function degrees_to_radians(t) { return t * (Math.PI / 180) } function MoveToAngle(t, e, i) {
-        let n = t.x, o = t.y, s = degrees_to_radians(e);
-        return n += i * Math.cos(s), o += i * Math.sin(s), { x: n, y: o }
-    } function GetRandomInt(t, e) {
-        const i = Math.ceil(t), n = Math.floor(e);
-        return Math.floor(Math.random() * (n - i) + i)
-    } function rgbToHex(t, e, i) {
-        if (t > 255 || e > 255 || i > 255) throw "Invalid color component";
-        return `#${(t << 16 | e << 8 | i).toString(16)}`
-    } function rgb2hsv(t, e, i) {
-        let n, o, s, r, a, h, l, c, d, w, f, u;
-        return n = t / 255, o = e / 255, s = i / 255, d = Math.max(n, o, s), w = d - Math.min(n, o, s), f = t => (d - t) / 6 / w + .5, u = t => Math.round(100 * t) / 100, 0 == w ? l = c = 0 : (c = w / d, r = f(n), a = f(o), h = f(s), n === d ? l = h - a : o === d ? l = 1 / 3 + r - h : s === d && (l = 2 / 3 + a - r), l < 0 ? l += 1 : l > 1 && (l -= 1)), { Xt: Math.round(360 * l), s: u(100 * c), Qt: u(100 * d) }
-    } function Fill(t, e, i, n, o, s, r, a, h) {
-        var [l, c, d, w, f, u] = [t, e, i, n, o, s], g = function (t, e, i) {
-            var n = e, o = i;
-            if (v(e, i, t)) {
-                for (;
-                    v(n + 1, o, t);
-                )n++;
-                var s = n;
-                do {
-                    for (n = e - 1, o++;
-                        v(n + 1, o, t) && n + 1 <= s;
-                    )n++
-                } while (n == s);
-                return { x: e, y: i, w: s - e, Xt: --o - i }
-            } return { w: -1, Xt: -1 }
-        }, m = (s = function (t, e, i) {
-            var n = e, o = i;
-            if (v(e, i, t)) {
-                for (;
-                    v(n - 1, o, t);
-                )n--;
-                var s = n;
-                do {
-                    for (n = e + 1, o--;
-                        v(n - 1, o, t) && n - 1 >= s;
-                    )n--
-                } while (n == s);
-                return { x: s, y: ++o, w: e - s, Xt: i - o }
-            } return { w: -1, Xt: -1 }
-        }, function (t, e, i) {
-            var n = e, o = i;
-            if (v(e, i, t)) {
-                for (;
-                    v(n, o + 1, t);
-                )o++;
-                var s = o;
-                do {
-                    for (o = i - 1, n--;
-                        v(n, o + 1, t) && o + 1 <= s;
-                    )o++
-                } while (o == s);
-                return { x: ++n, y: i, w: e - n, Xt: s - i }
-            } return { w: -1, Xt: -1 }
-        }), b = function (t, e, i) {
-            var n = e, o = i;
-            if (v(e, i, t)) {
-                for (;
-                    v(n, o - 1, t);
-                )o--;
-                var s = o;
-                do {
-                    for (o = i + 1, n++;
-                        v(n, o - 1, t) && o - 1 >= s;
-                    )o--
-                } while (o == s);
-                return { x: e, y: s, w: --n - e, Xt: i - s }
-            } return { w: -1, Xt: -1 }
-        }, v = function (t, e, i) {
-            if (E[t][e]) return !1;
-            var n = 4 * (t + e * f), o = x.slice(n, n + 4), s = rgb2hsv(i[0], i[1], i[2]), l = rgb2hsv(o[0], o[1], o[2]), c = (Math.abs(i[0] - o[0]), Math.abs(i[1] - o[1]), Math.abs(i[2] - o[2]), Math.abs(i[3] - o[3]), Math.abs(s.Xt - l.Xt)), d = Math.abs(s.s - l.s), w = Math.abs(s.Qt - l.Qt);
-            return !a(r, t, e, h) && c < 25 && d < 25 && w < 25
-        }, M = function (t) {
-            for (var e = t[0], i = t[1], n = e + t[2], o = i + t[3], s = e;
-                s < n;
-                s++)for (var r = i;
-                    r < o;
-                    r++)E[s][r] = !0;
-            return t
-        }, A = function (t) { return t.map((t => Math.ceil(t / 2))) };
-        c = Math.round(c), d = Math.round(d);
-        var E, T = parseInt(w.replace("#", "0x")), O = T % 256;
-        e = (T = Math.floor(T / 256)) % 256, i = T = Math.floor(T / 256), function () {
-            E = [];
-            for (var t = -1;
-                t <= f;
-                t++)E[t] = [];
-            E[-1] = [], E[f] = [];
-            for (var e = -1;
-                e <= u;
-                e++)E[-1][e] = 1, E[f][e] = 1;
-            for (var i = 0;
-                i < f;
-                i++)E[i][-1] = 1, E[i][u] = 1
-        }();
-        for (var x = l.getImageData(0, 0, f, u).data, S = 4 * (c + d * f), y = [x[S], x[S + 1], x[S + 2], x[S + 3]], p = [], N = 0;
-            N <= f;
-            N++)p[N] = [];
-        if (v(c, d, [i, e, O, 255])) return [];
-        for (;
-            v(c - 1, d, y);
-        )c--;
-        for (;
-            v(c, d - 1, y);
-        )d--;
-        var C, _, R = { x: c, y: d, w: (o = g(y, c, d)).w, Xt: o.Xt, qt: 0, Zt: 0, stack: 0 }, D = o.w, k = A(M([o.x, o.y, o.w + 1, o.Xt + 1])).concat([0]);
-        do {
-            for (C = 0, 2 == R.qt && (C += R.Zt);
-                C <= R.Xt;
+    };
+    class GPColorPanel_ extends EventTarget {
+        static MAX_WIDTH = 144;
+        static SELECTORS = { SCREEN: ".screen", PANEL: ".colors", MARK_COLOR: ".marks .color", COLOR_LIST: ".colorslist", COLOR: ".colors :is(.colorslist, .marks) .color", INPUT_COLOR: 'input[type="color"]' };
+        static SET = { DEFAULT: "default", CUSTOM_PALETTE: "custom_palette", COLOR_PICKER: "color_picker", COLOR_WHEEL: "color_wheel" };
+        static CONTROL = {
+            PALETTE: "palette", CUSTOM_PALETTE: "custom-palette", COLOR_PICKER: "color-picker", "FULL_SIZE_\u0421OLOR_PICKER": "full-size-color-picker",
+            COLOR_WHEEL: "color-wheel"
+        };
+        static SET_CONTROLS = { [this.SET.DEFAULT]: [this.CONTROL.PALETTE, this.CONTROL.COLOR_PICKER], [this.SET.CUSTOM_PALETTE]: [this.CONTROL.CUSTOM_PALETTE, this.CONTROL.COLOR_PICKER], [this.SET.COLOR_PICKER]: [this.CONTROL.FULL_SIZE_\u0421OLOR_PICKER], [this.SET.COLOR_WHEEL]: [this.CONTROL.COLOR_PICKER, this.CONTROL.COLOR_WHEEL] };
+        constructor(a, b, c) {
+            super();
+            this.gpproxy = b;
+            this.l = c;
+            this.style = document.documentElement.style;
+            this.painter = a;
+            this.s = a.getSettings();
+            this.controls = new Set;
+            this.colorInput;
+
+            this.palette;
+            this.colorWheel;
+            this.colorPicker;
+            this.fullSizeColorPicker;
+            GPUtils_.bindMethods([this.colorsContainerClickHandler, this.colorPickerChangeHandler, this.colorInputInputHandler, this.colorInputChangeHandler, this.color2InputChangeHandler, this.wheelHandler], this);
+            this.painter.addEventListener("color", ({ detail: { color: d } }) => {
+                this.palette?.resetPaletteColor();
+                this.colorWheel?.setColor(d);
+                this.colorPicker?.setColor(d);
+                this.fullSizeColorPicker?.setColor(d);
+                this.colorInput.value = d
+            });
+            this.painter.addEventListener("color2",
+                ({ detail: { color: d } }) => { this.color2Input.value = d });
+            this.init()
+        } init() {
+            const a = GPColorPanel_.SELECTORS;
+            this.screen = document.querySelector(a.SCREEN);
+            this.panel = this.screen.querySelector(a.PANEL);
+            this.colorList = this.panel.querySelector(a.COLOR_LIST);
+            this.colorsContainer = this.colorList.parentElement;
+            this.panel.addEventListener("wheel", this.wheelHandler);
+            const b = this.colorsContainer.querySelector(a.MARK_COLOR);
+            this.screen.classList.toggle("color-marks_", b);
+            this.colorsContainer.addEventListener("click",
+                this.colorsContainerClickHandler, !0);
+            this.colorsContainer.querySelectorAll(a.COLOR).forEach(c => {
+                const [, d, e, f] = c.style.cssText.match(/\((\d+),\s(\d+),\s(\d+)\)/).map(g => +g);
+                c.dataset.color = GPColorUtils_.rgbToHex(d, e, f)
+            });
+            this.nativeColorInput = this.panel.querySelector(a.INPUT_COLOR);
+            this.updateNativePalette(this.s.stretchNativePalette);
+            this.setControlsSet(this.s.colorPanelControlsSet);
+            this.initColorInputs();
+            this.enable();
+            this.updateColorsPanelOffset()
+        } terminate() {
+            this.panel.removeEventListener("wheel",
+                this.wheelHandler);
+            this.colorsContainer.removeEventListener("click", this.colorsContainerClickHandler, !0);
+            this.colorInput.removeEventListener("input", this.colorInputInputHandler);
+            this.colorInput.removeEventListener("change", this.colorInputChangeHandler);
+            this.color2Input.removeEventListener("change", this.color2InputChangeHandler);
+            this.colorInput.remove();
+            this.color2Input.remove();
+            this.resetControls()
+        } updateColorsPanelOffset() {
+            const a = this.panel.getBoundingClientRect().height / this.painter.getActualScale();
+
+            this.panel.style.setProperty("--gp-colors-panel-offset", `${Math.round(Math.min(Math.max(2 * (112 - (698 - a) / 2), 0), 698 - a))}px`)
+        } getColorsPanelOffset() {
+            const a = this.painter.getActualScale(), b = this.panel.getBoundingClientRect().height;
+            return Math.max(Math.round(158 - (698 - b / a) / 2), 0)
+        } updateNativePalette(a) {
+            this.screen.classList.toggle("gp-prevent-palette-stretching_", !a);
+            this.updateColorsPanelOffset()
+        } colorsContainerClickHandler(a) {
+            if (a.target.classList.contains("color")) {
+                var b = a.target.dataset.color;
+                this.palette?.resetPaletteColor();
+
+                this.colorPicker?.setColor(b);
+                this.colorInput.value = b;
+                this.dispatchEvent(new CustomEvent("color", { detail: { color: b } }));
+                a.stopPropagation()
+            }
+        } setControlsSet(a) {
+            this.resetControls();
+            this.currentControlsSet = a in GPColorPanel_.SET_CONTROLS ? a : GPColorPanel_.SET.DEFAULT;
+            a = GPColorPanel_.SET_CONTROLS[this.currentControlsSet];
+            this.panel.classList.add(...a.map(b => `ctrl-${b}_`));
+            a.forEach(b => {
+                switch (b) {
+                    case GPColorPanel_.CONTROL.PALETTE: 0 === GPExtendedPalette_.PALETTES[this.s.extendedPaletteName]?.length && this.painter.setPaletteName(GPExtendedPalette_.PALETTE.DEFAULT);
+
+                        this.s.extendedPalettePanel && this.initExtendedPalette();
+                        break;
+                    case GPColorPanel_.CONTROL.CUSTOM_PALETTE: this.initExtendedPalette(GPExtendedPalette_.PALETTE.CUSTOM);
+                        break;
+                    case GPColorPanel_.CONTROL.COLOR_PICKER: this.s.colorPickerPanel && this.initColorPicker();
+                        break;
+                    case GPColorPanel_.CONTROL.FULL_SIZE_\u0421OLOR_PICKER: this.initFullSize\u0421olorPicker();
+                        break;
+                    case GPColorPanel_.CONTROL.COLOR_WHEEL: this.initColorWheel()
+                }
+            });
+            this.updateCustomToolsState();
+            this.controls = new Set(a)
+        } changeControlsSet(a) {
+            const b =
+                Object.values(GPColorPanel_.SET), c = b.findIndex(d => d === this.s.colorPanelControlsSet);
+            if (~c) {
+                const d = b.length;
+                a = b[0 > a ? (c + d - 1) % d : (c + 1) % d]
+            } else a = GPColorPanel_.SET.DEFAULT;
+            this.setControlsSet(a);
+            this.dispatchEvent(new CustomEvent("controls-set-changed", { detail: { name: a } }))
+        } wheelHandler(a) {
+            this.changeControlsSet(a.deltaY);
+            a.preventDefault()
+        } initExtendedPalette(a) {
+            this.palette && this.palette.terminate();
+            this.palette = new GPExtendedPalette_(this.l, a ?? this.s.extendedPaletteName, () => this.gpproxy.getNickname(),
+                () => this.painter.getColor().slice(1));
+            this.palette.addEventListener("palette", ({ detail: { name: b } }) => { this.painter.setPaletteName(b) });
+            this.palette.addEventListener("color", ({ detail: { color: b } }) => {
+                this.colorWheel?.setColor(b);
+                this.fullSizeColorPicker?.setColor(b);
+                this.colorPicker?.setColor(b);
+                this.colorInput.value = b;
+                this.dispatchEvent(new CustomEvent("color", { detail: { color: b } }))
+            });
+            this.painter.isDisabled && this.palette.disable();
+            this.colorList.after(this.palette.getElement());
+            this.screen.classList.add("gp-extended-palette-panel_")
+        } initColorPicker() {
+            this.colorPicker &&
+                this.colorPicker.remove();
+            this.colorPicker = new GPColorPicker_(GPColorPanel_.MAX_WIDTH, 125);
+            this.colorPicker.setColor(this.painter.getColor());
+            this.colorPicker.toggle(!this.painter.isDisabled);
+            this.colorPicker.addEventListener("color", this.colorPickerChangeHandler);
+            this.nativeColorInput.before(this.colorPicker.getElement());
+            this.screen.classList.add("gp-color-picker-panel_")
+        } "initFullSize\u0421olorPicker"() {
+            this.fullSizeColorPicker && this.fullSizeColorPicker.remove();
+            this.fullSizeColorPicker = new GPColorPicker_(GPColorPanel_.MAX_WIDTH,
+                288);
+            this.fullSizeColorPicker.setColor(this.painter.getColor());
+            this.fullSizeColorPicker.toggle(!this.painter.isDisabled);
+            this.fullSizeColorPicker.addEventListener("color", this.colorPickerChangeHandler);
+            this.colorList.after(this.fullSizeColorPicker.getElement());
+            this.screen.classList.add("gp-color-picker-panel_")
+        } colorPickerChangeHandler({ detail: { color: a } }) {
+            this.palette?.resetPaletteColor();
+            this.colorWheel?.setColor(a);
+            this.colorInput.value = a;
+            this.dispatchEvent(new CustomEvent("color", { detail: { color: a } }))
+        } initColorWheel() {
+            this.colorWheel &&
+                this.colorWheel.remove();
+            this.colorWheel = new GPColorWheel_(this.painter.getColor(), this.s.colorWheelMode, GPColorPanel_.MAX_WIDTH, this.l);
+            this.colorWheel.addEventListener("color", ({ detail: { color: a } }) => {
+                this.fullSizeColorPicker?.setColor(a);
+                this.colorPicker?.setColor(a);
+                this.colorInput.value = a;
+                this.dispatchEvent(new CustomEvent("color", { detail: { color: a } }))
+            });
+            this.colorWheel.addEventListener("mode", ({ detail: { mode: a } }) => { this.dispatchEvent(new CustomEvent("color-wheel-mode-changed", { detail: { mode: a } })) });
+
+            this.colorList.after(this.colorWheel.getElement())
+        } resetControls() {
+            this.controls.forEach(a => { this.panel.classList.remove(`ctrl-${a}_`) });
+            this.controls.clear();
+            this.palette && (this.palette.terminate(), this.palette = null, this.screen.classList.remove("gp-extended-palette-panel_"));
+            this.colorWheel && (this.colorWheel.remove(), this.colorWheel = null);
+            this.fullSizeColorPicker && (this.fullSizeColorPicker.remove(), this.fullSizeColorPicker = null, this.screen.classList.remove("gp-color-picker-panel_"));
+            this.colorPicker &&
+                (this.colorPicker.remove(), this.colorPicker = null, this.screen.classList.remove("gp-color-picker-panel_"));
+            this.screen.classList.remove("gp-custom-tools_")
+        } initColorInputs() {
+            this.colorInput = document.createElement("input");
+            this.colorInput.type = "color";
+            this.colorInput.className = "gp-painter-color_";
+            this.colorInput.classList.add("gp-ui-color_");
+            this.colorInput.value = this.painter.getColor();
+            this.colorInput.addEventListener("input", this.colorInputInputHandler);
+            this.colorInput.addEventListener("change", this.colorInputChangeHandler);
+
+            this.nativeColorInput.after(this.colorInput);
+            this.color2Input = document.createElement("input");
+            this.color2Input.type = "color";
+            this.color2Input.className = "gp-painter-color2_";
+            this.color2Input.classList.add("gp-ui-color_");
+            this.color2Input.value = this.painter.getColor2();
+            this.color2Input.addEventListener("change", this.color2InputChangeHandler);
+            this.colorInput.after(this.color2Input);
+            this.nativeColorInput.classList.add("hidden")
+        } colorInputInputHandler(a) { this.dispatchEvent(new CustomEvent("color", { detail: { color: a.target.value } })) } colorInputChangeHandler(a) {
+            this.palette?.resetPaletteColor();
+
+            this.colorPicker?.setColor(a.target.value);
+            this.dispatchEvent(new CustomEvent("color", { detail: { color: a.target.value } }))
+        } color2InputChangeHandler(a) { this.dispatchEvent(new CustomEvent("color2", { detail: { color: a.target.value } })) } toggle(a) { a ? this.enable() : this.disable() } enable() {
+            this.panel.classList.remove("disabled");
+            this.colorInput.removeAttribute("disabled");
+            this.color2Input.removeAttribute("disabled");
+            this.colorInput.value = this.painter.getColor();
+            this.color2Input.value = this.painter.getColor2();
+            this.palette?.enable();
+
+            this.colorWheel?.enable();
+            this.colorPicker?.enable();
+            this.fullSizeColorPicker?.enable()
+        } disable() {
+            this.panel.classList.add("disabled");
+            this.colorInput.setAttribute("disabled", "");
+            this.color2Input.setAttribute("disabled", "");
+            this.colorInput.value = this.s.panelsBackgroundColor;
+            this.color2Input.value = this.s.panelsBackgroundColor;
+            this.palette?.disable();
+            this.colorWheel?.disable();
+            this.colorPicker?.disable();
+            this.fullSizeColorPicker?.disable()
+        } updateExtendedPalette(a) {
+            this.controls.has(GPColorPanel_.CONTROL.PALETTE) &&
+                (a ? this.initExtendedPalette() : this.palette && (this.palette.terminate(), this.palette = null, this.screen.classList.remove("gp-extended-palette-panel_")), this.updateCustomToolsState())
+        } updateColorPickerPanel(a) { this.controls.has(GPColorPanel_.CONTROL.COLOR_PICKER) && (a ? this.initColorPicker() : this.colorPicker && (this.colorPicker.remove(), this.colorPicker = null, this.screen.classList.remove("gp-color-picker-panel_")), this.updateCustomToolsState()) } updateCustomToolsState() {
+            this.screen.classList.toggle("gp-custom-tools_",
+                !!(this.palette || this.colorPicker || this.fullSizeColorPicker || this.colorWheel));
+            this.updateColorsPanelOffset()
+        } updatePanelsBackground(a) { this.painter.isDisabled && (this.colorInput.value = a, this.color2Input.value = a) }
+    };
+    class GPColorPicker_ extends EventTarget {
+        static TOP = "top";
+        static BOTTOM = "bottom";
+        static LEFT = "left";
+        static RIGHT = "right";
+        static HORIZONTAL = "horizontal";
+        static VERTICAL = "vertical";
+        static DEFAULT_WIDTH = 250;
+        static DEFAULT_HEIGHT = 250;
+        static DEFAULT_HUE_POSITION = this.BOTTOM;
+        static HUE_MIN_SIDE_SIZE = 30;
+        static HUE_MARGIN = 15;
+        constructor(a = GPColorPicker_.DEFAULT_WIDTH, b = GPColorPicker_.DEFAULT_HEIGHT, c = GPColorPicker_.DEFAULT_HUE_POSITION) {
+            super();
+            this.style = document.documentElement.style;
+            this.style.setProperty("--cp-hue-margin",
+                `${GPColorPicker_.HUE_MARGIN}px`);
+            this.container;
+            this.hsv = [0, 0, 0];
+            this.width = a;
+            this.height = b;
+            this.palettePointerY = this.palettePointerX = 0;
+            this.huePosition = c;
+            this.huePosDir = c === GPColorPicker_.TOP || c === GPColorPicker_.BOTTOM ? GPColorPicker_.HORIZONTAL : GPColorPicker_.VERTICAL;
+            this.hueBarSize = (this.huePosDir === GPColorPicker_.HORIZONTAL ? this.width : this.height) - 2 * GPColorPicker_.HUE_MARGIN;
+            this.huePosDir === GPColorPicker_.HORIZONTAL ? (this.hueWidth = this.width, this.hueHeight = GPColorPicker_.HUE_MIN_SIDE_SIZE, this.paletteWidth =
+                this.width, this.paletteHeight = this.height - this.hueHeight) : (this.hueWidth = GPColorPicker_.HUE_MIN_SIDE_SIZE, this.hueHeight = this.height, this.paletteWidth = this.width - this.hueWidth, this.paletteHeight = this.height);
+            this.paletteDownHandler = this.paletteDownHandler.bind(this);
+            this.paletteMoveHandler = this.paletteMoveHandler.bind(this);
+            this.hueSliderDownHandler = this.hueSliderDownHandler.bind(this);
+            this.hueSliderMoveHandler = this.hueSliderMoveHandler.bind(this);
+            this.render()
+        } getElement() { return this.container } hide() {
+            this.container.classList.add("hidden");
+
+            this.isHidden = !0
+        } show(a, b) {
+            let c = 0, d = 0;
+            switch (this.huePosition) {
+                case GPColorPicker_.LEFT: c = this.hueWidth;
+                    break;
+                case GPColorPicker_.TOP: d = this.hueHeight
+            }a = a - this.palettePointerX - c;
+            b = b - this.palettePointerY - d;
+            a = a + this.width > document.documentElement.clientWidth ? Math.max(document.documentElement.clientWidth - this.width, 0) : Math.max(a, 0);
+            b = b + this.height > document.documentElement.clientHeight ? Math.max(document.documentElement.clientHeight - this.height, 0) : Math.max(b, 0);
+            this.container.style.left = `${a}px`;
+            this.container.style.top =
+                `${b}px`;
+            this.container.classList.remove("hidden");
+            this.isHidden = !1
+        } remove() { this.container.remove() } toggle(a) { this.container.toggleAttribute("disabled", void 0 === a ? a : !a) } enable() { this.toggle(!0) } disable() { this.toggle(!1) } render() {
+            this.container = document.createElement("div");
+            this.container.className = `gp-color-picker_ ${this.huePosition}_`;
+            this.container.innerHTML = '<div class="palette"><div class="hue"><div class="lightness"><div class="darkness"></div><div class="pointer-wrapper"><div class="pointer"></div></div></div></div></div><div class="hue"><div class="slider-wrapper"><div class="slider"><div class="handle-wrapper"><div class="handle"></div></div></div></div></div>';
+
+            this.container.style.width = `${this.width}px`;
+            this.container.style.height = `${this.height}px`;
+            this.palette = this.container.querySelector(".palette");
+            this.palette.addEventListener("pointerdown", this.paletteDownHandler);
+            this.paletteHue = this.container.querySelector(".gp-color-picker_ > .palette .hue");
+            this.pointerWrapper = this.container.querySelector(".gp-color-picker_ > .palette .pointer-wrapper");
+            const a = this.container.querySelector(".gp-color-picker_ > .hue");
+            a.style.width = `${this.hueWidth}px`;
+            a.style.height =
+                `${this.hueHeight}px`;
+            this.hueSlider = this.container.querySelector(".gp-color-picker_ > .hue .slider");
+            this.hueSlider.addEventListener("pointerdown", this.hueSliderDownHandler);
+            this.hueHandleWrapper = this.container.querySelector(".gp-color-picker_ > .hue .handle-wrapper")
+        } paletteDownHandler(a) {
+            0 === a.button && (this.palette.setPointerCapture(a.pointerId), this.palette.addEventListener("pointermove", this.paletteMoveHandler), this.palette.addEventListener("pointerup", b => {
+                this.palette.removeEventListener("pointermove",
+                    this.paletteMoveHandler)
+            }, { once: !0 }), this.paletteMoveHandler(a))
+        } paletteMoveHandler(a) {
+            if (!this.isHidden) {
+                var [b, c] = this.getCoords(a);
+                b = Math.max(0, Math.min(this.paletteWidth, b));
+                c = Math.max(0, Math.min(this.paletteHeight, c));
+                this.palettePointerX = b;
+                this.palettePointerY = c;
+                this.updatePalettePointer(b, c);
+                this.hsv = this.getPaletteColor(b, c);
+                this.dispatchEvent(new CustomEvent("color", { detail: { color: GPColorUtils_.hsvToHex(...this.hsv) } }))
+            }
+        } hueSliderDownHandler(a) {
+            0 === a.button && (this.hueSlider.setPointerCapture(a.pointerId),
+                this.hueSlider.addEventListener("pointermove", this.hueSliderMoveHandler), this.hueSlider.addEventListener("pointerup", b => { this.hueSlider.removeEventListener("pointermove", this.hueSliderMoveHandler) }, { once: !0 }), this.hueSliderMoveHandler(a))
+        } hueSliderMoveHandler(a) {
+            if (!this.isHidden) {
+                var [b, c] = this.getCoords(a), d = (a = this.huePosDir === GPColorPicker_.HORIZONTAL) ? b : c;
+                this.updateHueSlider(d, a);
+                this.hsv[0] = Math.round(Math.max(0, Math.min(100, d / (this.hueBarSize / 100)))) / 100;
+                this.updatePaletteHue(this.hsv[0]);
+
+                this.dispatchEvent(new CustomEvent("color", { detail: { color: GPColorUtils_.hsvToHex(...this.hsv) } }))
+            }
+        } updatePalettePointer(a, b) {
+            a = Math.max(0, Math.min(100, a / (this.paletteWidth / 100)));
+            this.pointerWrapper.style.top = `${Math.max(0, Math.min(100, b / (this.paletteHeight / 100)))}%`;
+            this.pointerWrapper.style.left = `${a}%`
+        } updatePaletteHue(a) {
+            const [b, c, d] = GPColorUtils_.hsvToRgb(a, 1, 1);
+            this.paletteHue.style.backgroundColor = `rgb(${b}, ${c}, ${d})`
+        } updateHueSlider(a, b = this.huePosDir === GPColorPicker_.HORIZONTAL) {
+            a = Math.max(0,
+                Math.min(100, a / (this.hueBarSize / 100)));
+            b ? this.hueHandleWrapper.style.left = `${a}%` : this.hueHandleWrapper.style.top = `${a}%`
+        } getPaletteColor(a, b) { return Number.isNaN(a) || Number.isNaN(b) ? this.hsv : [this.hsv[0], Math.max(0, Math.min(100, Math.round(a / (this.paletteWidth / 100)))) / 100, Math.max(0, Math.min(100, Math.round((this.paletteHeight - b) / (this.paletteHeight / 100)))) / 100] } getCoords(a) {
+            const b = a.target.getBoundingClientRect(), [c, d] = a.touches ? [a.touches[0].clientX, a.touches[0].clientY] : [a.clientX, a.clientY], [e,
+                f] = [c - b.left, d - b.top];
+            return [a.target.clientWidth / b.width * e, a.target.clientHeight / b.height * f]
+        } getColor() { return GPColorUtils_.hsvToHex(...this.hsv) } setColor(a) {
+            const [b, c, d] = GPColorUtils_.hexToHsv(a);
+            this.hsv = [b, c, d];
+            a = this.hueBarSize * b;
+            const e = this.paletteWidth * c, f = this.paletteHeight - this.paletteHeight * d;
+            this.palettePointerX = Math.max(0, Math.min(this.paletteWidth, e));
+            this.palettePointerY = Math.max(0, Math.min(this.paletteHeight, f));
+            this.updateHueSlider(a);
+            this.updatePaletteHue(b);
+            this.updatePalettePointer(e,
+                f)
+        }
+    } window.GPColorPicker_ = GPColorPicker_;
+    class GPColorUtils_ {
+        static hsvToRgb(a, b, c) {
+            let d, e, f;
+            const g = Math.floor(6 * a), k = 6 * a - g;
+            a = c * (1 - b);
+            const h = c * (1 - k * b);
+            b = c * (1 - (1 - k) * b);
+            switch (g % 6) {
+                case 0: d = c;
+                    e = b;
+                    f = a;
+                    break;
+                case 1: d = h;
+                    e = c;
+                    f = a;
+                    break;
+                case 2: d = a;
+                    e = c;
+                    f = b;
+                    break;
+                case 3: d = a;
+                    e = h;
+                    f = c;
+                    break;
+                case 4: d = b;
+                    e = a;
+                    f = c;
+                    break;
+                case 5: d = c, e = a, f = h
+            }return [Math.round(255 * d), Math.round(255 * e), Math.round(255 * f)]
+        } static rgbToHex(a, b, c) { return "#" + (16777216 + (a << 16) + (b << 8) + c).toString(16).slice(1) } static hsvToHex(a, b, c) {
+            a = this.hsvToRgb(a, b, c);
+            return this.rgbToHex(...a)
+        } static hexToRgb(a) {
+            a =
+                a.replace(/^#?([a-f\d])([a-f\d])([a-f\d])$/i, (b, c, d, e) => c + c + d + d + e + e);
+            return (a = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(a)) ? [parseInt(a[1], 16), parseInt(a[2], 16), parseInt(a[3], 16)] : null
+        } static rgbToHsv(a, b, c) {
+            a /= 255;
+            b /= 255;
+            c /= 255;
+            const d = Math.max(a, b, c), e = Math.min(a, b, c);
+            let f;
+            const g = d - e;
+            if (d == e) f = 0;
+            else {
+                switch (d) {
+                    case a: f = (b - c) / g + (b < c ? 6 : 0);
+                        break;
+                    case b: f = (c - a) / g + 2;
+                        break;
+                    case c: f = (a - b) / g + 4
+                }f /= 6
+            } return [f, 0 == d ? 0 : g / d, d]
+        } static hexToHsv(a) {
+            a = this.hexToRgb(a);
+            return this.rgbToHsv(...a).map(b => Math.floor(1E3 *
+                b) / 1E3)
+        } static rgbToHsl(a, b, c) {
+            a /= 255;
+            b /= 255;
+            c /= 255;
+            const d = Math.max(a, b, c);
+            var e = Math.min(a, b, c);
+            let f, g = (d + e) / 2;
+            if (d == e) f = e = 0;
+            else {
+                const k = d - e;
+                e = .5 < g ? k / (2 - d - e) : k / (d + e);
+                switch (d) {
+                    case a: f = (b - c) / k + (b < c ? 6 : 0);
+                        break;
+                    case b: f = (c - a) / k + 2;
+                        break;
+                    case c: f = (a - b) / k + 4
+                }f /= 6
+            } return [f, e, g]
+        } static hexToHsl(a) {
+            a = this.hexToRgb(a);
+            return this.rgbToHsl(...a)
+        }
+    } window.GPColorUtils_ = GPColorUtils_;
+    class GPColorWheel_ extends EventTarget {
+        static SIZE = 300;
+        static DEFAULT_COLOR = "#000000";
+        static DEFAULT_BRIGHTNESS = 1;
+        static MOUSE_WHEEL_ENABLED = !1;
+        static SECOND_BUTTON_ENABLED = !0;
+        static MODE = { SINGLE: "single", COMPLEMENTARY: "complementary", SPLIT_COMPLEMENTARY: "split_complementary", ANALOGOUS: "analogous", TRIADIC: "triadic", TETRADIC: "tetradic" };
+        static DEFAULT_MODE = this.MODE.COMPLEMENTARY;
+        static MODE_MENU_TYPE = { TEXT: "text", ICON: "icon" };
+        static DEFAULT_MODE_MENU_TYPE = this.MODE_MENU_TYPE.ICON;
+        static MODE_ICON_PATTERN = '<svg class="icon_" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg"><defs><style>.cw-ic_{r:32px;fill:#000;cx: 200px;cy: 68px;transform-origin: 200px 200px}</style ></defs > <circle cx="200" cy="200" r="200" fill="currentColor" />{ markers }</svg > ';
+        static MARKERS = {
+            [this.MODE.SINGLE]: [0],
+            [this.MODE.COMPLEMENTARY]: [0, 6], [this.MODE.SPLIT_COMPLEMENTARY]: [0, 5, 7], [this.MODE.ANALOGOUS]: [0, 1, 11], [this.MODE.TRIADIC]: [0, 4, 8], [this.MODE.TETRADIC]: [0, 3, 6, 9]
+        };
+        static HUE_STEP = .0833;
+        constructor(a = GPColorWheel_.DEFAULT_MODE, b = GPColorWheel_.DEFAULT_COLOR, c = GPColorWheel_.SIZE, d) {
+            super();
+            this.l = d;
+            this.size = c;
+            this.brightness = GPColorWheel_.DEFAULT_BRIGHTNESS;
+            this.mode = b;
+            this.currentModeIndex = Object.values(GPColorWheel_.MODE).indexOf(this.mode);
+            this.render();
+            this.setColor(a)
+        } getElement() { return this.container } render() {
+            this.container =
+                document.createElement("div");
+            this.container.className = "gp-color-wheel_";
+            this.container.dataset.menuType = GPColorWheel_.DEFAULT_MODE_MENU_TYPE;
+            this.container.style.setProperty("--color-wheel-size", `${this.size}px`);
+            this.modesMenu = document.createElement("div");
+            this.modesMenu.className = "modes-menu_ folded_";
+            const a = e => { this.hideModesMenu() };
+            this.modesMenu.addEventListener("pointerdown", e => {
+                if (0 === e.button) {
+                    var f = this.modesMenu.classList.contains("folded_"), g = e.target.parentElement === this.modesMenu;
+                    g &&
+                        document.removeEventListener("pointerup", a, { once: !0 });
+                    document.addEventListener("pointerup", k => { k.target.parentElement !== this.modesMenu || k.target.classList.contains("selected_") && f ? f && !g && document.addEventListener("pointerup", a, { once: !0 }) : (this.hideModesMenu(), this.selectMode(k.target.dataset.mode), document.removeEventListener("pointerup", a, { once: !0 })) }, { once: !0 });
+                    this.showModesMenu()
+                }
+            });
+            this.container.appendChild(this.modesMenu);
+            const b = this.l.COLOR_WHEEL_MODES.split("|");
+            Object.values(GPColorWheel_.MODE).forEach((e,
+                f) => {
+                const g = document.createElement("div");
+                g.className = "item_";
+                g.classList.toggle("selected_", e === this.mode);
+                g.dataset.mode = e;
+                e = this.buildModeIcon(e);
+                g.appendChild(e);
+                e = document.createElement("div");
+                e.className = "title_";
+                e.textContent = b[f];
+                g.appendChild(e);
+                this.modesMenu.appendChild(g)
+            });
+            const c = document.createElement("div");
+            c.className = "wheel_";
+            c.addEventListener("pointerdown", e => {
+                0 === e.button && e.target === e.currentTarget && (c.classList.add("pressed_"), document.addEventListener("pointerup", f => { c.classList.remove("pressed_") },
+                    { once: !0 }))
+            });
+            c.addEventListener("pointerdown", e => { 0 === e.button && e.target === e.currentTarget && this.selectColorHandler(e, null, null, this.getScale()) });
+            GPColorWheel_.SECOND_BUTTON_ENABLED && c.addEventListener("contextmenu", e => {
+                this.changeMode(1);
+                e.preventDefault()
+            });
+            GPColorWheel_.MOUSE_WHEEL_ENABLED && c.addEventListener("wheel", e => {
+                this.changeMode(e.deltaY);
+                e.preventDefault()
+            });
+            this.container.appendChild(c);
+            this.canvas = document.createElement("canvas");
+            this.canvas.className = "canvas_";
+            this.canvas.width = 300;
+
+            this.canvas.height = 300;
+            c.appendChild(this.canvas);
+            const d = this.canvas.getContext("2d");
+            this.drawWheel(d);
+            this.markers = document.createElement("div");
+            this.markers.className = "markers_";
+            this.markers.addEventListener("pointerdown", e => {
+                if (0 === e.button) {
+                    var { width: f, height: g } = e.target.getBoundingClientRect();
+                    this.hsv = e.target.hsv;
+                    var k = this.getScale();
+                    this.selectColorHandler(e, e.offsetX * k - f / 2, e.offsetY * k - g / 2, k)
+                }
+            });
+            c.appendChild(this.markers);
+            this.brightnessInput = document.createElement("input");
+            this.brightnessInput.className =
+                "brightness_";
+            this.brightnessInput.type = "range";
+            this.brightnessInput.min = 0;
+            this.brightnessInput.max = 1;
+            this.brightnessInput.step = .01;
+            this.brightnessInput.value = this.brightness;
+            this.brightnessInput.addEventListener("input", e => {
+                this.hsv[2] = Number.parseFloat(e.target.value);
+                this.updateBrightness();
+                this.renderMarkers();
+                this.dispatchEvent(new CustomEvent("color", { detail: { color: GPColorUtils_.hsvToHex(...this.hsv) } }))
+            });
+            this.container.appendChild(this.brightnessInput)
+        } showModesMenu() { this.modesMenu.classList.remove("folded_") } hideModesMenu() { this.modesMenu.classList.add("folded_") } buildModeIcon(a) {
+            a =
+                GPColorWheel_.MARKERS[a].map(b => `<circle class="cw-ic_" transform="rotate(${30 * b + 180})"/>`);
+            a = GPColorWheel_.MODE_ICON_PATTERN.replace("{markers}", a);
+            return (new DOMParser).parseFromString(a, "image/svg+xml").documentElement
+        } selectMode(a) { a !== this.mode && (this.mode = a, this.currentModeIndex = Object.values(GPColorWheel_.MODE).indexOf(a), this.updateModesMenu(), this.renderMarkers(), this.dispatchEvent(new CustomEvent("mode", { detail: { mode: this.mode } }))) } updateModesMenu() {
+            this.hideModesMenu();
+            Array.from(this.modesMenu.children).forEach(a => { a.classList.toggle("selected_", a.dataset.mode === this.mode) })
+        } changeMode(a) {
+            const b = Object.values(GPColorWheel_.MODE);
+            this.currentModeIndex = 0 < a ? (this.currentModeIndex + 1) % b.length : (this.currentModeIndex - 1 + b.length) % b.length;
+            this.mode = b[this.currentModeIndex];
+            this.updateModesMenu();
+            this.renderMarkers();
+            this.dispatchEvent(new CustomEvent("mode", { detail: { mode: this.mode } }))
+        } updateBrightness() {
+            this.brightness = this.hsv[2];
+            this.brightnessInput.value = this.hsv[2];
+            this.canvas.style.opacity = 1 * this.hsv[2]
+        } drawWheel(a) {
+            a.clearRect(0,
+                0, a.canvas.width, a.canvas.height);
+            const b = a.canvas.width / 2;
+            a.translate(b, b);
+            a.lineWidth = 3;
+            let c = b, d = 0;
+            this.plot(a, c, d, 0);
+            const e = 45 / Math.floor(b / Math.sqrt(2));
+            let f = 1.25 - b;
+            for (;
+                c > d;
             ) {
-                var L;
-                -1 != (_ = (o = b(y, R.x + R.w + 1, R.y + R.Xt - C)).Xt) ? (p[_].push({ x: o.x, y: o.y, w: o.w, Xt: o.Xt, qt: 1, Zt: R.Xt + 1 - C, stack: k.length }), (L = k).push.apply(L, A(M([o.x, o.y, o.w + 1, o.Xt + 1])).concat([R.stack])), _ > D && (D = _), C += _) : C++
-            } for (C = 0, 1 == R.qt && (C += R.Zt);
-                C <= R.Xt;
-            ) {
-                var I;
-                -1 != (_ = (o = m(y, R.x - 1, R.y + C)).Xt) ? (p[_].push({ x: o.x, y: o.y, w: o.w, Xt: o.Xt, qt: 2, Zt: R.Xt + 1 - C, stack: k.length }), (I = k).push.apply(I, A(M([o.x, o.y, o.w + 1, o.Xt + 1])).concat([R.stack])), _ > D && (D = _), C += _) : C++
-            } for (C = 0, 4 == R.qt && (C += R.Zt);
-                C <= R.w;
-            ) {
-                var G;
-                -1 != (_ = (o = g(y, R.x + C, R.y + R.Xt + 1)).w) ? (p[_].push({ x: o.x, y: o.y, w: o.w, Xt: o.Xt, qt: 3, Zt: R.w + 1 - C, stack: k.length }), (G = k).push.apply(G, A(M([o.x, o.y, o.w + 1, o.Xt + 1])).concat([R.stack])), _ > D && (D = _), C += _) : C++
-            } for (C = 0, 3 == R.qt && (C += R.Zt);
-                C <= R.w;
-            ) {
-                var j;
-                -1 != (_ = (o = s(y, R.x + R.w - C, R.y - 1)).w) ? (p[_].push({ x: o.x, y: o.y, w: o.w, Xt: o.Xt, qt: 4, Zt: R.w + 1 - C, stack: k.length }), (j = k).push.apply(j, A(M([o.x, o.y, o.w + 1, o.Xt + 1])).concat([R.stack])), _ > D && (D = _), C += _) : C++
-            } for (R = p[D].pop();
-                null == R && D > 0;
-            )R = p[--D].pop()
-        } while (null != R);
-        return k
-    } let originalLog = console.log;
-    console.log = (t, e) => { t.indexOf("[MOD]") <= -1 || originalLog.call(this, t, e) }
-}
+                ++d;
+                0 > f ? f += 2 * d + 3 : (f += 2 * (d - c) + 5, --c);
+                const g = d * e;
+                this.plot(a, c, d, g);
+                this.plot(a, d, c, 90 - g)
+            } a.translate(-b, -b)
+        } plot(a, b, c, d) {
+            const e = [b, -c, -b, c];
+            b = [c, b, -c, -b];
+            for (c = 0;
+                4 > c;
+                ++c) {
+                const f = a.createLinearGradient(0, 0, e[c], b[c]);
+                f.addColorStop(0, "white");
+                f.addColorStop(1, `rgb(${GPColorUtils_.hsvToRgb((-(d + 90 * c) % 360 + 360) % 360 / 360,
+                    1, 1).join(",")})`);
+                a.strokeStyle = f;
+                a.beginPath();
+                a.moveTo(0, 0);
+                a.lineTo(e[c], b[c]);
+                a.stroke()
+            }
+        } selectColorHandler(a, b, c, d) {
+            const e = f => { this.selectColor(f, a.target.index, b, c, d) };
+            a.currentTarget.setPointerCapture(a.pointerId);
+            a.currentTarget.addEventListener("pointermove", e);
+            a.currentTarget.addEventListener("pointerup", f => { f.currentTarget.removeEventListener("pointermove", e) }, { once: !0 });
+            this.selectColor(a, a.target.index, b, c, d)
+        } selectColor(a, b, c, d, e) {
+            const [f, g] = this.getCoords(a, c, d, e);
+            a = this.size / 2;
+
+            this.hsv = [1 - (this.getAngle(a, a, f, g) + 180) % 360 / 360, Math.min(this.getDistance(a, a, f, g) / a, 1), Number.parseFloat(this.brightness)];
+            this.updateMarkers(b);
+            this.dispatchEvent(new CustomEvent("color", { detail: { color: GPColorUtils_.hsvToHex(...this.hsv) } }))
+        } renderMarkers() {
+            this.markers.innerHTML = "";
+            GPColorWheel_.MARKERS[this.mode].forEach((a, b) => {
+                a = this.renderMarker([1 + (this.hsv[0] - GPColorWheel_.HUE_STEP * a) % 1, this.hsv[1], this.hsv[2]], b);
+                this.markers.appendChild(a)
+            })
+        } renderMarker(a, b) {
+            const [c, d] = this.getColorCoords(a),
+                e = document.createElement("div");
+            e.className = "marker_";
+            e.classList.toggle("main_", 0 === b);
+            e.style.top = `${d}px`;
+            e.style.left = `${c}px`;
+            e.style.backgroundColor = `rgb(${GPColorUtils_.hsvToRgb(...a).join(",")})`;
+            e.index = b;
+            e.hsv = a;
+            return e
+        } updateMarkers(a = 0) {
+            Array.from(this.markers.children).forEach(b => {
+                const c = [1 + (this.hsv[0] - GPColorWheel_.HUE_STEP * (GPColorWheel_.MARKERS[this.mode][b.index] - GPColorWheel_.MARKERS[this.mode][a])) % 1, this.hsv[1], this.hsv[2]], [d, e] = this.getColorCoords(c);
+                b.style.top = `${e}px`;
+
+                b.style.left = `${d}px`;
+                b.style.backgroundColor = `rgb(${GPColorUtils_.hsvToRgb(...c).join(",")})`
+            })
+        } getColorCoords(a) {
+            var b = this.size / 2;
+            const c = a[1] * b, d = Math.PI / 180 * (360 * a[0] + 90);
+            a = b + c * Math.sin(d);
+            b += c * Math.cos(d);
+            1E-10 > Math.abs(a) && (a = 0);
+            1E-10 > Math.abs(b) && (b = 0);
+            return [a, b]
+        } getCoords(a, b = 0, c = 0, d = 1) {
+            const e = a.currentTarget.getBoundingClientRect();
+            return [(a.clientX - e.left - b) / d, (a.clientY - e.top - c) / d]
+        } getDistance(a, b, c, d) {
+            a = c - a;
+            b = d - b;
+            return Math.sqrt(a * a + b * b)
+        } getAngle(a, b, c, d) {
+            return 180 / Math.PI * Math.atan2(d -
+                b, c - a) + 180
+        } setColor(a) {
+            this.hsv = GPColorUtils_.hexToHsv(a);
+            this.updateBrightness();
+            this.renderMarkers()
+        } getScale() { return this.container.getBoundingClientRect().width / this.container.offsetWidth } enable() { this.container.removeAttribute("disabled") } disable() { this.container.setAttribute("disabled", "") } remove() { this.container.remove() }
+    } window.GPColorWheel_ = GPColorWheel_;
+    class GPPainter_ extends EventTarget {
+        static SEARCH_DRAW_CONTAINER_INTERVAL = 200;
+        static TOOL = { BRUSH: 1, ERASER: 2, LINE: 3, RECTANGLE: 4, CIRCLE: 5, RECTANGLE_FILLED: 6, CIRCLE_FILLED: 7, FILL: 8, NOTE: 10, DELIMITER: 11 };
+        static TOOLS_IN_TIME = [this.TOOL.BRUSH, this.TOOL.ERASER, this.TOOL.NOTE];
+        static ORIGINAL_WIDTH = 758;
+        static ORIGINAL_HEIGHT = 424;
+        static DEFAULT_DENSITY = 2;
+        static BACKGROUND_COLOR = "#ffffff";
+        static DEFAULT_TOOL = this.TOOL.BRUSH;
+        static FIRST_STROKE_ID = 1;
+        static POINTER_COLOR = "#000000";
+        static POINTER_OPACITY = 1;
+        static POINTER_OUTLINE_COLOR = "#FFFFFF";
+        static POINTER_OUTLINE_OPACITY = 1;
+        static POINTER_CROSSHAIR_MIN_THICKNESS = 5;
+        static POINTER_CROSSHAIR_LINE_LENGTH = 6;
+        static POINTER_DOT_THICKNESS = 2;
+        static TOOLS_THICKNESSES = {
+            [this.TOOL.RECTANGLE_FILLED]: 2,
+            [this.TOOL.CIRCLE_FILLED]: 2, [this.TOOL.FILL]: 2
+        };
+        static DISABLED_MODE_OPTIONS = { visible: [2] };
+        static COLOR_PICKER_WIDTH = 250;
+        static COLOR_PICKER_HEIGHT = 250;
+        static COLOR_PICKER_HUE_POSITION = GPColorPicker_.RIGHT;
+        static DEFAULT_HEADER_COLOR = "#481d92";
+        static SYMMETRY_MODES = { VERTICAL: 0, HORIZONTAL: 1, QUADRANT: 2, RADIAL: 3, MANDALA: 4 };
+        static UNSUBSCRIBED_SYMMETRY_MODES = ["VERTICAL", "HORIZONTAL"];
+        static DEFAULT_SYMMETRY_MODE = this.SYMMETRY_MODES.VERTICAL;
+        static SYMMETRY_GUIDES_COUNT_SENSITIVITY = Math.round(window.screen.height /
+            1080 * 5);
+        static MIN_SYMMETRY_RADIAL_GUIDES = 2;
+        static MAX_SYMMETRY_RADIAL_GUIDES = 32;
+        static MIN_SYMMETRY_MANDALA_GUIDES = 2;
+        static MAX_SYMMETRY_MANDALA_GUIDES = 16;
+        static SYMMETRY_GUIDES_RADIUS = Math.ceil(Math.sqrt(this.ORIGINAL_WIDTH * this.ORIGINAL_WIDTH + this.ORIGINAL_HEIGHT * this.ORIGINAL_HEIGHT)) * this.DEFAULT_DENSITY;
+        static M_STROKE_OFFSET = 67;
+        static M_STROKE_RANGE = 100;
+        static DEFAULT_BINDINGS = {
+            dropper: [["AltLeft"]], thickness: [["ControlLeft"]], opacity: [["ShiftLeft"]], brightness: [["KeyV"]], zoom: [["KeyZ"]], zoomToPoint: [["KeyS"]],
+            zoomReset: [["KeyA"]], mirror: [["CapsLock"]], verticalMirror: [["ControlLeft", "CapsLock"]], palette: [["Tab"]], swap: [["KeyX"]], eraser: [["KeyC"]], grayscale: [["KeyW"]], hand: [["Space"]], clear: [["KeyF"]], symmetry: [["KeyT"]], reference: [["KeyP"]], toolCentering: [["KeyR"]], save: [["ControlLeft", "KeyS"]], undo: [["ControlLeft", "KeyZ"]], redo: [["ControlLeft", "KeyY"], ["ControlLeft", "ShiftLeft", "KeyZ"]], save: [["ControlLeft", "KeyS"]], brushTool: [["KeyB"]], eraserTool: [["KeyE"]], rectangleTool: [], rectangleFilledTool: [], circleTool: [],
+            circleFilledTool: [], fillTool: [], noteTool: []
+        };
+        static NATIVE_BINDINGS_KEYS = new Set(["KeyE", "KeyB", "KeyZ"]);
+        static AXIS = { HORIZONTAL: "horizontal", VERTICAL: "vertical" };
+        static DIRECTION = { DOWN_RIGHT: "down / right", UP_LEFT: "up / left" };
+        static DEFAULT_SETTINGS = {
+            defaultColor: "#000000", defaultThickness: 6, defaultOpacity: 1, minThickness: 2, maxThickness: 300, thicknessAxis: this.AXIS.HORIZONTAL, upThicknessDirection: this.DIRECTION.DOWN_RIGHT, doubleEraserThickness: !0, minOpacity: .02, opacitySensitivity: 1, opacityAxis: this.AXIS.HORIZONTAL,
+            upOpacityDirection: this.DIRECTION.DOWN_RIGHT, brightnessSensitivity: 1, brightnessAxis: this.AXIS.VERTICAL, upBrightnessDirection: this.DIRECTION.UP_LEFT, minZoom: 1, maxZoom: 30, zoomSensitivity: 10, zoomAxis: this.AXIS.VERTICAL, zoomInDirection: this.DIRECTION.UP_LEFT, maxZoomToPoint: 3, pointerOpacity: 1, pointerOutlineOpacity: 1, colorPickerHuePosition: GPColorPicker_.RIGHT, colorPickerWidth: 250, colorPickerHeight: 250, colorWheelMode: GPColorWheel_.MODE.COMPLEMENTARY, fixedScreenSize: !1, readyConfirmation: !1, stretchNativePalette: !0,
+            extendedPalettePanel: !0, extendedPaletteName: "default", colorPanelControlsSet: "default", colorPickerPanel: !0, panelsBackgroundColor: "#5e1933", panelsBackgroundOpacity: 50, panelsElementsColor: "#ff8eaf", panelsElementsOpacity: 60, controlsBackgroundBlurLevel: 0, hideHeaderBackground: !1, autoHideHeaderElements: !1, autoHideHeaderDelay: .3, headerColor: "#481d92", headerInstructionsColor: "#43de99", lineSmoothingLevel: 0, eraserLineSmoothing: !1, symmetryGuidesColor: "#4affff", symmetryGuidesOpacity: 1, symmetryGuidesWidth: 1, symmetryRadialGuidesCount: 8,
+            symmetryMandalaGuidesCount: 4, symmetryMode: this.SYMMETRY_MODES.VERTICAL, centeringCircleTool: !1
+        };
+        static SETTINGS_UI = {
+            _1: { text: "Default Settings" }, defaultColor: { type: "color", description: "\u0426\u0432\u0435\u0442 \u043a\u0438\u0441\u0442\u0438 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e (\u0443\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u0432 \u043d\u0430\u0447\u0430\u043b\u0435 \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u0440\u0430\u0443\u043d\u0434\u0430)" },
+            defaultThickness: { type: "slider", args: { min: 0.5, max: 600, step: 1 }, description: "\u0422\u043e\u043b\u0449\u0438\u043d\u0430 \u043a\u0438\u0441\u0442\u0438 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e (\u0443\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u0432 \u043d\u0430\u0447\u0430\u043b\u0435 \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u0440\u0430\u0443\u043d\u0434\u0430)" }, defaultOpacity: { type: "slider", args: { min: .01, max: 1, step: .01 }, description: "\u041d\u0430\u0441\u044b\u0449\u0435\u043d\u043d\u043e\u0441\u0442\u044c \u043a\u0438\u0441\u0442\u0438 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e (\u0443\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442\u0441\u044f \u0432 \u043d\u0430\u0447\u0430\u043b\u0435 \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u0440\u0430\u0443\u043d\u0434\u0430)" },
+            _2: { text: "Thickness" }, minThickness: { type: "slider", args: { min: 1, max: 600, step: 1 }, description: "\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0442\u043e\u043b\u0449\u0438\u043d\u0430 \u043a\u0438\u0441\u0442\u0438, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u0430\u044f \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" }, maxThickness: { type: "slider", args: { min: 1, max: 600, step: 1 }, description: "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u0442\u043e\u043b\u0449\u0438\u043d\u0430 \u043a\u0438\u0441\u0442\u0438, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u0430\u044f \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+            thicknessAxis: { type: "dropdown", args: { items: [this.AXIS.HORIZONTAL, this.AXIS.VERTICAL] }, description: "\u041f\u043b\u043e\u0441\u043a\u043e\u0441\u0442\u044c \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u043e\u0432\u043a\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c \u0442\u043e\u043b\u0449\u0438\u043d\u044b \u043a\u0438\u0441\u0442\u0438" }, upThicknessDirection: { type: "dropdown", args: { items: [this.DIRECTION.DOWN_RIGHT, this.DIRECTION.UP_LEFT] }, description: "\u041d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u043e\u0432\u044b\u0448\u0435\u043d\u0438\u044f \u0442\u043e\u043b\u0449\u0438\u043d\u044b \u043a\u0438\u0441\u0442\u0438, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+            doubleEraserThickness: { type: "switch", description: "\u0423\u0434\u0432\u0430\u0438\u0432\u0430\u0442\u044c \u0442\u043e\u043b\u0449\u0438\u043d\u0443 \u043a\u0438\u0441\u0442\u0438 \u043f\u0440\u0438 \u0438\u0441\u043f\u043e\u043b\u044c\u0437\u043e\u0432\u0430\u043d\u0438\u0438 \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u0430 \u041b\u0430\u0441\u0442\u0438\u043a" }, _3: { text: "Opacity" }, minOpacity: { type: "slider", args: { min: .01, max: 1, step: .01 }, description: "\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u0430\u044f \u043d\u0430\u0441\u044b\u0449\u0435\u043d\u043d\u043e\u0441\u0442\u044c \u043a\u0438\u0441\u0442\u0438, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u0430\u044f \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+            opacitySensitivity: { type: "slider", args: { min: .1, max: 3, step: .1 }, description: "\u0427\u0443\u0432\u0441\u0442\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u044f \u043d\u0430\u0441\u044b\u0449\u0435\u043d\u043d\u043e\u0441\u0442\u0438 \u043a\u0438\u0441\u0442\u0438, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" }, opacityAxis: {
+                type: "dropdown", args: {
+                    items: [this.AXIS.HORIZONTAL,
+                    this.AXIS.VERTICAL]
+                }, description: "\u041f\u043b\u043e\u0441\u043a\u043e\u0441\u0442\u044c \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u043e\u0432\u043a\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c \u043d\u0430\u0441\u044b\u0449\u0435\u043d\u043d\u043e\u0441\u0442\u0438 \u043a\u0438\u0441\u0442\u0438"
+            }, upOpacityDirection: { type: "dropdown", args: { items: [this.DIRECTION.DOWN_RIGHT, this.DIRECTION.UP_LEFT] }, description: "\u041d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u043e\u0432\u044b\u0448\u0435\u043d\u0438\u044f \u043d\u0430\u0441\u044b\u0449\u0435\u043d\u043d\u043e\u0441\u0442\u0438 \u043a\u0438\u0441\u0442\u0438, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+            _4: { text: "Brightness" }, brightnessSensitivity: { type: "slider", args: { min: .1, max: 3, step: .1 }, description: "\u0427\u0443\u0432\u0441\u0442\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u0438\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u044f \u044f\u0440\u043a\u043e\u0441\u0442\u0438 \u0446\u0432\u0435\u0442\u0430 \u043a\u0438\u0441\u0442\u0438, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" }, brightnessAxis: {
+                type: "dropdown",
+                args: { items: [this.AXIS.HORIZONTAL, this.AXIS.VERTICAL] }, description: "\u041f\u043b\u043e\u0441\u043a\u043e\u0441\u0442\u044c \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u043e\u0432\u043a\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c \u044f\u0440\u043a\u043e\u0441\u0442\u0438 \u0446\u0432\u0435\u0442\u0430 \u043a\u0438\u0441\u0442\u0438"
+            }, upBrightnessDirection: { type: "dropdown", args: { items: [this.DIRECTION.DOWN_RIGHT, this.DIRECTION.UP_LEFT] }, description: "\u041d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u043e\u0432\u044b\u0448\u0435\u043d\u0438\u044f \u044f\u0440\u043a\u043e\u0441\u0442\u0438 \u0446\u0432\u0435\u0442\u0430 \u043a\u0438\u0441\u0442\u0438, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+            _5: { text: "Zoom" }, minZoom: { type: "slider", args: { min: .1, max: 1, step: .1 }, description: "\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0443\u0440\u043e\u0432\u0435\u043d\u044c \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f \u0445\u043e\u043b\u0441\u0442\u0430, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" }, maxZoom: { type: "slider", args: { min: 2, max: 60, step: 1 }, description: "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0443\u0440\u043e\u0432\u0435\u043d\u044c \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f \u0445\u043e\u043b\u0441\u0442\u0430, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+            zoomSensitivity: { type: "slider", args: { min: 1, max: 20, step: 1 }, description: "\u0427\u0443\u0432\u0441\u0442\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f \u0445\u043e\u043b\u0441\u0442\u0430, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" }, zoomAxis: { type: "dropdown", args: { items: [this.AXIS.HORIZONTAL, this.AXIS.VERTICAL] }, description: "\u041f\u043b\u043e\u0441\u043a\u043e\u0441\u0442\u044c \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u043e\u0432\u043a\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f \u0445\u043e\u043b\u0441\u0442\u0430" },
+            zoomInDirection: { type: "dropdown", args: { items: [this.DIRECTION.DOWN_RIGHT, this.DIRECTION.UP_LEFT] }, description: "\u041d\u0430\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u0435 \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f \u0445\u043e\u043b\u0441\u0442\u0430, \u0440\u0435\u0433\u0443\u043b\u0438\u0440\u0443\u0435\u043c\u043e\u0435 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" }, maxZoomToPoint: { type: "slider", args: { min: 2, max: 60, step: 1 }, description: "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u043e\u0435 \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u0435 \u0445\u043e\u043b\u0441\u0442\u0430 \u0432 \u0432\u044b\u0431\u0440\u0430\u043d\u043d\u0443\u044e \u0442\u043e\u0447\u043a\u0443" },
+            _6: { text: "Pointer" }, pointerOpacity: { type: "slider", args: { min: 0, max: 1, step: .1 }, description: "\u041f\u0440\u043e\u0437\u0440\u0430\u0447\u043d\u043e\u0441\u044c \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044f" }, pointerOutlineOpacity: { type: "slider", args: { min: 0, max: 1, step: .1 }, description: "\u041f\u0440\u043e\u0437\u0440\u0430\u0447\u043d\u043e\u0441\u044c \u043a\u043e\u043d\u0442\u0443\u0440\u0430 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044f" }, _7: { text: "Color Picker" }, colorPickerHuePosition: {
+                type: "dropdown",
+                args: { items: [GPColorPicker_.TOP, GPColorPicker_.BOTTOM, GPColorPicker_.RIGHT, GPColorPicker_.LEFT] }, description: "\u0420\u0430\u0441\u043f\u043e\u043b\u043e\u0436\u0435\u043d\u0438\u0435 \u043f\u043e\u043b\u0437\u0443\u043d\u043a\u0430 \u043e\u0442\u0442\u0435\u043d\u043a\u0430 \u0434\u043b\u044f \u043f\u0430\u043b\u0438\u0442\u0440\u044b \u0446\u0432\u0435\u0442\u043e\u0432 (\u043f\u043e\u0434 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c)"
+            }, colorPickerWidth: {
+                type: "slider", args: {
+                    min: 100,
+                    max: 350, step: 1
+                }, description: "\u0428\u0438\u0440\u0438\u043d\u0430 \u043f\u0430\u043b\u0438\u0442\u0440\u044b \u0446\u0432\u0435\u0442\u043e\u0432 (\u043f\u043e\u0434 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c)"
+            }, colorPickerHeight: { type: "slider", args: { min: 100, max: 350, step: 1 }, description: "\u0412\u044b\u0441\u043e\u0442\u0430 \u043f\u0430\u043b\u0438\u0442\u0440\u044b \u0446\u0432\u0435\u0442\u043e\u0432 (\u043f\u043e\u0434 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c)" },
+            _8: { text: "Interface" }, fixedScreenSize: { type: "switch", description: "\u0424\u0438\u043a\u0441\u0438\u0440\u043e\u0432\u0430\u043d\u043d\u044b\u0439 \u0440\u0430\u0437\u043c\u0435\u0440 \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430 \u0440\u0435\u0434\u0430\u043a\u0442\u043e\u0440\u0430 (\u0438\u0433\u043d\u043e\u0440\u0438\u0440\u0443\u0435\u0442 \u0440\u0430\u0437\u043c\u0435\u0440 \u043e\u043a\u043d\u0430 \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0430)" }, readyConfirmation: {
+                type: "switch",
+                description: '\u041f\u043e\u0434\u0442\u0432\u0435\u0440\u0436\u0434\u0435\u043d\u0438\u0435 \u0437\u0430\u0432\u0435\u0440\u0448\u0435\u043d\u0438\u044f \u0445\u043e\u0434\u0430, \u0435\u0441\u043b\u0438 \u043f\u0430\u0440\u0430\u043c\u0435\u0442\u0440 "\u0412\u0420\u0415\u041c\u042f" \u0443\u0441\u0442\u0430\u043d\u043e\u0432\u043b\u0435\u043d, \u043a\u0430\u043a "\u0420\u0415\u0428\u0415\u041d\u0418\u0415 \u0412\u0415\u0414\u0423\u0429\u0415\u0413\u041e" (\u043f\u0440\u0438 \u0443\u0441\u043b\u043e\u0432\u0438\u0438, \u0447\u0442\u043e \u0412\u044b \u044f\u0432\u043b\u044f\u0435\u0442\u0435\u0441\u044c \u0432\u043b\u0430\u0434\u0435\u043b\u044c\u0446\u0435\u043c \u043a\u043e\u043c\u043d\u0430\u0442\u044b)'
+            },
+            stretchNativePalette: { type: "switch", description: "\u0420\u0430\u0441\u0442\u044f\u0433\u0438\u0432\u0430\u0442\u044c \u0440\u043e\u0434\u043d\u0443\u044e \u043f\u0430\u043d\u0435\u043b\u044c \u043f\u0430\u043b\u0438\u0442\u0440\u044b \u043f\u043e \u0448\u0438\u0440\u0438\u043d\u0435" }, extendedPalettePanel: { type: "switch", description: "\u0420\u0430\u0441\u0448\u0438\u0440\u0435\u043d\u043d\u0430\u044f \u043f\u0430\u043d\u0435\u043b\u044c \u043f\u0430\u043b\u0438\u0442\u0440\u044b (\u0437\u0430\u043c\u0435\u043d\u044f\u0435\u0442 \u043e\u0441\u043d\u043e\u0432\u043d\u0443\u044e)" },
+            colorPickerPanel: { type: "switch", description: "\u041f\u0430\u043d\u0435\u043b\u044c \u0432\u044b\u0431\u043e\u0440\u0430 \u0446\u0432\u0435\u0442\u0430" }, panelsBackgroundColor: { type: "color", inputTrigger: !0, description: "\u0426\u0432\u0435\u0442 \u0444\u043e\u043d\u0430 \u043f\u0430\u043d\u0435\u043b\u0435\u0439 \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430" }, panelsBackgroundOpacity: { type: "slider", args: { min: 0, max: 100, step: 1 }, inputTrigger: !0, description: "\u041f\u0440\u043e\u0437\u0440\u0430\u0447\u043d\u043e\u0441\u0442\u044c \u0444\u043e\u043d\u0430 \u043f\u0430\u043d\u0435\u043b\u0435\u0439 \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430" },
+            panelsElementsColor: { type: "color", inputTrigger: !0, description: "\u0426\u0432\u0435\u0442 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u0432 \u043f\u0430\u043d\u0435\u043b\u0435\u0439 \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430" }, panelsElementsOpacity: { type: "slider", args: { min: 0, max: 100, step: 1 }, inputTrigger: !0, description: "\u041f\u0440\u043e\u0437\u0440\u0430\u0447\u043d\u043e\u0441\u0442\u044c \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u0432 \u043f\u0430\u043d\u0435\u043b\u0435\u0439 \u0438\u043d\u0442\u0435\u0440\u0444\u0435\u0439\u0441\u0430" },
+            controlsBackgroundBlurLevel: { type: "slider", args: { min: 0, max: 20, step: .1 }, inputTrigger: !0, description: "\u0423\u0440\u043e\u0432\u0435\u043d\u044c \u0440\u0430\u0437\u043c\u044b\u0442\u0438\u044f \u0444\u043e\u043d\u0430 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u0432 \u0443\u043f\u0440\u0430\u0432\u043b\u0435\u043d\u0438\u044f" }, _9: { text: "Header" }, hideHeaderBackground: { type: "switch", description: "\u0421\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u0444\u043e\u043d \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0430 \u0438 \u0440\u0430\u043c\u043a\u0438 \u0440\u0435\u0434\u0430\u043a\u0442\u043e\u0440\u0430" },
+            autoHideHeaderElements: { type: "switch", description: "\u0410\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438 \u0441\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u044b \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0430 \u0440\u0435\u0434\u0430\u043a\u0442\u043e\u0440\u0430 (\u043a\u0440\u043e\u043c\u0435 \u043b\u043e\u0433\u043e \u0438 \u0437\u0430\u043f\u0443\u0449\u0435\u043d\u043d\u043e\u0433\u043e \u0442\u0430\u0439\u043c\u0435\u0440\u0430) \u0438 \u043f\u043e\u043a\u0430\u0437\u044b\u0432\u0430\u0442\u044c \u043f\u0440\u0438 \u043d\u0430\u0432\u0435\u0434\u0435\u043d\u0438\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u044f" },
+            autoHideHeaderDelay: { type: "slider", args: { min: 0, max: 1, step: .1 }, description: "\u0417\u0430\u0434\u0435\u0440\u0436\u043a\u0430 \u043f\u0435\u0440\u0435\u0434 \u0430\u0432\u0442\u043e\u043c\u0430\u0442\u0438\u0447\u0435\u0441\u043a\u0438\u043c \u0441\u043a\u0440\u044b\u0442\u0438\u0435\u043c/\u043f\u043e\u043a\u0430\u0437\u043e\u043c \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u0432 \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0430" }, headerColor: { type: "color", inputTrigger: !0, description: "\u0426\u0432\u0435\u0442 \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0430 \u0440\u0435\u0434\u0430\u043a\u0442\u043e\u0440\u0430 \u0438 \u0441\u0432\u044f\u0437\u0430\u043d\u043d\u044b\u0445 \u044d\u043b\u0435\u043c\u0435\u043d\u0442\u043e\u0432" },
+            headerInstructionsColor: { type: "color", inputTrigger: !0, description: "\u0426\u0432\u0435\u0442 \u0438\u043d\u0441\u0442\u0440\u0443\u043a\u0446\u0438\u0439 \u0432 \u0437\u0430\u0433\u043e\u043b\u043e\u0432\u043a\u0435 \u0440\u0435\u0434\u0430\u043a\u0442\u043e\u0440\u0430" }, _10: { text: "Line Smoothing" }, lineSmoothingLevel: { type: "slider", args: { min: 0, max: 8, step: 1 }, description: "\u0423\u0440\u043e\u0432\u0435\u043d\u044c \u0441\u0433\u043b\u0430\u0436\u0438\u0432\u0430\u043d\u0438\u044f \u043b\u0438\u043d\u0438\u0439 \u0434\u043b\u044f \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u043e\u0432 \u041a\u0438\u0441\u0442\u044c, \u041b\u0430\u0441\u0442\u0438\u043a \u0438 \u0417\u0430\u043c\u0435\u0442\u043a\u0430" },
+            eraserLineSmoothing: { type: "switch", description: "\u041f\u0440\u0438\u043c\u0435\u043d\u044f\u0442\u044c \u0441\u0433\u043b\u0430\u0436\u0438\u0432\u0430\u043d\u0438\u0435 \u043b\u0438\u043d\u0438\u0439 \u0434\u043b\u044f \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u0430 \u041b\u0430\u0441\u0442\u0438\u043a" }, _11: { text: "Symmetry Guides" }, symmetryGuidesColor: { type: "color", inputTrigger: !0, description: "\u0426\u0432\u0435\u0442 \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u044f\u044e\u0449\u0438\u0445 \u0441\u0438\u043c\u043c\u0435\u0442\u0440\u0438\u0438" },
+            symmetryGuidesOpacity: { type: "slider", args: { min: 0, max: 1, step: .01 }, inputTrigger: !0, description: "\u041d\u0430\u0441\u044b\u0449\u0435\u043d\u043d\u043e\u0441\u0442\u044c \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u044f\u044e\u0449\u0438\u0445 \u0441\u0438\u043c\u043c\u0435\u0442\u0440\u0438\u0438" }, symmetryGuidesWidth: { type: "slider", args: { min: 1, max: 8, step: .5 }, inputTrigger: !0, description: "\u0428\u0438\u0440\u0438\u043d\u0430 \u043d\u0430\u043f\u0440\u0430\u0432\u043b\u044f\u044e\u0449\u0438\u0445 \u0441\u0438\u043c\u043c\u0435\u0442\u0440\u0438\u0438" },
+            _12: { text: "Tools" }, centeringCircleTool: { type: "switch", description: "\u0426\u0435\u043d\u0442\u0440\u0438\u0440\u043e\u0432\u0430\u0442\u044c \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442\u044b \u041a\u0440\u0443\u0433 \u0438 \u0417\u0430\u043f\u043e\u043b\u043d\u0435\u043d\u043d\u044b\u0439 \u043a\u0440\u0443\u0433 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e" }
+        };
+        static MODULE = {
+            title: "Painter", alias: "pa", dependencies: ["GPDrawInterface_", "GPColorUtils_", "GPColorPicker_"],
+            settings: { storage: "gp_painter", defaultSettings: this.DEFAULT_SETTINGS, ui: this.SETTINGS_UI }, useCSS: !0
+        };
+        constructor(a, b) {
+            super();
+            this.gpproxy = a.gpproxy;
+            this.sm = a.sm;
+            this.timer = a.tmr;
+            this.reference = a.ref;
+            this.ac = a.ac;
+            this.abt = a.abt;
+            this.l = b;
+            this.s = a.sm.setSettings(this, this.updateSettings);
+            this.bindings = Object.assign({}, window.structuredClone(GPPainter_.DEFAULT_BINDINGS), JSON.parse(localStorage.getItem("gp_painter_bindings")));
+            this.bindingsLabels = { brushTool: this.l.BINDINGS_LABEL_TOOLS };
+            this.tools = {
+                dropper: {
+                    handler: this.dropperKeyDown,
+                    description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u041f\u0438\u043f\u0435\u0442\u043a\u0430 (\u0443\u0441\u0442\u0430\u043d\u0430\u0432\u043b\u0438\u0432\u0430\u0435\u0442 \u0446\u0432\u0435\u0442 \u043f\u043e\u0434 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c \u043c\u044b\u0448\u0438)"
+                }, thickness: { handler: this.thicknessKeyDown, description: "\u0418\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u0435 \u0442\u043e\u043b\u0449\u0438\u043d\u044b \u043a\u0438\u0441\u0442\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+                opacity: { handler: this.opacityKeyDown, description: "\u0418\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u0435 \u043d\u0430\u0441\u044b\u0449\u0435\u043d\u043d\u043e\u0441\u0442\u0438 \u043a\u0438\u0441\u0442\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" }, brightness: { handler: this.brightnessKeyDown, description: "\u0418\u0437\u043c\u0435\u043d\u0435\u043d\u0438\u0435 \u044f\u0440\u043a\u043e\u0441\u0442\u0438 \u0446\u0432\u0435\u0442\u0430 \u043a\u0438\u0441\u0442\u0438 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+                zoom: { handler: this.zoomKeyDown, description: "\u041f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u0435/\u043e\u0442\u0434\u0430\u043b\u0435\u043d\u0438\u0435 \u0445\u043e\u043b\u0441\u0442\u0430 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" }, zoomToPoint: { handler: this.zoomToPoint, description: "\u041f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u0435/\u043e\u0442\u0434\u0430\u043b\u0435\u043d\u0438\u0435 \u0445\u043e\u043b\u0441\u0442\u0430 \u0432 \u0442\u043e\u0447\u043a\u0443 \u043f\u043e\u0434 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+                zoomReset: { handler: this.resetZoom, description: "\u0421\u0431\u0440\u043e\u0441 \u0443\u0440\u043e\u0432\u043d\u044f \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f/\u043e\u0442\u0434\u0430\u043b\u0435\u043d\u0438\u044f \u0445\u043e\u043b\u0441\u0442\u0430" }, mirror: { handler: this.mirror, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0417\u0435\u0440\u043a\u0430\u043b\u043e (\u043e\u0442\u0440\u0430\u0436\u0430\u0435\u0442 \u0445\u043e\u043b\u0441\u0442 \u043f\u043e \u0433\u043e\u0440\u0438\u0437\u043e\u043d\u0442\u0430\u043b\u0438)" },
+                verticalMirror: { handler: this.verticalMirror, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0412\u0435\u0440\u0442\u0438\u043a\u0430\u043b\u044c\u043d\u043e\u0435 \u0437\u0435\u0440\u043a\u0430\u043b\u043e (\u043e\u0442\u0440\u0430\u0436\u0430\u0435\u0442 \u0445\u043e\u043b\u0441\u0442 \u043f\u043e \u0432\u0435\u0440\u0442\u0438\u043a\u0430\u043b\u0438)" }, palette: { handler: this.palette, description: "\u041e\u0442\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435 \u043f\u0430\u043b\u0438\u0442\u0440\u044b \u043f\u043e\u0434 \u0443\u043a\u0430\u0437\u0430\u0442\u0435\u043b\u0435\u043c" },
+                swap: { handler: this.swap, description: "\u041f\u0435\u0440\u0435\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 \u043c\u0435\u0436\u0434\u0443 \u043e\u0441\u043d\u043e\u0432\u043d\u044b\u043c \u0438 \u0434\u043e\u043f\u043e\u043b\u043d\u0438\u0442\u0435\u043b\u044c\u043d\u044b\u043c \u0446\u0432\u0435\u0442\u0430\u043c\u0438" }, eraser: { handler: this.eraser, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u041b\u0430\u0441\u0442\u0438\u043a (\u043f\u0440\u0438 \u0437\u0430\u0436\u0430\u0442\u0438\u0438 \u043a\u043b\u0430\u0432\u0438\u0448\u0438 - \u0430\u043a\u0442\u0438\u0432\u0438\u0440\u0443\u0435\u0442\u0441\u044f, \u043f\u0440\u0438 \u043e\u0442\u043f\u0443\u0441\u043a\u0430\u043d\u0438\u0438 - \u0432\u043e\u0437\u0432\u0440\u0430\u0449\u0430\u0435\u0442 \u043f\u0440\u0435\u0434\u044b\u0434\u0443\u0449\u0438\u0439 \u0438\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442)" },
+                grayscale: { handler: this.grayscale, description: "\u0412\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 \u0447\u0451\u0440\u043d\u043e-\u0431\u0435\u043b\u043e\u0433\u043e \u0444\u0438\u043b\u044c\u0442\u0440\u0430" }, hand: { handler: this.handKeyDown, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0420\u0443\u043a\u0430 (\u043f\u0440\u0438 \u0437\u0430\u0436\u0430\u0442\u0438\u0438 \u043a\u043b\u0430\u0432\u0438\u0448\u0438 \u043f\u043e\u0437\u0432\u043e\u043b\u044f\u0435\u0442 \u043f\u0435\u0440\u0435\u043c\u0435\u0449\u0430\u0442\u044c \u0445\u043e\u043b\u0441\u0442 \u041b\u0435\u0432\u043e\u0439 \u043a\u043d\u043e\u043f\u043a\u043e\u0439 \u043c\u044b\u0448\u0438 \u0438\u043b\u0438 \u0441\u0442\u0438\u043b\u0443\u0441\u043e\u043c)" },
+                clear: { handler: this.clear, description: "\u041e\u0447\u0438\u0441\u0442\u043a\u0430 \u0445\u043e\u043b\u0441\u0442\u0430 (\u043d\u0435 \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0432 \u0440\u0435\u0436\u0438\u043c\u0430\u0445 \u0410\u043d\u0438\u043c\u0430\u0446\u0438\u044f, \u0424\u043e\u043d \u0438 \u0421\u043e\u043b\u043e)" }, symmetry: { handler: this.symmetry, description: "\u0412\u043a\u043b\u044e\u0447\u0435\u043d\u0438\u0435 \u0441\u0438\u043c\u043c\u0435\u0442\u0440\u0438\u0447\u043d\u043e\u0433\u043e \u0440\u0438\u0441\u043e\u0432\u0430\u043d\u0438\u044f" },
+                reference: { handler: this.toggleReference, description: "\u041f\u043e\u043a\u0430\u0437 \u043e\u043a\u043d\u0430 \u043c\u043e\u0434\u0443\u043b\u044f Reference" }, toolCentering: { handler: this.toolCentering, description: "\u041f\u043e\u0441\u0442\u0440\u043e\u0435\u043d\u0438\u0435 \u0444\u0438\u0433\u0443\u0440 \u043e\u0442 \u0446\u0435\u043d\u0442\u0440\u0430 (\u043f\u0440\u0438 \u0437\u0430\u0436\u0430\u0442\u0438\u0438 \u043a\u043b\u0430\u0432\u0438\u0448\u0438)" }, undo: { handler: this.undo, repeat: !0, description: "\u041e\u0442\u043c\u0435\u043d\u0430 \u043f\u043e\u0441\u043b\u0435\u0434\u043d\u0435\u0433\u043e \u0448\u0442\u0440\u0438\u0445\u0430" },
+                redo: { handler: this.redo, repeat: !0, description: "\u0412\u043e\u0437\u0432\u0440\u0430\u0442 \u043e\u0442\u043c\u0435\u043d\u0435\u043d\u043d\u043e\u0433\u043e \u0448\u0442\u0440\u0438\u0445\u0430" }, save: { handler: this.save, description: "\u0421\u043e\u0445\u0440\u0430\u043d\u0435\u043d\u0438\u0435 \u0440\u0438\u0441\u0443\u043d\u043a\u0430 \u043d\u0430 \u043a\u043e\u043c\u043f\u044c\u044e\u0442\u0435\u0440" }, brushTool: { handler: this.brushTool, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u041a\u0438\u0441\u0442\u044c" },
+                eraserTool: { handler: this.eraserTool, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u041b\u0430\u0441\u0442\u0438\u043a" }, rectangleTool: { handler: this.rectangleTool, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u041f\u0440\u044f\u043c\u043e\u0443\u0433\u043e\u043b\u044c\u043d\u0438\u043a" }, rectangleFilledTool: { handler: this.rectangleFilledTool, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u041f\u0440\u044f\u043c\u043e\u0443\u0433\u043e\u043b\u044c\u043d\u0438\u043a (\u0437\u0430\u043a\u0440\u0430\u0448\u0435\u043d\u043d\u044b\u0439)" },
+                circleTool: { handler: this.circleTool, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u041a\u0440\u0443\u0433" }, circleFilledTool: { handler: this.circleFilledTool, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u041a\u0440\u0443\u0433 (\u0437\u0430\u043a\u0440\u0430\u0448\u0435\u043d\u043d\u044b\u0439)" }, fillTool: { handler: this.fillTool, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0417\u0430\u043b\u0438\u0432\u043a\u0430" },
+                noteTool: { handler: this.noteTool, description: "\u0418\u043d\u0441\u0442\u0440\u0443\u043c\u0435\u043d\u0442 \u0417\u0430\u043c\u0435\u0442\u043a\u0430" }
+            };
+            this.areKeysLocked = !1;
+            this.iface = new GPDrawInterface_(this, this.gpproxy, this.l);
+            this.iface.addEventListener("color", ({ detail: { color: d } }) => {
+                this.color = d;
+                this.colorPicker.setColor(d)
+            });
+            this.iface.addEventListener("color2", ({ detail: { color: d } }) => { this.color2 = d });
+            this.density = GPPainter_.DEFAULT_DENSITY;
+            this.width = GPPainter_.ORIGINAL_WIDTH * this.density;
+
+            this.height = GPPainter_.ORIGINAL_HEIGHT * this.density;
+            this.style = document.documentElement.style;
+            this.style.setProperty("--gp-painter-heigth-width", `${GPPainter_.ORIGINAL_WIDTH}px`);
+            this.style.setProperty("--gp-painter-heigth", `${GPPainter_.ORIGINAL_HEIGHT}px`);
+            this.style.setProperty("--gp-painter-background-color", `${GPPainter_.BACKGROUND_COLOR}`);
+            this.color = this.s.defaultColor;
+            this.color2 = GPPainter_.BACKGROUND_COLOR;
+            this.thickness = Math.max(this.s.minThickness, Math.min(this.s.maxThickness, this.s.defaultThickness));
+
+            a = Math.max(this.s.minOpacity, this.s.defaultOpacity);
+            this.opacity = 1 === a ? a : String(a);
+            this.tool = GPPainter_.DEFAULT_TOOL;
+            this.isNote = !1;
+            this.searchTimer = null;
+            this.strokeId = GPPainter_.FIRST_STROKE_ID;
+            this.strokeOptions = [];
+            this.strokeCoords = [];
+            this.history = [];
+            this.undos = [];
+            this.lastDrawData = this.backgroundData = null;
+            this.lastDelimiterIndex = -1;
+            this.isSigned = !1;
+            this.mStrokeId = null;
+            this.mStrokeOrigin = this.getRandomInt(GPPainter_.M_STROKE_RANGE);
+            this.isSubscribed = !1;
+            this.pointerY = this.pointerX = 0;
+            this.isDrawing =
+                this.isToolCentering = this.isZoomedToPoint = this.isHand = this.isEraser = this.isGrayscale = this.isVerticalMirror = this.isMirrored = this.isZooming = this.isBrightnessSetting = this.isThicknessSetting = this.isOpacitySetting = this.isDropperDown = this.isDropper = !1;
+            this.centering\u0421oords = [];
+            this.isSymmetryGuidesMoved = this.isSymmetryGuidesEditable = this.isSymmetryEnabled = !1;
+            this.symmetryStrokesOptions = [];
+            this.symmetryCoords = [];
+            this.symmetryStrokesGroups = {};
+            this.symmetryGuideX = Math.round(GPPainter_.ORIGINAL_WIDTH / 2);
+
+            this.symmetryGuideY = Math.round(GPPainter_.ORIGINAL_HEIGHT / 2);
+            this.radiansPerSymmetryRadialGuide = 2 * Math.PI / this.s.symmetryRadialGuidesCount;
+            this.radiansPerSymmetryMandalaGuide = 2 * Math.PI / this.s.symmetryMandalaGuidesCount;
+            this.isTerminated = this.isDisabled = !1;
+            this.pointerMoveHandler = null;
+            this.localization = this.gpproxy.getLocalization("draw");
+            this.isReadyWarningShown = !1;
+            this.lineSmoothingCounter = 1;
+            this.background;
+            this.backgroundCtx;
+            this.lastDraw;
+            this.lastDrawCtx;
+            this.canvas;
+            this.canvasCtx;
+            this.stroke;
+
+            this.strokeCtx;
+            this.pointer;
+            this.pointerCtx;
+            this.colorPicker;
+            this.colorPickerWidth = GPPainter_.COLOR_PICKER_WIDTH;
+            this.colorPickerHeight = GPPainter_.COLOR_PICKER_HEIGHT;
+            this.colorPickerHuePos = GPPainter_.COLOR_PICKER_HUE_POSITION;
+            GPUtils_.bindMethods([this.globalCoordsHandler, this.keyDownHandler, this.keyUpHandler, this.inject, this.searchDrawContainer, this.getFillData, this.saveImage, this.clearPointer, this.middleButtonDown, this.rightButtonDown, this.strokeDown, this.strokeUp, this.strokeMove, this.strokeProcess,
+            this.drawPointer, this.dropperKeyDown, this.dropperKeyUp, this.dropperMove, this.dropperDown, this.dropperUp, this.resetKeys, this.thicknessKeyDown, this.thicknessKeyUp, this.thicknessDown, this.opacityKeyDown, this.opacityKeyUp, this.opacityDown, this.brightnessKeyDown, this.brightnessKeyUp, this.brightnessDown, this.zoomKeyDown, this.zoomKeyUp, this.zoomDown, this.mouseZoom, this.handKeyDown, this.handKeyUp, this.handDown, this.symmetryGuidesDownHandler, this.changeSymmetryRadialGuidesCount, this.changeSymmetryMandalaGuidesCount,
+            this.blockContextMenu, this.resizeWindowHandler, this.windowsInkCheck], this);
+            this.keysMap = this.buildKeysMap(this.bindings);
+            this.pressedKeys = new Set;
+            this.currentBinding = null;
+            this.addEventListener("color", ({ detail: { color: d } }) => { this.color = d });
+            this.addEventListener("color2", ({ detail: { color: d } }) => { this.color2 = d });
+            this.addEventListener("stroke", ({ detail: { data: d, symmetryStrokesData: e = [] } }) => {
+                this.drawFunction(this.canvasCtx, [d, ...e]);
+                this.strokeOptions = [];
+                this.strokeCoords = [];
+                this.symmetryCoords = [];
+                e.length &&
+                    (this.symmetryStrokesGroups[d[1]] = d[1], e.map(f => { this.symmetryStrokesGroups[f[1]] = d[1] }));
+                this.clearStroke();
+                this.history.push(d, ...e);
+                this.undos.length && (this.undos = []);
+                this.shouldBeSigned() && this.sign()
+            });
+            this.addEventListener("stroke_started", ({ detail: { data: d, symmetryStrokesData: e = [] } }) => {
+                const f = !!e.length, g = d[0];
+                this.gpproxy.getSendQueueSize() && this.isToolInTime(g) || (this.gpproxy.tool(1, d, f), e.forEach(k => { this.gpproxy.tool(1, k, f) }))
+            });
+            this.addEventListener("stroke_process", ({ detail: { data: d, symmetryStrokesData: e =
+                [] } }) => {
+                const f = !!e.length;
+                this.gpproxy.tool(3, d, f);
+                e.forEach(g => { this.gpproxy.tool(3, g, f) })
+            });
+            this.addEventListener("stroke_ended", ({ detail: { data: d, symmetryStrokesData: e = [] } }) => {
+                const f = !!e.length, g = f || this.gpproxy.getSendQueueSize() && this.isToolInTime(d[0]) ? 1 : 3;
+                this.gpproxy.tool(g, d, f);
+                e.forEach(k => { this.gpproxy.tool(g, k, f) })
+            });
+            this.addEventListener("stroke_undo", ({ detail: { data: d, symmetryStrokesData: e = [] } }) => {
+                this.gpproxy.undo(d[1], !1);
+                e.forEach(f => { this.gpproxy.undo(f[1], !1) })
+            });
+            this.addEventListener("stroke_redo",
+                ({ detail: { data: d, symmetryStrokesData: e = [] } }) => {
+                    const f = !!e.length;
+                    this.gpproxy.redo(d, f);
+                    e.forEach(g => { this.gpproxy.redo(g, f) })
+                });
+            this.gpproxy.addEventListener("localization", ({ detail: { data: d, type: e } }) => { "draw" === e && (this.localization = d) });
+            this.gpproxy.addEventListener("turn_started", () => {
+                this.terminate();
+                this.resetTurnSettings();
+                this.setTimer()
+            });
+            this.gpproxy.addEventListener("turns_ended", d => {
+                this.terminate();
+                this.stopTimer()
+            });
+            this.gpproxy.addEventListener("send_queue_updated", ({ detail: { size: d,
+                timeLeft: e } }) => { this.iface.updateActionQueueSize(d, e) });
+            this.iface.addEventListener("bindings_updated", ({ detail: { bindings: d } }) => {
+                this.updateBindings(d);
+                this.saveBindings()
+            });
+            document.addEventListener("_url_changed", ({ detail: { path: d } }) => { "/draw" === d && (this.enabled = this.isPermittedMode(), this.terminate(), this.inject()) });
+            this.gpproxy.addEventListener("rejoin", ({ detail: { screen: d } }) => { d === GPProxy_.SCREEN.PAINTER && (this.enabled = this.isPermittedMode(), this.terminate(), this.inject()) });
+            document.addEventListener("_subs_status",
+                ({ detail: { status: d } }) => { this.isSubscribed = d });
+            Document.prototype.addEventListener = new Proxy(Element.prototype.addEventListener, {
+                apply(d, e, f) { if ("keydown" !== f[0] || !1 !== f[2]) return d.apply(e, f) }
+            });
+            const c = this;
+            Element.prototype.addEventListener = new Proxy(Element.prototype.addEventListener, {
+                apply(d, e, f) { if (!(e.classList?.contains("drawingContainer") && ["mousedown", "pointerdown", "contextmenu", "touchstart"].includes(f[0]) && c.isPermittedMode())) return d.apply(e, f) }
+            });
+            this.timer?.addEventListener("finish",
+                d => { this.timer.settings.readyAfterTimeExpires && this.gpproxy.isGameTime(GPProxy_.GAME_TIME.HOSTS_DECISION) && this.gpproxy.isHost() && this.iface.readyBtn.click() });
+            this.reference?.addEventListener("state_changed", ({ detail: { isEnabled: d } }) => { d && this.resizeWindowHandler() })
+        } buildKeysMap(a) {
+            const b = {};
+            for (let c in a) this.tools[c] && a[c].forEach(d => {
+                const e = d.length;
+                b[e] = b[e] || [];
+                b[e].push({ name: c, keys: d, ...this.tools[c] })
+            });
+            return b
+        } bindingHandler(a, b) {
+            const c = this.getBinding();
+            c ? (a.preventDefault(), a.stopPropagation(),
+                a.repeat && a.repeat !== !!c.repeat || !a.repeat && c.name === this.currentBinding?.name || (c.handler.apply(this, [a]), this.currentBinding = c)) : !b && this.isNativeBinding(a.code) && a.stopPropagation()
+        } isNativeBinding(a) { return GPPainter_.NATIVE_BINDINGS_KEYS.has(a) } getBinding() {
+            var a = this.pressedKeys.size;
+            if (this.currentBinding) {
+                if (!a) return this.currentBinding = null;
+                if (!this.keysMap[a]) return this.currentBinding.keys.length > a && (this.currentBinding = null), null
+            } if (a = (this.keysMap[a] || []).find(({ keys: b }) => {
+                const c = this.pressedKeys.values();
+
+                return b.every(d => d === c.next().value)
+            })) return a;
+            this.checkForMatchBinding() || (this.currentBinding = null);
+            return null
+        } checkForMatchBinding() {
+            if (this.currentBinding) {
+                var a = this.pressedKeys.values();
+                return this.currentBinding.keys.every(b => b === a.next().value)
+            }
+        } keyDownHandler(a) { this.areKeysDisabled() || (this.pressedKeys.add(a.code), this.bindingHandler(a)) } keyUpHandler(a) { this.areKeysDisabled() || (this.pressedKeys.delete(a.code), this.bindingHandler(a, !0)) } areKeysDisabled() {
+            return this.isDisabled || this.areKeysLocked ||
+                "INPUT" === document.activeElement.tagName && ("text" === document.activeElement.type || "search" === document.activeElement.type) || "TEXTAREA" === document.activeElement.tagName
+        } render() {
+            this.container = document.createElement("div");
+            this.container.className = "gp-painter_";
+            this.container.addEventListener("pointerdown", this.suppressEvents);
+            this.container.addEventListener("pointermove", this.suppressEvents);
+            this.container.addEventListener("mousedown", this.suppressEvents);
+            this.container.addEventListener("mousemove",
+                this.suppressEvents);
+            this.container.addEventListener("mouseup", this.suppressEvents);
+            this.container.addEventListener("mousecancel", this.suppressEvents);
+            this.container.addEventListener("touchstart", this.suppressEvents, !0);
+            this.container.addEventListener("touchend", this.suppressEvents, !0);
+            this.container.addEventListener("touchcancel", this.suppressEvents, !0);
+            this.drawingArea = document.createElement("div");
+            this.drawingArea.className = "drawing-area";
+            this.container.appendChild(this.drawingArea);
+            this.background =
+                document.createElement("canvas");
+            this.background.className = "background_";
+            this.background.classList.add("hidden");
+            this.background.width = this.width;
+            this.background.height = this.height;
+            this.backgroundCtx = this.background.getContext("2d");
+            this.backgroundCtx.fillStyle = GPPainter_.BACKGROUND_COLOR;
+            this.backgroundCtx.fillRect(0, 0, this.width, this.height);
+            this.drawingArea.appendChild(this.background);
+            this.lastDraw = document.createElement("canvas");
+            this.lastDraw.className = "last-draw_";
+            this.lastDraw.classList.add("hidden");
+
+            this.lastDraw.width = this.width;
+            this.lastDraw.height = this.height;
+            this.lastDrawCtx = this.lastDraw.getContext("2d");
+            this.drawingArea.appendChild(this.lastDraw);
+            this.canvas = document.createElement("canvas");
+            this.canvas.className = "canvas_";
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+            this.canvasCtx = this.canvas.getContext("2d");
+            this.drawingArea.appendChild(this.canvas);
+            this.stroke = document.createElement("canvas");
+            this.stroke.className = "stroke_";
+            this.stroke.width = this.width;
+            this.stroke.height =
+                this.height;
+            this.stroke.addEventListener("contextmenu", this.blockContextMenu);
+            this.stroke.addEventListener("pointermove", this.drawPointer);
+            null === this.abt?.getWindowsInkWarningState() && this.stroke.addEventListener("pointerdown", this.windowsInkCheck, { once: !0 });
+            this.stroke.addEventListener("pointerdown", this.middleButtonDown);
+            this.stroke.addEventListener("pointerdown", this.rightButtonDown);
+            this.stroke.addEventListener("pointerdown", this.strokeDown);
+            this.stroke.addEventListener("pointermove", this.dropperDown);
+
+            this.stroke.addEventListener("pointerdown", this.thicknessDown);
+            this.stroke.addEventListener("pointerdown", this.opacityDown);
+            this.stroke.addEventListener("pointerdown", this.brightnessDown);
+            this.stroke.addEventListener("pointerdown", this.zoomDown);
+            this.stroke.addEventListener("pointerdown", this.handDown);
+            this.stroke.addEventListener("pointerout", this.clearPointer);
+            this.stroke.addEventListener("wheel", this.mouseZoom);
+            this.drawingArea.appendChild(this.stroke);
+            this.strokeCtx = this.stroke.getContext("2d");
+
+            this.strokeCtx.lineJoin = "round";
+            this.strokeCtx.lineCap = "round";
+            this.strokeCtx.strokeStyle = this.s.defaultColor;
+            this.strokeCtx.lineWidth = this.s.defaultThickness;
+            this.strokeCtx.globalAlpha = this.s.defaultOpacity;
+            this.pointer = document.createElement("canvas");
+            this.pointer.className = "pointer_";
+            this.pointer.width = this.width;
+            this.pointer.height = this.height;
+            this.drawingArea.appendChild(this.pointer);
+            this.pointerCtx = this.pointer.getContext("2d");
+            this.pointerCtx.lineWidth = this.density;
+            this.symmetryGuides = document.createElement("canvas");
+
+            this.symmetryGuides.className = "symmetry-guides_";
+            this.symmetryGuides.width = this.width;
+            this.symmetryGuides.height = this.height;
+            this.symmetryGuidesCtx = this.symmetryGuides.getContext("2d");
+            this.symmetryGuidesCtx.strokeStyle = this.s.symmetryGuidesColor;
+            this.symmetryGuidesCtx.globalAlpha = this.s.symmetryGuidesOpacity;
+            this.symmetryGuidesCtx.lineWidth = this.s.symmetryGuidesWidth * this.density;
+            this.symmetryGuides.addEventListener("contextmenu", this.blockContextMenu);
+            this.symmetryGuides.addEventListener("pointerdown",
+                this.symmetryGuidesDownHandler);
+            this.drawSymmetryGuides();
+            this.drawingArea.appendChild(this.symmetryGuides);
+            this.zoomer = window.renderer({ minScale: this.s.minZoom, maxScale: this.s.maxZoom, element: this.drawingArea, defaultScaleSensitivity: this.s.zoomSensitivity });
+            this.initColorPicker({ width: this.s.colorPickerWidth, height: this.s.colorPickerHeight, huePos: this.s.colorPickerHuePosition })
+        } terminate() {
+            !this.isTerminated && this.container && (clearTimeout(this.strokeTimer), clearTimeout(this.searchTimer), window.removeEventListener("blur",
+                this.resetKeys), window.removeEventListener("focus", this.resetKeys), window.removeEventListener("resize", this.resizeWindowHandler), document.removeEventListener("pointermove", this.globalCoordsHandler, !0), document.removeEventListener("keydown", this.keyDownHandler, !0), document.removeEventListener("keyup", this.keyUpHandler, !0), document.removeEventListener("contextmenu", this.blockContextMenu), this.stroke.removeEventListener("pointermove", this.strokeMove), this.stroke.removeEventListener("pointerup", this.strokeUp,
+                    { once: !0 }), this.stroke.removeEventListener("pointermove", this.thicknessMoveHandler), this.stroke.removeEventListener("pointermove", this.opacityMoveHandler), this.stroke.removeEventListener("pointermove", this.brightnessMoveHandler), this.stroke.removeEventListener("pointermove", this.zoomMoveHandler), this.stroke.removeEventListener("pointermove", this.handMoveHandler), this.clearPointer(), this.clearStroke(), this.clearCanvas(), this.clearBackground(), this.resetZoom(), this.resetMirror(), this.container.classList.remove("grayscale_"),
+                this.background.classList.add("hidden"), this.lastDraw.classList.add("hidden"), this.symmetryGuides.classList.remove("editable_"), this.colorPicker.hide(), this.iface.terminate(), this.reference?.terminate(), this.container.remove(), this.isTerminated = !0)
+        } resetTurnSettings() {
+            if (this.container) {
+                this.color = this.s.defaultColor;
+                this.color2 = GPPainter_.BACKGROUND_COLOR;
+                this.thickness = Math.max(this.s.minThickness, Math.min(this.s.maxThickness, this.s.defaultThickness));
+                var a = Math.max(this.s.minOpacity, this.s.defaultOpacity);
+
+                this.opacity = 1 === a ? a : String(a);
+                this.tool = GPPainter_.DEFAULT_TOOL;
+                this.isSymmetryEnabled = !1;
+                this.symmetryStrokesGroups = {};
+                this.symmetryGuides.classList.remove("shown_");
+                this.isSigned = !1;
+                this.mStrokeOrigin = this.getRandomInt(GPPainter_.M_STROKE_RANGE)
+            }
+        } init() {
+            const a = this.gpproxy.getState(), b = this.gpproxy.getCurrentTurnId();
+            this.searchTimer = null;
+            this.strokeOptions = [];
+            this.strokeCoords = [];
+            this.history = a.draw || [];
+            this.backgroundData = this.ac?.isSuspicious(`tbg_${b}`) ? [] : a.background;
+            this.lastDrawData = this.ac?.isSuspicious(`t_${b}`) ?
+                [] : a.lastDraw;
+            this.lastDelimiterIndex = this.history.findLastIndex(c => 11 === c[0]);
+            this.strokeId = this.calculateStrokeID();
+            this.undos = [];
+            this.pointerY = this.pointerX = 0;
+            this.isDrawing = this.isToolCentering = this.isZoomedToPoint = this.isHand = this.isEraser = this.isGrayscale = this.isVerticalMirror = this.isMirrored = this.isZooming = this.isBrightnessSetting = this.isThicknessSetting = this.isOpacitySetting = this.isDropperDown = this.isDropper = this.areKeysLocked = !1;
+            this.currentBinding = null;
+            this.pressedKeys.clear();
+            this.isSymmetryGuidesMoved =
+                this.isSymmetryGuidesEditable = this.isReadyWarningShown = this.isNote = this.isDisabled = !1;
+            this.symmetryStrokesOptions = [];
+            this.symmetryCoords = [];
+            !this.isSubscribed && !this.gpproxy.isSoloGame() && 1 < this.s.symmetryMode && (this.s.symmetryMode = GPPainter_.DEFAULT_SYMMETRY_MODE, this.drawSymmetryGuides());
+            document.addEventListener("pointermove", this.globalCoordsHandler, !0);
+            document.addEventListener("keydown", this.keyDownHandler, !0);
+            document.addEventListener("keyup", this.keyUpHandler, !0);
+            window.addEventListener("blur",
+                this.resetKeys);
+            window.addEventListener("focus", this.resetKeys);
+            window.addEventListener("resize", this.resizeWindowHandler);
+            this.redrawBackground();
+            this.redrawLastDraw();
+            this.redrawCanvas();
+            this.background.classList.toggle("hidden", !this.backgroundData);
+            this.lastDraw.classList.toggle("hidden", !this.lastDrawData);
+            this.zoomer.setContainerScale(this.getContainerScale());
+            this.iface.init();
+            this.reference?.init();
+            this.gpproxy.isReady() && this.iface.disableInterface();
+            this.isTerminated = !1
+        } inject() {
+            this.enabled &&
+                (this.container || this.render(), this.searchDrawContainer().then(a => {
+                    a.appendChild(this.container);
+                    this.init()
+                }))
+        } searchDrawContainer() {
+            return new Promise(a => {
+                this.searchTimer = setTimeout(() => {
+                    const b = document.querySelector(".drawingContainer");
+                    b ? (clearTimeout(this.searchTimer), a(b)) : this.searchDrawContainer()
+                }, GPPainter_.SEARCH_DRAW_CONTAINER_INTERVAL)
+            })
+        } isPermittedMode() {
+            const { configs: a } = this.gpproxy.getState();
+            for (let b in GPPainter_.DISABLED_MODE_OPTIONS) if (GPPainter_.DISABLED_MODE_OPTIONS[b].some(c =>
+                c === a[b])) return !1;
+            return !0
+        } initColorPicker({ width: a, height: b, huePos: c } = {}) {
+            this.colorPickerWidth = a ?? this.colorPickerWidth;
+            this.colorPickerHeight = b ?? this.colorPickerHeight;
+            this.colorPickerHuePos = c ?? this.colorPickerHuePos;
+            this.colorPicker?.getElement() && this.colorPicker.getElement().remove();
+            this.colorPicker = new GPColorPicker_(this.colorPickerWidth, this.colorPickerHeight, this.colorPickerHuePos);
+            this.colorPicker.setColor(this.color);
+            this.colorPicker.hide();
+            this.colorPicker.addEventListener("color",
+                ({ detail: { color: d } }) => { this.dispatchEvent(new CustomEvent("color", { detail: { color: d } })) });
+            document.body.appendChild(this.colorPicker.getElement())
+        } calculateStrokeID() {
+            const a = [...this.history, ...this.undos].reduceRight((b, c) => c[1] > b ? c[1] : b, GPPainter_.FIRST_STROKE_ID - 1);
+            return Math.max(a + 1, GPPainter_.FIRST_STROKE_ID)
+        } middleButtonDown(a) { 1 !== a.button || this.isThicknessSetting || this.isOpacitySetting || this.isBrightnessSetting || this.isZooming || this.isHand || (this.handDown(a, !0), a.stopPropagation(), a.stopImmediatePropagation()) } rightButtonDown(a) {
+            if (2 ===
+                a.button) {
+                if (this.isThicknessSetting) this.stroke.removeEventListener("pointermove", this.thicknessMoveHandler), this.thickness = this.s.defaultThickness, this.iface.updateThickness(this.thickness), this.renderPointer(...this.getCoords(a), void 0, void 0, !0);
+                else if (this.isOpacitySetting) this.stroke.removeEventListener("pointermove", this.opacityMoveHandler), this.setOpacity(this.s.defaultOpacity), this.renderPointer(...this.getCoords(a), this.opacity, void 0, !0);
+                else if (this.isBrightnessSetting) {
+                    this.stroke.removeEventListener("pointermove",
+                        this.zoomMoveHandler);
+                    this.brightness = 1;
+                    const [b, c] = GPColorUtils_.hexToHsv(this.color), d = GPColorUtils_.hsvToHex(b, c, this.brightness);
+                    this.colorPicker.setColor(d);
+                    this.dispatchEvent(new CustomEvent("color", { detail: { color: d } }));
+                    this.renderPointer(...this.getCoords(a), this.opacity, void 0, !0)
+                } else this.isZooming ? (this.stroke.removeEventListener("pointermove", this.zoomMoveHandler), this.resetZoom()) : this.isHand ? this.resetZoom() : this.strokeDown(a, this.color2);
+                document.addEventListener("contextmenu", this.blockContextMenu,
+                    { once: !0 });
+                a.stopPropagation();
+                a.stopImmediatePropagation()
+            }
+        } strokeDown(a, b) {
+            this.gpproxy.isConnected() || this.abt?.showDisconnectionNotice();
+            this.isDrawing && this.strokeUp(a);
+            if (!(this.isDropper || this.isDropperDown || this.isOpacitySetting || this.isThicknessSetting || this.isBrightnessSetting || this.isZooming || this.isHand)) {
+                var c = this.getOCoords(a);
+                this.strokeOptions = this.getStrokeOptions(this.tool, b);
+                this.strokeCoords = [c];
+                this.isCenteringActivated = this.shouldCenteringBeActivated(this.tool);
+                this.centering\u0421oords =
+                    [c.slice()];
+                this.isSymmetryEnabled && this.convertToSymmetryCoords(c).forEach((d, e) => {
+                    const f = this.strokeOptions.slice();
+                    f[1] = this.strokeId++;
+                    this.symmetryStrokesOptions[e] = f;
+                    this.symmetryCoords[e] = [d];
+                    this.centering\u0421oords[e + 1] = d.slice()
+                });
+                this.lineSmoothingCounter = 1;
+                this.tool === GPPainter_.TOOL.FILL ? (this.updateStrokeCoords(this.strokeCoords, this.getCoords(a)), a = this.buildStrokeData(this.strokeOptions, this.strokeCoords), this.dispatchEvent(new CustomEvent("stroke_started", { detail: { data: a } })), this.dispatchEvent(new CustomEvent("stroke",
+                    { detail: { data: a } }))) : (this.stroke.setPointerCapture(a.pointerId), this.stroke.addEventListener("pointermove", this.strokeMove), this.stroke.addEventListener("pointerup", this.strokeUp, { once: !0 }), a = [...this.strokeOptions, ...this.strokeCoords], b = this.buildSymmetryStrokesData(!0), this.drawFunction(this.strokeCtx, [a, ...b], this.density, !1), clearTimeout(this.strokeTimer), !this.isSymmetryEnabled && this.isToolInTime(this.tool) && (this.strokeTimer = setTimeout(this.strokeProcess, 1E3), this.dispatchEvent(new CustomEvent("stroke_started",
+                        { detail: { data: a, symmetryStrokesData: b } }))), this.isDrawing = !0)
+            }
+        } buildSymmetryStrokesData(a = !1) {
+            const b = [];
+            this.isSymmetryEnabled && this.symmetryCoords.forEach((c, d) => { b.push(this.buildStrokeData(this.symmetryStrokesOptions[d], c, a)) });
+            return b
+        } rotatePoint(a, b, c, d, e) {
+            var f = Math.PI / 180 * e;
+            e = Math.cos(f);
+            f = Math.sin(f);
+            return [e * (c - a) + f * (d - b) + a, e * (d - b) - f * (c - a) + b]
+        } convertToSymmetryCoords([a, b], c = this.s.symmetryMode) {
+            const d = this.isMirrored ? GPPainter_.ORIGINAL_WIDTH - this.symmetryGuideX : this.symmetryGuideX, e =
+                this.isVerticalMirror ? GPPainter_.ORIGINAL_HEIGHT - this.symmetryGuideY : this.symmetryGuideY, f = [];
+            switch (c) {
+                case GPPainter_.SYMMETRY_MODES.VERTICAL: f.push([d + (d - a), b]);
+                    break;
+                case GPPainter_.SYMMETRY_MODES.HORIZONTAL: f.push([a, e + (e - b)]);
+                    break;
+                case GPPainter_.SYMMETRY_MODES.QUADRANT: f.push([d + (d - a), b]);
+                    f.push([a, e + (e - b)]);
+                    f.push([d + (d - a), e + (e - b)]);
+                    break;
+                case GPPainter_.SYMMETRY_MODES.RADIAL: c = this.s.symmetryRadialGuidesCount;
+                    var g = 360 / c;
+                    for (var k = 1;
+                        k < c;
+                        k++) {
+                        const [l, m] = this.rotatePoint(d, e, a, b, k * g);
+                        f.push([Math.round(l),
+                        Math.round(m)])
+                    } break;
+                case GPPainter_.SYMMETRY_MODES.MANDALA: c = e + (e - b);
+                    g = 2 * this.s.symmetryMandalaGuidesCount;
+                    k = 360 / g;
+                    const h = this.s.symmetryMandalaGuidesCount % 2 ? 2 * k : 3 * k;
+                    for (let l = 1;
+                        l < g;
+                        l++) {
+                        let m, n;
+                        l % 2 ? (m = l * k + h, n = c) : (m = l * k, n = b);
+                        const [r, p] = this.rotatePoint(d, e, a, n, m);
+                        f.push([Math.round(r), Math.round(p)])
+                    }
+            }return f
+        } strokeMove(a) {
+            var b = this.getOCoords(a);
+            this.updateStrokeCoords(this.strokeCoords, b);
+            this.isSymmetryEnabled && (b = this.convertToSymmetryCoords(b), this.updateSymmetryStrokeCoords(b));
+            b = this.buildSymmetryStrokesData(!0);
+
+            this.clearStroke();
+            this.drawFunction(this.strokeCtx, [[...this.strokeOptions, ...this.strokeCoords], ...b], this.density, !1);
+            this.lineSmoothingCounter++;
+            this.isCenteringActivated && this.renderPointer(...this.getCoords(a), null, void 0, !1, this.centering\u0421oords[0].map(c => c * this.density))
+        } strokeUp(a) {
+            clearTimeout(this.strokeTimer);
+            this.s.lineSmoothingLevel && this.lineSmoothingCounter % (this.s.lineSmoothingLevel + 1) && this.strokeCoords.push(this.getOCoords(a));
+            a = this.buildStrokeData(this.strokeOptions, this.strokeCoords);
+
+            const b = this.buildSymmetryStrokesData(), c = this.isToolInTime(this.tool) ? "stroke_ended" : "stroke_started";
+            this.dispatchEvent(new CustomEvent(c, { detail: { data: a, symmetryStrokesData: b } }));
+            this.dispatchEvent(new CustomEvent("stroke", { detail: { data: a, symmetryStrokesData: b } }));
+            this.isDrawing = !1;
+            this.stroke.removeEventListener("pointermove", this.strokeMove)
+        } strokeProcess() {
+            let a;
+            this.isSymmetryEnabled && (a = [], this.symmetryCoords.forEach((b, c) => { a.push(this.buildStrokeData(this.symmetryStrokesOptions[c], b)) }));
+
+            this.dispatchEvent(new CustomEvent("stroke_process", { detail: { data: [...this.strokeOptions, ...this.strokeCoords], symmetryStrokesData: a } }));
+            !this.isSymmetryEnabled && this.isToolInTime(this.tool) && (clearTimeout(this.strokeTimer), this.strokeTimer = setTimeout(this.strokeProcess, 1E3))
+        } updateSymmetryStrokeCoords(a) { a.forEach((b, c) => { this.updateStrokeCoords(this.symmetryCoords[c], b, c + 1) }) } updateStrokeCoords(a, b, c = 0) {
+            switch (this.tool) {
+                case GPPainter_.TOOL.BRUSH: case GPPainter_.TOOL.ERASER: case GPPainter_.TOOL.NOTE: this.s.lineSmoothingLevel &&
+                    (this.tool !== GPPainter_.TOOL.ERASER || this.s.eraserLineSmoothing) && this.lineSmoothingCounter % (this.s.lineSmoothingLevel + 1) || a.push(b);
+                    break;
+                case GPPainter_.TOOL.LINE: case GPPainter_.TOOL.RECTANGLE: case GPPainter_.TOOL.CIRCLE: case GPPainter_.TOOL.RECTANGLE_FILLED: case GPPainter_.TOOL.CIRCLE_FILLED: let d = [a[0], b];
+                    a.splice(0, a.length);
+                    a.push(...d);
+                    if (this.isCenteringActivated) {
+                        const [e, f] = this.centering\u0421oords[c];
+                        a[0][0] = e - (b[0] - e);
+                        a[0][1] = f - (b[1] - f)
+                    } break;
+                case GPPainter_.TOOL.FILL: a.splice(0, a.length),
+                    a.push(...this.getFillData(b[0], b[1]))
+            }
+        } getStrokeOptions(a = this.tool, b = this.color, c = this.thickness) {
+            switch (a) {
+                case GPPainter_.TOOL.BRUSH: case GPPainter_.TOOL.LINE: case GPPainter_.TOOL.RECTANGLE: case GPPainter_.TOOL.CIRCLE: case GPPainter_.TOOL.RECTANGLE_FILLED: case GPPainter_.TOOL.CIRCLE_FILLED: return [a, this.strokeId++, [b, c, this.opacity]];
+                case GPPainter_.TOOL.ERASER: return [a, this.strokeId++, this.s.doubleEraserThickness ? 2 * c : c];
+                case GPPainter_.TOOL.FILL: return [a, this.strokeId++, [b, this.opacity]];
+                case GPPainter_.TOOL.NOTE: return [a,
+                    this.strokeId++, null]
+            }
+        } buildStrokeData(a, b, c = !1) { return [...a, ...(c || !this.isMirrored && !this.isVerticalMirror || a[0] === GPPainter_.TOOL.FILL ? b : this.mirrorStrokeCoords(b, this.isMirrored, this.isVerticalMirror))] } drawPointer(a, b, c) {
+            const [d, e] = this.getCoords(a);
+            this.pointerX = d;
+            this.pointerY = e;
+            this.renderPointer(d, e, b, c)
+        } renderPointer(a, b, c, d = this.thickness, e, f) {
+            this.clearPointer();
+            c = this.isOpacitySetting ? this.opacity : c;
+            d = this.isZooming ? 1 : !e && GPPainter_.TOOLS_THICKNESSES[this.tool] || d;
+            this.tool === GPPainter_.TOOL.ERASER &&
+                this.s.doubleEraserThickness && (d *= 2);
+            e = this.pointerCtx;
+            e.beginPath();
+            e.arc(a, b, d / 2 * this.density, 0, 2 * Math.PI);
+            c && (e.fillStyle = `rgba(${GPColorUtils_.hexToRgb(this.color).join(",")},${c}`, e.fill());
+            e.strokeStyle = GPPainter_.POINTER_COLOR;
+            e.stroke();
+            e.beginPath();
+            e.arc(a, b, (d / 2 + 1) * this.density, 0, 2 * Math.PI);
+            e.strokeStyle = GPPainter_.POINTER_OUTLINE_COLOR;
+            e.globalAlpha = this.s.pointerOutlineOpacity;
+            e.stroke();
+            e.globalAlpha = this.s.pointerOpacity;
+            if (d < GPPainter_.POINTER_CROSSHAIR_MIN_THICKNESS) {
+                d = 3 * d * this.density;
+
+                const g = GPPainter_.POINTER_CROSSHAIR_LINE_LENGTH * this.density;
+                e.strokeStyle = GPPainter_.POINTER_OUTLINE_COLOR;
+                e.globalAlpha = this.s.pointerOutlineOpacity;
+                e.beginPath();
+                e.moveTo(a, b - d);
+                e.lineTo(a, b - d - g);
+                e.moveTo(a + d, b);
+                e.lineTo(a + d + g, b);
+                e.moveTo(a, b + d);
+                e.lineTo(a, b + d + g);
+                e.moveTo(a - d, b);
+                e.lineTo(a - d - g, b);
+                e.stroke();
+                e.globalAlpha = this.s.pointerOpacity
+            } if (f) {
+                const [g, k] = f;
+                e.beginPath();
+                e.arc(g, k, GPPainter_.POINTER_DOT_THICKNESS / 2 * this.density, 0, 2 * Math.PI);
+                c && (e.fillStyle = `rgba(${GPColorUtils_.hexToRgb(this.color).join(",")},${c}`,
+                    e.fill());
+                e.strokeStyle = GPPainter_.POINTER_COLOR;
+                e.stroke();
+                e.beginPath();
+                e.arc(g, k, (GPPainter_.POINTER_DOT_THICKNESS / 2 + 1) * this.density, 0, 2 * Math.PI);
+                e.strokeStyle = GPPainter_.POINTER_OUTLINE_COLOR;
+                e.globalAlpha = this.s.pointerOutlineOpacity;
+                e.stroke();
+                e.globalAlpha = this.s.pointerOpacity
+            }
+        } updatePointer() { this.renderPointer(this.pointerX, this.pointerY) } setTool(a) {
+            this.tool = a;
+            a = a === GPPainter_.TOOL.NOTE;
+            const b = a !== this.isNote;
+            this.isNote = a;
+            b && (this.redrawBackground(), this.redrawLastDraw(), this.redrawCanvas())
+        } getColor() { return this.color } getColor2() { return this.color2 } setOpacity(a) {
+            this.opacity =
+                String(a);
+            this.iface.updateOpacity(a)
+        } setThickness(a) { this.thickness = a } toggleLastDraw(a) { this.lastDraw.classList.toggle("hidden", !a) } clearBackground() {
+            this.backgroundCtx.fillStyle = GPPainter_.BACKGROUND_COLOR;
+            this.backgroundCtx.fillRect(0, 0, this.background.width, this.background.height)
+        } clearLastDraw() { this.lastDrawCtx.clearRect(0, 0, this.lastDraw.width, this.lastDraw.height) } clearCanvas() { this.canvasCtx.clearRect(0, 0, this.canvas.width, this.canvas.height) } clearStroke() {
+            this.strokeCtx.clearRect(0, 0, this.stroke.width,
+                this.stroke.height)
+        } clearPointer() { this.pointerCtx.clearRect(0, 0, this.pointer.width, this.pointer.height) } redrawBackground() {
+            this.clearBackground();
+            this.backgroundData?.length && this.drawFunction(this.backgroundCtx, this.backgroundData, this.density, !1, this.isNote)
+        } redrawLastDraw() {
+            this.clearLastDraw();
+            this.lastDrawData?.length && this.drawFunction(this.lastDrawCtx, this.lastDrawData, this.density, !0, this.isNote)
+        } redrawCanvas() {
+            this.clearCanvas();
+            this.history.length && this.drawFunction(this.canvasCtx, this.history,
+                this.density, !0, this.isNote)
+        } getCoords(a) {
+            const b = a.target.getBoundingClientRect(), [c, d] = a.touches ? [a.touches[0].clientX, a.touches[0].clientY] : [a.clientX, a.clientY], [e, f] = [c - b.left, d - b.top];
+            return [Math.round(a.target.width / b.width * e), Math.round(a.target.height / b.height * f)]
+        } getOCoords(a) {
+            const [b, c] = this.getCoords(a);
+            return [Math.round(b / this.density), Math.round(c / this.density)]
+        } globalCoordsHandler(a) {
+            this.cX = a.clientX;
+            this.cY = a.clientY
+        } resetKeys(a) {
+            this.container && (this.drawingArea.classList.remove("dropper_",
+                "dropper-s_", "hand_", "hand-s_"), this.isToolCentering = this.isHand = this.isEraser = this.isZooming = this.isBrightnessSetting = this.isThicknessSetting = this.isOpacitySetting = this.isDropperDown = this.isDropper = !1, this.stroke.removeEventListener("pointermove", this.thicknessMoveHandler), this.stroke.removeEventListener("pointermove", this.opacityMoveHandler), this.stroke.removeEventListener("pointermove", this.brightnessMoveHandler), this.stroke.removeEventListener("pointermove", this.zoomMoveHandler), this.stroke.removeEventListener("pointermove",
+                    this.handMoveHandler), this.currentBinding = null, a && (this.pressedKeys.clear(), this.bindingHandler(a)))
+        }
+
+        dropperKeyDown(a) {
+            a.preventDefault();
+            this.isDropper = !0;
+            this.drawingArea.classList.add("dropper_");
+            document.addEventListener("keyup", this.dropperKeyUp, { once: !0 })
+            document.addEventListener("keyup", this.dropperUp, { once: !0 })
+        }
+
+        dropperKeyUp(a) {
+            this.isDropper && (a.preventDefault(), this.isDropper = !1, this.drawingArea.classList.remove("dropper_"), this.isDropperDown || this.stroke.removeEventListener("pointermove", this.dropperMove))
+        }
+
+        // ON Pointer Move,
+        dropperDown(a) {
+            this.isDropper && (this.isDropperDown =
+                !0, 
+                this.dropperMove(a), 
+                this.drawingArea.classList.add("dropper-s_"), 
+                this.stroke.setPointerCapture(a.pointerId), 
+                this.stroke.addEventListener("pointermove", this.dropperMove), 
+                this.stroke.addEventListener("pointermove", () =>{
+                    let [b,
+                        c] = this.getCoords(a);
+                    b = this.isMirrored ? this.width - b : b;
+                    c = this.isVerticalMirror ? this.height - c : c;
+                    a = this.getPixelColor(b, c);
+                    this.colorPicker.setColor(a);
+                    this.dispatchEvent(new CustomEvent("color", { detail: { color: a } }));
+                    this.stroke.removeEventListener("pointermove", this.dropperMove)
+                }, { once: !0 })
+                //this.stroke.addEventListener("pointermove", this.dropperUp, { once: !0 })
+            )
+        }
+
+        dropperMove(a) {
+            if (this.isDropper || this.isDropperDown) {
+                var [b, c] = this.getCoords(a);
+                b = this.isMirrored ? this.width - b : b;
+                c = this.isVerticalMirror ? this.height - c : c;
+                a = this.getPixelColor(b, c);
+                this.colorPicker.setColor(a);
+                this.dispatchEvent(new CustomEvent("color", { detail: { color: a } }))
+            }
+        }
+
+        dropperUp(a) {
+            let [b,
+                c] = this.getCoords(a);
+            b = this.isMirrored ? this.width - b : b;
+            c = this.isVerticalMirror ? this.height - c : c;
+            a = this.getPixelColor(b, c);
+            this.colorPicker.setColor(a);
+            this.dispatchEvent(new CustomEvent("color", { detail: { color: a } }));
+            this.isDropperDown = !1;
+            this.isDropper = !1;
+            this.drawingArea.classList.remove("dropper-s_");
+            this.drawingArea.classList.remove("dropper_");
+            this.stroke.removeEventListener("pointermove", this.dropperMove)
+        }
+
+        getPixelColor(a, b) {
+            var c = document.createElement("canvas");
+            c.width = 1;
+            c.height = 1;
+            c = c.getContext("2d");
+            c.fillStyle = GPPainter_.BACKGROUND_COLOR;
+            c.fillRect(0, 0,
+                1, 1);
+            this.backgroundData?.length && c.drawImage(this.background, a, b, 1, 1, 0, 0, 1, 1);
+            this.lastDrawData?.length && c.drawImage(this.lastDraw, a, b, 1, 1, 0, 0, 1, 1);
+            c.drawImage(this.canvas, a, b, 1, 1, 0, 0, 1, 1);
+            const [d, e, f, g] = c.getImageData(0, 0, 1, 1).data;
+            return g ? `${GPColorUtils_.rgbToHex(d, e, f)}` : GPPainter_.BACKGROUND_COLOR
+        } thicknessKeyDown(a) {
+            this.isThicknessSetting = !0;
+            this.renderPointer(this.pointerX, this.pointerY, void 0, void 0, !0);
+            document.addEventListener("keyup", this.thicknessKeyUp, { once: !0 })
+        } thicknessKeyUp(a) {
+            this.isThicknessSetting &&
+                (this.isThicknessSetting = !1)
+        } thicknessDown(a) {
+            if (this.isThicknessSetting && 0 === a.button) {
+                var [b, c] = this.getCoords(a);
+                this.thicknessMoveHandler = this.thicknessMove(b, c, b, c);
+                this.stroke.setPointerCapture(a.pointerId);
+                this.stroke.addEventListener("pointermove", this.thicknessMoveHandler);
+                this.stroke.addEventListener("pointerup", d => {
+                    this.stroke.removeEventListener("pointermove", this.thicknessMoveHandler);
+                    this.dispatchEvent(new CustomEvent("thickness", { detail: { thickness: this.thickness } }))
+                }, { once: !0 });
+                this.thicknessMoveHandler(a)
+            }
+        } thicknessMove(a,
+            b, c, d) {
+            const e = this.s.upThicknessDirection === GPPainter_.DIRECTION.DOWN_RIGHT ? 1 : -1;
+            return f => {
+                const [g, k] = this.getCoords(f);
+                f = Math.round(Math.max(Math.min(this.thickness + (this.s.thicknessAxis === GPPainter_.AXIS.HORIZONTAL ? g - c : k - d) * e, this.s.maxThickness), this.s.minThickness));
+                c = g;
+                d = k;
+                f && (this.thickness = f, this.iface.updateThickness(f), this.renderPointer(a, b, void 0, void 0, !0))
+            }
+        } opacityKeyDown(a) {
+            this.isOpacitySetting = !0;
+            this.renderPointer(this.pointerX, this.pointerY, this.opacity, void 0, !0);
+            document.addEventListener("keyup",
+                this.opacityKeyUp, { once: !0 })
+        } opacityKeyUp(a) { this.isOpacitySetting && (this.isOpacitySetting = !1) } opacityDown(a) {
+            if (this.isOpacitySetting && 0 === a.button) {
+                var [b, c] = this.getCoords(a);
+                this.opacityMoveHandler = this.opacityMove(a, b, c);
+                this.stroke.setPointerCapture(a.pointerId);
+                this.stroke.addEventListener("pointermove", this.opacityMoveHandler);
+                this.stroke.addEventListener("pointerup", d => {
+                    this.stroke.removeEventListener("pointermove", this.opacityMoveHandler);
+                    this.drawPointer(d, null)
+                }, { once: !0 });
+                this.opacityMoveHandler(a)
+            }
+        } opacityMove(a,
+            b, c) {
+            const d = this.s.opacityAxis === GPPainter_.AXIS.HORIZONTAL, e = `client${d ? "X" : "Y"}`, f = this.s.upOpacityDirection === GPPainter_.DIRECTION.UP_LEFT ? -1 : 1, g = this.s.opacitySensitivity * (d ? window.screen.width / 1920 : window.screen.height / 1080), k = 100 * this.opacity / g;
+            let h = a[e] * f;
+            return l => {
+                l = l[e] * f;
+                const m = (l + k - h) * g;
+                0 > m ? h = l + k : 100 < m && (h = l + k - 100 / g);
+                this.setOpacity(Math.max(this.s.minOpacity, Math.min(1, Math.round(m) / 100)));
+                this.renderPointer(b, c, this.opacity, void 0, !0)
+            }
+        } brightnessKeyDown(a) {
+            this.isBrightnessSetting =
+                !0;
+            this.renderPointer(this.pointerX, this.pointerY, this.opacity, void 0, !0);
+            document.addEventListener("keyup", this.brightnessKeyUp, { once: !0 })
+        } brightnessKeyUp(a) { this.isBrightnessSetting && (this.isBrightnessSetting = !1) } brightnessDown(a) {
+            if (this.isBrightnessSetting && 0 === a.button) {
+                var [b, c, d] = GPColorUtils_.hexToHsv(this.color);
+                this.brightness = d;
+                var [e, f] = this.getCoords(a);
+                this.brightnessMoveHandler = this.brightnessMove(a, e, f, b, c);
+                this.stroke.setPointerCapture(a.pointerId);
+                this.stroke.addEventListener("pointermove",
+                    this.brightnessMoveHandler);
+                this.stroke.addEventListener("pointerup", g => {
+                    this.stroke.removeEventListener("pointermove", this.brightnessMoveHandler);
+                    this.drawPointer(g, null)
+                }, { once: !0 });
+                this.brightnessMoveHandler(a)
+            }
+        } brightnessMove(a, b, c, d, e) {
+            const f = this.s.brightnessAxis === GPPainter_.AXIS.HORIZONTAL, g = `client${f ? "X" : "Y"}`, k = this.s.upBrightnessDirection === GPPainter_.DIRECTION.UP_LEFT ? -1 : 1, h = this.s.brightnessSensitivity * (f ? window.screen.width / 1920 : window.screen.height / 1080), l = 100 * this.brightness / h;
+            let m =
+                a[g] * k;
+            return n => {
+                n = n[g] * k;
+                const r = (n + l - m) * h;
+                0 > r ? m = n + l : 100 < r && (m = n + l - 100 / h);
+                this.brightness = n = Math.max(.01, Math.min(1, Math.round(r) / 100));
+                n = GPColorUtils_.hsvToHex(d, e, n);
+                this.colorPicker.setColor(n);
+                this.dispatchEvent(new CustomEvent("color", { detail: { color: n } }));
+                this.renderPointer(b, c, this.opacity, void 0, !0)
+            }
+        } handKeyDown(a) {
+            this.isHand = !0;
+            this.drawingArea.classList.add("hand_");
+            document.addEventListener("keyup", this.handKeyUp, { once: !0 })
+        } handKeyUp(a) {
+            this.isHand && (this.drawingArea.classList.remove("hand_"),
+                this.isHand = !1)
+        } handDown(a, b) {
+            if (b || this.isHand && 0 === a.button) this.drawingArea.classList.add("hand-s_"), this.clearPointer(), this.handMoveHandler = this.handMove(), this.stroke.setPointerCapture(a.pointerId), document.addEventListener("contextmenu", this.blockContextMenu), this.stroke.addEventListener("pointermove", this.handMoveHandler), this.stroke.addEventListener("pointerup", c => {
+                this.stroke.removeEventListener("pointermove", this.handMoveHandler);
+                this.drawingArea.classList.remove("hand-s_");
+                this.drawPointer(c);
+
+                setTimeout(() => { document.removeEventListener("contextmenu", this.blockContextMenu) }, 0)
+            }, { once: !0 }), this.handMoveHandler(a)
+        } handMove() { return a => { this.zoomer.panBy({ originX: a.movementX, originY: a.movementY }) } } zoomKeyDown(a) {
+            this.isZooming = !0;
+            this.renderPointer(this.pointerX, this.pointerY, null, 1);
+            document.addEventListener("keyup", this.zoomKeyUp, { once: !0 })
+        } zoomKeyUp(a) { this.isZooming && (this.renderPointer(this.pointerX, this.pointerY, null, this.thickness), this.isZooming = !1) } zoomDown(a) {
+            if (this.isZooming &&
+                0 === a.button) {
+                this.isZoomedToPoint && this.resetZoom();
+                var [b, c] = this.getCoords(a), d = a.pageX, e = a.pageY;
+                this.zoomMoveHandler = this.zoomMove(b, c, d, e, d, e);
+                this.stroke.setPointerCapture(a.pointerId);
+                this.stroke.addEventListener("pointermove", this.zoomMoveHandler);
+                this.stroke.addEventListener("pointerup", f => {
+                    this.stroke.removeEventListener("pointermove", this.zoomMoveHandler);
+                    1 >= this.zoomer.getScale() && this.resetZoom()
+                }, { once: !0 });
+                this.zoomMoveHandler(a)
+            }
+        } zoomMove(a, b, c, d, e, f) {
+            const g = this.s.zoomInDirection ===
+                GPPainter_.DIRECTION.UP_LEFT ? 1 : -1;
+            return k => {
+                const h = k.pageX;
+                k = k.pageY;
+                const l = (this.s.zoomAxis === GPPainter_.AXIS.HORIZONTAL ? h - e : k - f) * g;
+                2 < Math.abs(l) && (this.zoomer.zoom({ deltaScale: -Math.sign(l), x: c - window.scrollX, y: d - window.scrollY, scaleSensitivity: this.s.zoomSensitivity }), this.dispatchEvent(new CustomEvent("zoom", { detail: { value: this.zoomer.getScale() } })), e = h, f = k);
+                this.renderPointer(a, b, null, 1)
+            }
+        } mouseZoom(a) {
+            this.isZoomedToPoint && this.resetZoom();
+            this.zoomer.zoom({
+                deltaScale: -Math.sign(a.deltaY),
+                x: a.pageX - window.scrollX, y: a.pageY - window.scrollY, scaleSensitivity: this.s.zoomSensitivity
+            });
+            this.dispatchEvent(new CustomEvent("zoom", { detail: { value: this.zoomer.getScale() } }));
+            1 >= this.zoomer.getScale() && this.resetZoom();
+            a.preventDefault()
+        } resetZoom() {
+            this.zoomer.reset();
+            this.isZoomedToPoint = !1;
+            this.dispatchEvent(new CustomEvent("zoom", { detail: { value: this.zoomer.getScale() } }))
+        } resizeWindowHandler(a) {
+            a = this.getActualScale();
+            this.zoomer.setContainerScale(a);
+            this.iface.roundPixelOffset()
+        } getActualScale() {
+            return this.s.fixedScreenSize ||
+                this.reference?.isEnabled() ? 1 : this.getContainerScale()
+        } getContainerScale() {
+            let a = (window.innerWidth - 180) / 1150;
+            766 * a > window.innerHeight && (a = window.innerHeight / 766);
+            return a
+        } suppressEvents(a) {
+            a.preventDefault();
+            a.stopPropagation();
+            a.stopImmediatePropagation()
+        } blockContextMenu(a) { a.preventDefault() } mirrorStrokeCoords(a, b, c) {
+            if (a.length) return Array.isArray(a[0]) ? a.map(([d, e]) => [b ? this.width / this.density - d : d, c ? this.height / this.density - e : e]) : a.map(d => d % 2 ? c ? this.height / this.density - d : d : b ? this.width / this.density -
+                d : d)
+        } resetMirror() { this.container.classList.remove("mirror_", "vertical-mirror_") } isToolInTime(a) { return GPPainter_.TOOLS_IN_TIME.includes(a) } saveImage() {
+            const a = document.createElement("canvas");
+            a.width = GPPainter_.ORIGINAL_WIDTH;
+            a.height = GPPainter_.ORIGINAL_HEIGHT;
+            var b = a.getContext("2d");
+            b.drawImage(this.background, 0, 0, a.width, a.height);
+            b.drawImage(this.canvas, 0, 0, a.width, a.height);
+            var c = this.gpproxy.getState();
+            b = c.user.nick;
+            c = "string" === typeof c.previous?.data ? c.previous.data : "\u043f\u0440\u043e\u0438\u0437\u0432\u043e\u043b\u044c\u043d\u0430\u044f \u0442\u0435\u043c\u0430";
+
+            const d = (new Date).toLocaleDateString("ru-RU");
+            b = `${b} - ${c} (${d}).png`;
+            c = document.createElement("a");
+            c.href = a.toDataURL();
+            c.download = b;
+            c.click()
+        } clear() {
+            if (!this.isDrawing) {
+                var a = this.getStrokeOptions(GPPainter_.TOOL.ERASER, void 0, Math.trunc(Math.hypot(GPPainter_.ORIGINAL_WIDTH, GPPainter_.ORIGINAL_HEIGHT)));
+                a = this.buildStrokeData(a, [[GPPainter_.ORIGINAL_WIDTH / 2, GPPainter_.ORIGINAL_HEIGHT / 2]]);
+                this.dispatchEvent(new CustomEvent("stroke_started", { detail: { data: a } }));
+                this.dispatchEvent(new CustomEvent("stroke_ended",
+                    { detail: { data: a } }));
+                this.dispatchEvent(new CustomEvent("stroke", { detail: { data: a } }))
+            }
+        } brushTool() {
+            this.setTool(GPPainter_.TOOL.BRUSH);
+            this.iface.updateToolbar(this.tool);
+            this.updatePointer()
+        } eraserTool() {
+            this.setTool(GPPainter_.TOOL.ERASER);
+            this.iface.updateToolbar(this.tool);
+            this.updatePointer()
+        } rectangleTool() {
+            this.setTool(GPPainter_.TOOL.RECTANGLE);
+            this.iface.updateToolbar(this.tool);
+            this.updatePointer()
+        } rectangleFilledTool() {
+            this.gpproxy.isAnimateMode() || (this.setTool(GPPainter_.TOOL.RECTANGLE_FILLED),
+                this.iface.updateToolbar(this.tool), this.updatePointer())
+        } circleTool() {
+            this.setTool(GPPainter_.TOOL.CIRCLE);
+            this.iface.updateToolbar(this.tool);
+            this.updatePointer()
+        } circleFilledTool() { this.gpproxy.isAnimateMode() || (this.setTool(GPPainter_.TOOL.CIRCLE_FILLED), this.iface.updateToolbar(this.tool), this.updatePointer()) } fillTool() { this.gpproxy.isAnimateMode() || (this.setTool(GPPainter_.TOOL.FILL), this.iface.updateToolbar(this.tool), this.updatePointer()) } noteTool() {
+            this.gpproxy.isAnimateMode() && (this.setTool(GPPainter_.TOOL.NOTE),
+                this.iface.updateToolbar(this.tool), this.updatePointer())
+        } undo() {
+            let a, b = !0, c, d = [];
+            do {
+                if (!this.history.length || 11 === this.history.at(-1)[0]) return;
+                a = this.history.pop();
+                this.undos.push(a);
+                b ? (c = a, b = !1) : d.push(a)
+            } while (void 0 !== this.symmetryStrokesGroups[a[1]] && this.symmetryStrokesGroups[a[1]] === this.symmetryStrokesGroups[this.history.at(-1)?.[1]]);
+            !this.history.length && this.isSigned && this.unsign();
+            this.clearCanvas();
+            this.drawFunction(this.canvasCtx, this.history, this.density, !0, this.isNote);
+            this.dispatchEvent(new CustomEvent("stroke_undo",
+                { detail: { data: c, symmetryStrokesData: d } }))
+        } redo() {
+            let a, b = !0, c, d = [];
+            do {
+                if (!this.undos.length) return;
+                a = this.undos.pop();
+                this.history.push(a);
+                this.drawFunction(this.canvasCtx, [a], this.density, !0, this.isNote);
+                b ? (c = a, b = !1) : d.push(a)
+            } while (void 0 !== this.symmetryStrokesGroups[a[1]] && this.symmetryStrokesGroups[a[1]] === this.symmetryStrokesGroups[this.undos.at(-1)?.[1]]);
+            this.shouldBeSigned() && this.sign();
+            this.dispatchEvent(new CustomEvent("stroke_redo", { detail: { data: c, symmetryStrokesData: d } }))
+        } swap() {
+            const [a,
+                b] = [this.color2, this.color];
+            this.colorPicker.setColor(a);
+            this.dispatchEvent(new CustomEvent("color", { detail: { color: a } }));
+            this.dispatchEvent(new CustomEvent("color2", { detail: { color: b } }))
+        } mirror() {
+            this.isMirrored = !this.isMirrored;
+            this.container.classList.toggle("mirror_", this.isMirrored);
+            this.dispatchEvent(new CustomEvent("mirror", { detail: { state: this.isMirrored } }))
+        } verticalMirror() {
+            this.isVerticalMirror = !this.isVerticalMirror;
+            this.container.classList.toggle("vertical-mirror_", this.isVerticalMirror);
+
+            this.dispatchEvent(new CustomEvent("vertical-mirror", { detail: { state: this.isVerticalMirror } }))
+        } grayscale() {
+            this.isGrayscale = !this.isGrayscale;
+            this.container.classList.toggle("grayscale_", this.isGrayscale);
+            this.dispatchEvent(new CustomEvent("grayscale", { detail: { state: this.isGrayscale } }))
+        } eraser(a) {
+            if (!this.isEraser) {
+                this.isEraser = !0;
+                var b = this.tool;
+                this.setTool(GPPainter_.TOOL.ERASER);
+                this.iface.updateToolbar(this.tool);
+                var c = d => {
+                    d.code === a.code && (this.isEraser = !1, this.setTool(b), this.iface.updateToolbar(this.tool),
+                        document.removeEventListener("keyup", c))
+                };
+                document.addEventListener("keyup", c)
+            }
+        } toolCentering(a) {
+            if (!this.isToolCentering) {
+                this.isToolCentering = !0;
+                var b = c => { c.code === a.code && (this.isToolCentering = !1, document.removeEventListener("keyup", b)) };
+                document.addEventListener("keyup", b)
+            }
+        } shouldCenteringBeActivated(a) {
+            return a === GPPainter_.TOOL.LINE || a === GPPainter_.TOOL.RECTANGLE || a === GPPainter_.TOOL.RECTANGLE_FILLED ? this.isToolCentering : a === GPPainter_.TOOL.CIRCLE || a === GPPainter_.TOOL.CIRCLE_FILLED ? this.s.centeringCircleTool ?
+                !this.isToolCentering : this.isToolCentering : !1
+        } symmetry(a) {
+            if (!this.isDrawing) {
+                this.isSymmetryGuidesEditable = !0;
+                this.symmetryGuides.classList.add("editable_");
+                if (this.isSymmetryEnabled) {
+                    const c = d => { d.code === a.code && (this.isSymmetryGuidesMoved || (this.isSymmetryEnabled = !1, this.symmetryGuides.classList.remove("shown_"), this.iface.updateSymmetryPanel(this.isSymmetryEnabled)), document.removeEventListener("keyup", c)) };
+                    document.addEventListener("keyup", c)
+                } else this.isSymmetryEnabled = !0, this.symmetryGuides.classList.add("shown_"),
+                    this.iface.updateSymmetryPanel(this.isSymmetryEnabled);
+                var b = c => { c.code === a.code && (this.isSymmetryGuidesEditable = this.isSymmetryGuidesMoved = !1, this.symmetryGuides.classList.remove("editable_"), document.removeEventListener("keyup", b)) };
+                document.addEventListener("keyup", b)
+            }
+        } symmetryGuidesDownHandler(a) {
+            function b(d) {
+                const [e, f] = d.touches ? [d.touches[0].clientX, d.touches[0].clientY] : [d.clientX, d.clientY];
+                d = d.target.getBoundingClientRect();
+                let [g, k] = [Math.round((e - d.left) / c), Math.round((f - d.top) / c)];
+                this.isMirrored &&
+                    (g = GPPainter_.ORIGINAL_WIDTH - g);
+                this.isVerticalMirror && (k = GPPainter_.ORIGINAL_HEIGHT - k);
+                this.updateSymmetryGuides(Math.max(0, Math.min(GPPainter_.ORIGINAL_WIDTH, g)), Math.max(0, Math.min(GPPainter_.ORIGINAL_HEIGHT, k)))
+            } if (this.isSymmetryGuidesEditable) if (2 === a.button) this.resetSymmetryGuides();
+            else {
+                var c = this.getActualScale();
+                b = b.bind(this);
+                a.target.setPointerCapture(a.pointerId);
+                a.target.addEventListener("pointermove", b);
+                a.target.addEventListener("pointerup", d => {
+                    d.target.removeEventListener("pointermove",
+                        b)
+                }, { once: !0 });
+                b(a);
+                this.isSymmetryGuidesMoved = !0
+            }
+        } updateSymmetryGuides(a, b) {
+            this.symmetryGuideX = a;
+            this.symmetryGuideY = b;
+            this.drawSymmetryGuides(a, b)
+        } resetSymmetryGuides() {
+            this.updateSymmetryGuides(Math.round(GPPainter_.ORIGINAL_WIDTH / 2), Math.round(GPPainter_.ORIGINAL_HEIGHT / 2));
+            this.isSymmetryGuidesMoved = !0
+        } drawSymmetryGuides(a = this.symmetryGuideX, b = this.symmetryGuideY) {
+            const c = this.symmetryGuidesCtx;
+            a *= this.density;
+            b *= this.density;
+            c.clearRect(0, 0, c.canvas.width, c.canvas.height);
+            c.beginPath();
+            switch (this.s.symmetryMode) {
+                case GPPainter_.SYMMETRY_MODES.VERTICAL: c.moveTo(a,
+                    0);
+                    c.lineTo(a, GPPainter_.ORIGINAL_HEIGHT * this.density);
+                    break;
+                case GPPainter_.SYMMETRY_MODES.HORIZONTAL: c.moveTo(0, b);
+                    c.lineTo(GPPainter_.ORIGINAL_WIDTH * this.density, b);
+                    break;
+                case GPPainter_.SYMMETRY_MODES.QUADRANT: c.moveTo(a, 0);
+                    c.lineTo(a, GPPainter_.ORIGINAL_HEIGHT * this.density);
+                    c.moveTo(0, b);
+                    c.lineTo(GPPainter_.ORIGINAL_WIDTH * this.density, b);
+                    break;
+                case GPPainter_.SYMMETRY_MODES.RADIAL: c.arc(a, b, 50 * this.density, 0, 2 * Math.PI);
+                    for (var d = -(Math.PI / 2);
+                        d < 1.5 * Math.PI;
+                        d += this.radiansPerSymmetryRadialGuide) {
+                        var e =
+                            Math.cos(d) * GPPainter_.SYMMETRY_GUIDES_RADIUS, f = Math.sin(d) * GPPainter_.SYMMETRY_GUIDES_RADIUS;
+                        c.moveTo(a, b);
+                        c.lineTo(e + a, f + b)
+                    } break;
+                case GPPainter_.SYMMETRY_MODES.MANDALA: for (d = 1.5 * Math.PI, e = -(Math.PI / 2);
+                    e < d;
+                    e += this.radiansPerSymmetryMandalaGuide) {
+                    f = Math.cos(e) * GPPainter_.SYMMETRY_GUIDES_RADIUS;
+                    const g = Math.sin(e) * GPPainter_.SYMMETRY_GUIDES_RADIUS;
+                    c.moveTo(a, b);
+                    c.lineTo(f + a, g + b)
+                }
+            }c.stroke()
+        } setSymmetryGuidesColor(a) {
+            this.symmetryGuidesCtx.strokeStyle = a;
+            this.drawSymmetryGuides()
+        } setSymmetryGuidesOpacity(a) {
+            this.symmetryGuidesCtx.globalAlpha =
+                a;
+            this.drawSymmetryGuides()
+        } setSymmetryGuidesWidth(a) {
+            this.symmetryGuidesCtx.lineWidth = a * this.density;
+            this.drawSymmetryGuides()
+        } setSymmetryMode(a) {
+            this.s.symmetryMode = a;
+            this.drawSymmetryGuides()
+        } getSymmetryMode() { return this.s.symmetryMode } getSymmetryModes() {
+            const a = Object.keys(GPPainter_.SYMMETRY_MODES);
+            return this.isSubscribed || this.gpproxy.isSoloGame() ? a : GPPainter_.UNSUBSCRIBED_SYMMETRY_MODES
+        } changeSymmetryRadialGuidesCount(a) {
+            this.s.symmetryRadialGuidesCount = Math.min(GPPainter_.MAX_SYMMETRY_RADIAL_GUIDES,
+                Math.max(GPPainter_.MIN_SYMMETRY_RADIAL_GUIDES, this.s.symmetryRadialGuidesCount + (0 < a ? -1 : 1)));
+            this.radiansPerSymmetryRadialGuide = 2 * Math.PI / this.s.symmetryRadialGuidesCount;
+            this.drawSymmetryGuides();
+            return this.s.symmetryRadialGuidesCount
+        } changeSymmetryMandalaGuidesCount(a) {
+            this.s.symmetryMandalaGuidesCount = Math.min(GPPainter_.MAX_SYMMETRY_MANDALA_GUIDES, Math.max(GPPainter_.MIN_SYMMETRY_MANDALA_GUIDES, this.s.symmetryMandalaGuidesCount + (0 < a ? -1 : 1)));
+            this.radiansPerSymmetryMandalaGuide = 2 * Math.PI / this.s.symmetryMandalaGuidesCount;
+
+            this.drawSymmetryGuides();
+            return this.s.symmetryMandalaGuidesCount
+        } palette(a) {
+            const b = this.stroke.getBoundingClientRect(), c = b.left + (this.cX - b.left), d = b.top + (this.cY - b.top);
+            if (c >= b.left && c <= b.right && d >= b.top && d <= b.bottom) {
+                this.colorPicker.show(c, d);
+                this.container.classList.add("cursor_");
+                const e = f => {
+                    f.code === a.code && (this.colorPicker.hide(), document.removeEventListener("keyup", e));
+                    this.container.classList.remove("cursor_")
+                };
+                document.addEventListener("keyup", e)
+            }
+        } zoomToPoint(a) {
+            a = this.zoomer.getScale();
+
+            const [b, c] = [this.pointerX / this.density, this.pointerY / this.density];
+            1 !== a ? (this.resetZoom(), this.clearPointer(), this.isZoomedToPoint = !1) : (a = this.s.maxZoomToPoint, this.zoomer.panTo({ originX: -(b - GPPainter_.ORIGINAL_WIDTH / 2) * a, originY: -(c - GPPainter_.ORIGINAL_HEIGHT / 2) * a, scale: a }), this.clearPointer(), this.isZoomedToPoint = !0, this.dispatchEvent(new CustomEvent("zoom", { detail: { value: this.zoomer.getScale() } })))
+        } toggleReference() { this.iface.toggleReference() } save() { this.saveImage() } disable() {
+            this.resetZoom();
+
+            this.pressedKeys.clear();
+            this.resetKeys();
+            this.container.classList.add("disabled_");
+            this.isDisabled = !0
+        } enable() {
+            this.container.classList.remove("disabled_");
+            this.isDisabled = !1
+        } drawFunction(a, b, c = this.density, d = !0, e = !0) { GPUtils_.drawFunction(a, b, c, d, e) } getFillData(a, b) {
+            this.isMirrored && (a = this.width - a);
+            this.isVerticalMirror && (b = this.height - b);
+            let c;
+            if (this.backgroundData) {
+                var d = document.createElement("canvas");
+                d.width = this.canvas.width;
+                d.height = this.canvas.height;
+                c = d.getContext("2d");
+                c.drawImage(this.background,
+                    0, 0, d.width, d.height);
+                c.drawImage(this.lastDraw, 0, 0, d.width, d.height);
+                c.drawImage(this.canvas, 0, 0, d.width, d.height)
+            } else c = this.canvasCtx;
+            d = this.getPixelColor(a, b);
+            return this.getFillRects(c, a, b, d, this.canvas.width, this.canvas.height).map((e, f) => 4 > f % 5 ? Math.round(e / this.density) : e)
+        } getFillRects(a, b, c, d, e, f) {
+            var g = function (u, y, z) {
+                var x = y, A = z;
+                if (m(y, z, u)) {
+                    for (;
+                        m(x + 1, A, u);
+                    )x++;
+                    var C = x;
+                    do for (x = y - 1, A++;
+                        m(x + 1, A, u) && x + 1 <= C;
+                    )x++;
+                    while (x == C);
+                    return { x: y, y: z, w: C - y, h: --A - z }
+                } return { w: -1, h: -1 }
+            }, k = function (u, y,
+                z) {
+                var x = y, A = z;
+                if (m(y, z, u)) {
+                    for (;
+                        m(x - 1, A, u);
+                    )x--;
+                    var C = x;
+                    do for (x = y + 1, A--;
+                        m(x - 1, A, u) && x - 1 >= C;
+                    )x--;
+                    while (x == C);
+                    return { x: C, y: ++A, w: y - C, h: z - A }
+                } return { w: -1, h: -1 }
+            }, h = function (u, y, z) {
+                var x = y, A = z;
+                if (m(y, z, u)) {
+                    for (;
+                        m(x, A + 1, u);
+                    )A++;
+                    var C = A;
+                    do for (A = z - 1, x--;
+                        m(x, A + 1, u) && A + 1 <= C;
+                    )A++;
+                    while (A == C);
+                    return { x: ++x, y: z, w: y - x, h: C - z }
+                } return { w: -1, h: -1 }
+            }, l = function (u, y, z) {
+                var x = y, A = z;
+                if (m(y, z, u)) {
+                    for (;
+                        m(x, A - 1, u);
+                    )A--;
+                    var C = A;
+                    do for (A = z + 1, x++;
+                        m(x, A - 1, u) && A - 1 >= C;
+                    )A--;
+                    while (A == C);
+                    return { x: y, y: C, w: --x - y, h: z - C }
+                } return { w: -1, h: -1 }
+            },
+                m = function (u, y, z) {
+                    if (r[u][y]) return !1;
+                    u = 4 * (u + y * e);
+                    u = p.slice(u, u + 4);
+                    y = Math.abs(z[1] - u[1]);
+                    var x = Math.abs(z[2] - u[2]), A = Math.abs(z[3] - u[3]);
+                    return 20 > Math.abs(z[0] - u[0]) && 20 > y && 20 > x && 20 > A || 0 == u[3] && 255 == z[0] && 255 == z[1] && 255 == z[2] || 0 == z[3] && 255 == u[0] && 255 == u[1] && 255 == u[2]
+                }, n = function (u) {
+                    for (var y = u[0], z = u[1], x = y + u[2], A = z + u[3];
+                        y < x;
+                        y++)for (var C = z;
+                            C < A;
+                            C++)r[y][C] = !0;
+                    return u
+                };
+            b = Math.round(b);
+            c = Math.round(c);
+            var r;
+            parseInt(d.replace("#", "0x"));
+            !function () {
+                r = [];
+                for (var u = -1;
+                    u <= e;
+                    u++)r[u] = [];
+                r[-1] = [];
+                r[e] =
+                    [];
+                for (u = -1;
+                    u <= f;
+                    u++)r[-1][u] = 1, r[e][u] = 1;
+                for (u = 0;
+                    u < e;
+                    u++)r[u][-1] = 1, r[u][f] = 1
+            }();
+            var p = a.getImageData(0, 0, e, f).data;
+            a = 4 * (b + c * e);
+            a = [p[a], p[a + 1], p[a + 2], p[a + 3]];
+            d = [];
+            for (var q = 0;
+                q <= e;
+                q++)d[q] = [];
+            for (;
+                m(b - 1, c, a);
+            )b--;
+            for (;
+                m(b, c - 1, a);
+            )c--;
+            var t;
+            q = g(a, b, c);
+            c = { x: b, y: c, w: q.w, h: q.h, ref: 0, andada: 0, stack: 0 };
+            var v = q.w, w = [].concat(n([q.x, q.y, q.w + 1, q.h + 1]), [0]);
+            do {
+                b = 0;
+                for (2 == c.ref && (b += c.andada);
+                    b <= c.h;
+                )-1 != (t = (q = l(a, c.x + c.w + 1, c.y + c.h - b)).h) ? (d[t].push({ x: q.x, y: q.y, w: q.w, h: q.h, ref: 1, andada: c.h + 1 - b, stack: w.length }),
+                    w.push.apply(w, n([q.x, q.y, q.w + 1, q.h + 1]).concat([c.stack])), t > v && (v = t), b += t) : b++;
+                b = 0;
+                for (1 == c.ref && (b += c.andada);
+                    b <= c.h;
+                )-1 != (t = (q = h(a, c.x - 1, c.y + b)).h) ? (d[t].push({ x: q.x, y: q.y, w: q.w, h: q.h, ref: 2, andada: c.h + 1 - b, stack: w.length }), w.push.apply(w, n([q.x, q.y, q.w + 1, q.h + 1]).concat([c.stack])), t > v && (v = t), b += t) : b++;
+                b = 0;
+                for (4 == c.ref && (b += c.andada);
+                    b <= c.w;
+                )-1 != (t = (q = g(a, c.x + b, c.y + c.h + 1)).w) ? (d[t].push({ x: q.x, y: q.y, w: q.w, h: q.h, ref: 3, andada: c.w + 1 - b, stack: w.length }), w.push.apply(w, n([q.x, q.y, q.w + 1, q.h + 1]).concat([c.stack])),
+                    t > v && (v = t), b += t) : b++;
+                b = 0;
+                for (3 == c.ref && (b += c.andada);
+                    b <= c.w;
+                )-1 != (t = (q = k(a, c.x + c.w - b, c.y - 1)).w) ? (d[t].push({ x: q.x, y: q.y, w: q.w, h: q.h, ref: 4, andada: c.w + 1 - b, stack: w.length }), w.push.apply(w, n([q.x, q.y, q.w + 1, q.h + 1]).concat([c.stack])), t > v && (v = t), b += t) : b++;
+                for (c = d[v].pop();
+                    null == c && 0 < v;
+                )c = d[--v].pop()
+            } while (null != c);
+            return w
+        } setTimer() { this.timer && (this.timer.reset(), this.timer.settings.runAfterTurnStart && this.gpproxy.isGameTime(GPProxy_.GAME_TIME.HOSTS_DECISION) && this.gpproxy.isHost() && this.timer.start()) } stopTimer() {
+            this.timer &&
+                this.timer.reset()
+        } sign() {
+            const a = this.buildMStroke();
+            this.gpproxy.tool(1, a, !0);
+            this.mStrokeId = a[1];
+            this.isSigned = !0
+        } unsign() { null !== this.mStrokeId && (this.gpproxy.undo(this.mStrokeId, !0), this.mStrokeId = null, this.isSigned = !1) } buildMStroke() {
+            var a = this.gpproxy.getGameCode();
+            const b = this.gpproxy.getUsername(), c = Date.now().toString();
+            a = this.stringToCoords(`\x00${a}@${b}@${c}\x00`);
+            return [1, this.strokeId++, [this.color, 6, `${this.opacity}`], ...a]
+        } stringToCoords(a) {
+            const b = a.split("").map(c => c.codePointAt(0));
+
+            a.length % 2 && b.push(0);
+            a = [];
+            for (let c = 0;
+                c < b.length;
+                c += 2)a.push([b[c] + GPPainter_.ORIGINAL_WIDTH + GPPainter_.M_STROKE_OFFSET, b[c + 1] + GPPainter_.ORIGINAL_HEIGHT + GPPainter_.M_STROKE_OFFSET]);
+            return a
+        } 
+        shouldBeSigned() 
+        { 
+            return !this.isSigned && this.gpproxy.isAuthorized && this.history.length - (this.lastDelimiterIndex + 1) > this.mStrokeOrigin } windowsInkCheck(a) { 0 === a.button && "pen" === a.pointerType && this.abt.setWindowsInkWarningState(!0) } getRandomInt(a) { return Math.floor(Math.random() * (a + 1)) } setColorPanelControlsSet(a) {
+            this.s.colorPanelControlsSet =
+                a
+        } 
+        setPaletteName(a) { this.s.extendedPaletteName = a } setColorWheelMode(a) { this.s.colorWheelMode = a } insertSettingsView(a) { return this.sm.insertView(this.constructor.name, a) } updateSettingsView(a) { this.sm.updateView(a) } getSettings() { return this.s } getSettingsCopy() { return Object.assign({}, this.s) } getDefaultSettings() { return Object.assign({}, GPPainter_.DEFAULT_SETTINGS) } updateSettings({ detail: { settings: a } }) {
+            this.container && ("minZoom" in a && this.zoomer.setMinScale(a.minZoom), "maxZoom" in a && this.zoomer.setMaxScale(a.maxZoom),
+                "fixedScreenSize" in a && this.iface.toggleFixedScreenSize(a.fixedScreenSize), "stretchNativePalette" in a && this.iface.updateNativePalette(a.stretchNativePalette), "extendedPalettePanel" in a && this.iface.updateExtendedPalette(a.extendedPalettePanel), "colorPickerPanel" in a && this.iface.updateColorPickerPanel(a.colorPickerPanel), "colorPickerHuePosition" in a && this.initColorPicker({ huePos: a.colorPickerHuePosition }), "colorPickerWidth" in a && this.initColorPicker({ width: a.colorPickerWidth }), "colorPickerHeight" in
+                a && this.initColorPicker({ height: a.colorPickerHeight }), "hideHeaderBackground" in a && this.iface.toggleHeaderBackground(a.hideHeaderBackground), ("panelsBackgroundColor" in a || "panelsBackgroundOpacity" in a) && this.iface.updatePanelsBackground(this.s.panelsBackgroundColor, this.isDisabled ? Math.max(this.s.panelsBackgroundOpacity - 10, 0) : this.s.panelsBackgroundOpacity), ("panelsElementsColor" in a || "panelsElementsOpacity" in a) && this.iface.updatePanelsElements(this.s.panelsElementsColor, this.isDisabled ? Math.max(this.s.panelsElementsOpacity -
+                    30, 0) : this.s.panelsElementsOpacity), "controlsBackgroundBlurLevel" in a && this.iface.updateControlsBackgroundBlurLevel(a.controlsBackgroundBlurLevel), "headerColor" in a && this.iface.updateHeaderColor(a.headerColor), "headerInstructionsColor" in a && this.iface.updateHeaderPhraseColor(a.headerInstructionsColor), "autoHideHeaderElements" in a && this.iface.setAutoHideHeaderState(a.autoHideHeaderElements), "autoHideHeaderDelay" in a && this.iface.setAutoHideHeaderDelay(a.autoHideHeaderDelay), "symmetryGuidesColor" in a &&
+                this.setSymmetryGuidesColor(a.symmetryGuidesColor), "symmetryGuidesOpacity" in a && this.setSymmetryGuidesOpacity(a.symmetryGuidesOpacity), "symmetryGuidesWidth" in a && this.setSymmetryGuidesWidth(a.symmetryGuidesWidth))
+        } parseUISettings(a) {
+            const b = {};
+            for (let c in a) b[c] = a[c].value;
+            return b
+        } saveBindings() { localStorage.setItem("gp_painter_bindings", JSON.stringify(this.bindings)) } getBindings() { return [Object.assign({}, this.bindings), this.bindingsLabels] } getDefaultBindings() {
+            return [window.structuredClone(GPPainter_.DEFAULT_BINDINGS),
+            this.bindingsLabels]
+        } updateBindings(a) {
+            this.bindings = a;
+            this.keysMap = this.buildKeysMap(a)
+        } setKeysLockState(a) { this.areKeysLocked = a } getKeysMap() { return this.keysMap } getBindingKeys(a, b) { return this.bindings[a]?.[b] || null } compareBindingsKeys(a, b) { return a && b ? a.every((c, d) => c === b[d]) : !1 } isBindingExisted(a) {
+            return this.keysMap[a.size] ? this.keysMap[a.size].some(({ keys: b }) => {
+                const c = a.values();
+                return b.every(d => d === c.next().value)
+            }) : !1
+        }
+    } window.GPPainter_ = GPPainter_;
+    class GPDrawInterface_ extends EventTarget {
+        static MOBILE_MAX_WIDTH = 640;
+        static TOOLS_IDS_CLASSES = { 1: "pen", 2: "ers", 3: "lin", 4: "reb", 5: "ellb", 6: "rec", 7: "ell", 8: "fil", 10: "note" };
+        static TOOLS = { pen: { id: 1, tumbler: !0 }, ers: { id: 2, tumbler: !0 }, reb: { id: 4, tumbler: !0 }, ellb: { id: 5, tumbler: !0 }, rec: { id: 6, tumbler: !0 }, ell: { id: 7, tumbler: !0 }, lin: { id: 3, tumbler: !0 }, fil: { id: 8, tumbler: !0 }, dropper: { id: "", tumbler: !0, disabled: !0 }, note: { id: 10, tumbler: !0 }, hide: { id: "" }, undo: { id: "" }, redo: { id: "" } };
+        static FILTER_TOOL_CLASSES = ["jsx",
+            "tool", "sel"];
+        static THICKNESSES = [2, 6, 10, 14, 18];
+        static SELECTORS = { CORE: ".core", SCREEN: ".screen", TOOLS: ".tools", TOOL: ".tools .tool", SELECTED_TOOL: ".tool.sel", OPTIONS: ".options", OPACITY: ".bxopacity input", THICKNESS: ".thickness", SAVE_BTN: "button.download", READY_ICON: "i.ready,i.pencil" };
+        static SYMMETRY_ICONS = {
+            VERTICAL: '<svg width="26" height="26"><path d="M13.018 2.34v21.251h0" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.28163504"/></svg>', HORIZONTAL: '<svg width="26" height="26"><path d="M23.643 12.966H2.393h0" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.28163504"/></svg>',
+            QUADRANT: '<svg width="26" height="26"><g stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.452"><path d="M23.643 12.966H2.393M13.018 2.34v21.251" stroke-width="2.28163504"/></g></svg>', RADIAL: '<svg width="26" height="26" fill="none"><circle cx="13" cy="13" r="10.387" stroke="currentColor" stroke-width="2.8"/></svg>', MANDALA: '<svg width="26" height="26" fill="none"><circle cx="13" cy="13" r="10.387" stroke="currentColor" stroke-width="2.8"/><g fill="currentColor" stroke-width="1.313"><path d="M13.04 13.623c-.658 0-1.203-.317-1.203-.698V3.257c0-.382.545-.698 1.203-.698s1.202.316 1.202.698v9.668c0 .381-.545.698-1.202.698z"/><path d="M22.628 18.581c-.334.566-.884.875-1.212.681l-8.326-4.915c-.329-.194-.324-.824.01-1.39s.884-.875 1.213-.68l8.325 4.914c.329.194.324.824-.01 1.39z"/><path d="M3.4 18.603c.334.566.884.874 1.212.68l8.326-4.914c.328-.194.324-.825-.01-1.39-.335-.567-.884-.875-1.213-.682L3.39 17.212c-.328.194-.323.825.01 1.39z"/></g></svg>'
+        };
+        static KEY_ALIASES = { Control: "Ctrl" };
+        constructor(a,
+            b, c) {
+            super();
+            this.gpproxy = b;
+            this.l = c;
+            this.style = document.documentElement.style;
+            this.painter = a;
+            this.initialSettings = a.getSettingsCopy();
+            this.s = a.getSettings();
+            this.bindingsScrollPos = this.settingsScrollPos = 0;
+            this.toolsContainer;
+            this.colorPanel;
+            this.optionsContainer;
+            this.thicknessesContainer;
+            this.readyBtn;
+            this.readyIcon;
+            this.readyLabel;
+            this.saveBtn;
+            this.readyWarning;
+            this.isInit = !1;
+            this.tools = {};
+            this.thicknesses = {};
+            this.currentThickness = this.currentTool = null;
+            this.currentKeys;
+            this.pressedKeys;
+            this.currentBindingElem =
+                null;
+            GPUtils_.bindMethods([this.toolsContainerClickHandler, this.opacityChangeHandler, this.thicknessesContainerClickHandler, this.readyBtnClickHandler, this.saveBtnClickHandler, this.symmetryModesClickHandler, this.settingsBtnHandler, this.renderSettingsHandler, this.resetBindings, this.renderBindingsHandler, this.setBindingHandler, this.keyUpHandler, this.keyDownHandler, this.keyHandler, this.resizeHandler, this.stopBinding], this);
+            this.painter.addEventListener("mirror", ({ detail: { state: d } }) => {
+                this.toolsStates.classList.toggle("mirror_",
+                    d)
+            });
+            this.painter.addEventListener("vertical-mirror", ({ detail: { state: d } }) => { this.toolsStates.classList.toggle("vertical-mirror_", d) });
+            this.painter.addEventListener("grayscale", ({ detail: { state: d } }) => { this.toolsStates.classList.toggle("grayscale_", d) });
+            this.painter.addEventListener("zoom", ({ detail: { value: d } }) => {
+                this.toolsStates.classList.remove("zoom-in_", "zoom-out_");
+                1 !== d && (1 < d ? this.toolsStates.classList.add("zoom-in_") : this.toolsStates.classList.add("zoom-out_"))
+            });
+            this.updatePanelsBackground(this.initialSettings.panelsBackgroundColor,
+                this.initialSettings.panelsBackgroundOpacity);
+            this.updatePanelsElements(this.initialSettings.panelsElementsColor, this.initialSettings.panelsElementsOpacity);
+            this.updateControlsBackgroundBlurLevel(this.initialSettings.controlsBackgroundBlurLevel)
+        } init() {
+            var a = GPDrawInterface_.SELECTORS;
+            this.core = document.querySelector(a.CORE);
+            this.core.classList.add("background_");
+            this.screen = document.querySelector(a.SCREEN);
+            this.screen.classList.add("gp-painter-rendered_");
+            this.toolsContainer = document.querySelector(a.TOOLS);
+
+            this.toolsContainer.addEventListener("click", this.toolsContainerClickHandler);
+            this.toolsContainer.querySelectorAll(a.TOOL).forEach(c => {
+                for (let d in GPDrawInterface_.TOOLS) if (c.classList.contains(d)) {
+                    c.dataset.toolid = GPDrawInterface_.TOOLS[d].id;
+                    this.tools[d] = c;
+                    break
+                }
+            });
+            this.currentTool = this.tools[GPDrawInterface_.TOOLS_IDS_CLASSES[this.painter.tool]];
+            this.colorPanel = new GPColorPanel_(this.painter, this.gpproxy, this.l);
+            this.colorPanel.addEventListener("color", ({ detail: { color: c } }) => {
+                this.dispatchEvent(new CustomEvent("color",
+                    { detail: { color: c } }))
+            });
+            this.colorPanel.addEventListener("color2", ({ detail: { color: c } }) => { this.dispatchEvent(new CustomEvent("color2", { detail: { color: c } })) });
+            this.colorPanel.addEventListener("controls-set-changed", ({ detail: { name: c } }) => { this.painter.setColorPanelControlsSet(c) });
+            this.colorPanel.addEventListener("color-wheel-mode-changed", ({ detail: { mode: c } }) => { this.painter.setColorWheelMode(c) });
+            this.optionsContainer = document.querySelector(a.OPTIONS);
+            this.nativeOpacity = this.optionsContainer.querySelector(a.OPACITY);
+
+            this.nativeOpacity.addEventListener("change", this.opacityChangeHandler);
+            this.opacity = this.initOpacityPanel(this.s.minOpacity, this.painter.opacity, this.optionsContainer.querySelector(a.OPACITY));
+            const b = this.optionsContainer.querySelectorAll(a.THICKNESS);
+            b.forEach((c, d) => {
+                d = GPDrawInterface_.THICKNESSES[d];
+                c.dataset.value = d;
+                this.thicknesses[d] = c;
+                c.classList.remove("sel");
+                this.painter.thickness === d && (c.classList.add("sel"), this.currentThickness = c)
+            });
+            this.thicknessesContainer = b[0].parentElement;
+            this.thicknessesContainer.addEventListener("click",
+                this.thicknessesContainerClickHandler);
+            this.readyIcon = document.querySelector(a.READY_ICON);
+            this.readyBtn = this.readyIcon.closest("button");
+            this.readyBtn.addEventListener("click", this.readyBtnClickHandler, !0);
+            this.readyLabel = this.readyBtn.querySelector("strong");
+            this.readyBtn.hasAttribute("disabled") && this.readyBtn.removeAttribute("disabled");
+            this.painter.addEventListener("stroke", c => { this.readyBtn.hasAttribute("disabled") && this.readyBtn.removeAttribute("disabled") }, { once: !0 });
+            this.painter.addEventListener("stroke_redo",
+                c => { this.readyBtn.hasAttribute("disabled") && this.readyBtn.removeAttribute("disabled") }, { once: !0 });
+            this.updateReadyBtn();
+            this.saveBtn = document.querySelector(a.SAVE_BTN);
+            this.saveBtn.addEventListener("click", this.saveBtnClickHandler, !0);
+            a = document.querySelector(".header");
+            this.painter.reference && (this.referenceBtn = a.appendChild(this.painter.reference.getPainterButton()));
+            this.painter.timer && this.painter.gpproxy.isGameTime(GPProxy_.GAME_TIME.HOSTS_DECISION) && this.painter.gpproxy.isHost() && a.appendChild(this.painter.timer.getElement());
+
+            this.symmetryModes = document.createElement("form");
+            this.symmetryModes.className = "gp-painter-symmetry-modes_";
+            this.symmetryModes.addEventListener("change", this.symmetryModesClickHandler);
+            this.symmetryGuidesCount = document.createElement("div");
+            this.symmetryGuidesCount.className = "guides-count_ btn_";
+            this.symmetryGuidesCount.addEventListener("wheel", c => {
+                c.currentTarget.dataset.count = this.painter.getSymmetryMode() === GPPainter_.SYMMETRY_MODES.RADIAL ? this.painter.changeSymmetryRadialGuidesCount(c.deltaY) :
+                    this.painter.changeSymmetryMandalaGuidesCount(c.deltaY)
+            });
+            this.symmetryGuidesCount.addEventListener("pointerdown", c => {
+                let d = c.clientY;
+                const e = f => {
+                    const g = f.clientY - d;
+                    Math.abs(g) >= GPPainter_.SYMMETRY_GUIDES_COUNT_SENSITIVITY && (f.currentTarget.dataset.count = this.painter.getSymmetryMode() === GPPainter_.SYMMETRY_MODES.RADIAL ? this.painter.changeSymmetryRadialGuidesCount(g) : this.painter.changeSymmetryMandalaGuidesCount(g), d = f.clientY)
+                };
+                this.symmetryGuidesCount.setPointerCapture(c.pointerId);
+                this.symmetryGuidesCount.addEventListener("pointermove",
+                    e);
+                this.symmetryGuidesCount.addEventListener("pointerup", f => { this.symmetryGuidesCount.removeEventListener("pointermove", e) }, { once: !0 })
+            });
+            this.painter.getSymmetryModes().forEach(c => {
+                var d = GPPainter_.SYMMETRY_MODES[c];
+                const e = `sm-mode-${d}_`, f = document.createElement("input");
+                f.type = "radio";
+                f.name = "sm-group_";
+                f.id = e;
+                f.checked = d === this.painter.getSymmetryMode();
+                f.dataset.modeId = d;
+                this.symmetryModes.appendChild(f);
+                d = document.createElement("label");
+                d.className = `${c.toLowerCase()}_ btn_`;
+                d.setAttribute("for",
+                    e);
+                d.innerHTML = GPDrawInterface_.SYMMETRY_ICONS[c];
+                this.symmetryModes.appendChild(d)
+            });
+            this.symmetryModes.appendChild(this.symmetryGuidesCount);
+            this.toolsContainer.firstElementChild.before(this.symmetryModes);
+            this.updateSymmetryPanel(this.painter.isSymmetryEnabled);
+            this.updateSymmetryGuidesCount(this.painter.getSymmetryMode());
+            this.actionQueueSize = document.createElement("div");
+            this.actionQueueSize.className = "action-queue-size_";
+            a.appendChild(this.actionQueueSize);
+            this.toolsStates = document.createElement("div");
+
+            this.toolsStates.className = "tools-states_";
+            ["mirror", "vertical-mirror", "grayscale", "zoom-in", "zoom-out"].forEach(c => {
+                const d = document.createElement("div");
+                d.className = `${c}_ state_`;
+                this.toolsStates.appendChild(d)
+            });
+            a.appendChild(this.toolsStates);
+            this.settingsBtn = document.createElement("div");
+            this.settingsBtn.className = "gp-painter-settings-btn_";
+            this.settingsBtn.addEventListener("click", this.settingsBtnHandler);
+            a.appendChild(this.settingsBtn);
+            this.settingsPane = document.createElement("div");
+            this.settingsPane.className =
+                "settings_";
+            this.settingsPane.classList.add("hidden");
+            this.painter.container.appendChild(this.settingsPane);
+            this.settingsButtons = document.createElement("div");
+            this.settingsButtons.className = "buttons_";
+            this.settingsPane.appendChild(this.settingsButtons);
+            this.settingsTabBtn = document.createElement("div");
+            this.settingsTabBtn.className = "main-settings_ btn_ gp-ui-btn_";
+            this.settingsTabBtn.textContent = this.l.SETTINGS_BTN_LBL;
+            this.settingsTabBtn.addEventListener("click", this.renderSettingsHandler);
+            this.settingsButtons.appendChild(this.settingsTabBtn);
+
+            this.bindingsBtn = document.createElement("div");
+            this.bindingsBtn.className = "bindings-settings_ btn_ gp-ui-btn_";
+            this.bindingsBtn.textContent = this.l.BINDINGS_BTN_LBL;
+            this.bindingsBtn.addEventListener("click", this.renderBindingsHandler);
+            this.settingsButtons.appendChild(this.bindingsBtn);
+            this.settingsContent = document.createElement("div");
+            this.settingsContent.className = "content_";
+            this.settingsPane.appendChild(this.settingsContent);
+            this.settingsPane.addEventListener("pointerdown", this.unlockElement);
+            this.settingsPane.addEventListener("pointerup",
+                this.unlockElement);
+            this.settingsPane.addEventListener("pointermove", this.unlockElement);
+            this.settingsPane.addEventListener("mousedown", this.unlockElement);
+            this.settingsPane.addEventListener("mouseup", this.unlockElement);
+            this.settingsPane.addEventListener("mousemove", this.unlockElement);
+            this.toggleFixedScreenSize(this.s.fixedScreenSize);
+            this.toggleHeaderBackground(this.s.hideHeaderBackground);
+            this.updateHeaderColor(this.s.headerColor);
+            this.updateHeaderPhraseColor(this.s.headerInstructionsColor);
+            this.setAutoHideHeaderState(this.s.autoHideHeaderElements);
+
+            this.setAutoHideHeaderDelay(this.s.autoHideHeaderDelay);
+            this.enableInterface();
+            window.addEventListener("resize", this.resizeHandler);
+            this.lastViewportWidth = window.innerWidth;
+            this.isInit = !0
+        } terminate() {
+            this.isInit && (this.tools = {}, this.thicknesses = {}, this.currentThickness = this.currentTool = null, this.opacity.remove(), this.opacity.removeEventListener("change", this.opacityChangeHandler), this.opacity = null, this.settingsBtn.remove(), this.settingsBtn = null, this.settingsPane.remove(), this.settingsPane = null, this.toolsContainer.removeEventListener("click",
+                this.toolsContainerClickHandler), this.toolsContainer = null, this.nativeOpacity.removeEventListener("change", this.opacityChangeHandler), this.nativeOpacity = null, this.thicknessesContainer.removeEventListener("click", this.thicknessesContainerClickHandler), this.thicknessesContainer = null, this.readyBtn.removeEventListener("click", this.readyBtnClickHandler, !0), this.readyBtn = null, this.symmetryModes.remove(), this.symmetryModes = null, this.actionQueueSize.remove(), this.actionQueueSize = null, this.toolsStates.remove(),
+                this.toolsStates = null, this.saveBtn.removeEventListener("click", this.saveBtnClickHandler, !0), this.saveBtn = null, this.painter.reference && (this.referenceBtn.remove(), this.referenceBtn = null), this.core && this.core.classList.remove("background_"), this.readyWarning && (this.readyWarning.remove(), this.referenceBtn = null), this.colorPanel.terminate(), this.colorPanel = null, this.screen.classList.remove("gp-painter-rendered_"))
+        } resizeHandler(a) {
+            a = window.innerWidth;
+            if (this.lastViewportWidth <= GPDrawInterface_.MOBILE_MAX_WIDTH &&
+                a > GPDrawInterface_.MOBILE_MAX_WIDTH || this.lastViewportWidth > GPDrawInterface_.MOBILE_MAX_WIDTH && a <= GPDrawInterface_.MOBILE_MAX_WIDTH) this.terminate(), this.init();
+            this.lastViewportWidth = a
+        } initOpacityPanel(a, b, c) {
+            const d = document.createElement("input");
+            d.className = "gp-opacity-slider_";
+            d.type = "range";
+            d.min = a;
+            d.max = 1;
+            d.step = "0.01";
+            d.value = b;
+            d.addEventListener("change", this.opacityChangeHandler);
+            c.after(d);
+            return d
+        } updateNativePalette(a) { this.colorPanel.updateNativePalette(a) } updateExtendedPalette(a) { this.colorPanel.updateExtendedPalette(a) } toggleInterface(a) {
+            a ?
+                this.enableInterface() : this.disableInterface()
+        } enableInterface() {
+            this.painter.enable();
+            this.toolsContainer.classList.remove("disabled");
+            this.optionsContainer.classList.remove("disabled");
+            this.opacity.removeAttribute("disabled");
+            this.updatePanelsBackground(this.s.panelsBackgroundColor, this.s.panelsBackgroundOpacity);
+            this.colorPanel.enable()
+        } disableInterface() {
+            this.painter.disable();
+            this.toolsContainer.classList.add("disabled");
+            this.optionsContainer.classList.add("disabled");
+            this.opacity.setAttribute("disabled",
+                "");
+            this.updatePanelsBackground(this.s.panelsBackgroundColor, Math.max(this.s.panelsBackgroundOpacity - 10, 0));
+            this.colorPanel.disable()
+        } toggleFixedScreenSize(a) {
+            this.screen.classList.toggle("fixed-size_", !!a);
+            this.painter.resizeWindowHandler()
+        } toggleHeaderBackground(a) { this.screen.classList.toggle("header-hidden_", !!a) } roundPixelOffset() {
+            this.style.setProperty("--gp-pixel-offset-top", "0px");
+            this.style.setProperty("--gp-pixel-offset-left", "0px");
+            const { top: a, left: b } = window.getComputedStyle(this.screen),
+                c = parseFloat(a) % 1, d = parseFloat(b) % 1;
+            this.style.setProperty("--gp-pixel-offset-top", `${c}px`);
+            this.style.setProperty("--gp-pixel-offset-left", `${d}px`)
+        } unlockElement(a) { a.stopPropagation() } toolsContainerClickHandler(a) {
+            if (a.target.classList.contains("tool")) {
+                a.stopImmediatePropagation();
+                var b = a.target, c = this.filterToolClasses([...a.target.classList]), d = c[0];
+                a = GPDrawInterface_.TOOLS[d];
+                if (!a.disabled) {
+                    if (a.id) this.painter.setTool(a.id);
+                    else switch (d) {
+                        case "hide": c = "hideon" === c[1];
+                            b.classList.toggle("hideon",
+                                !c);
+                            this.painter.toggleLastDraw(c);
+                            break;
+                        case "undo": this.painter.undo();
+                            break;
+                        case "redo": this.painter.redo()
+                    }a.tumbler && (this.currentTool.classList.remove("sel"), b.classList.add("sel"), this.currentTool = b)
+                }
+            }
+        } filterToolClasses(a) { return a.filter(b => !GPDrawInterface_.FILTER_TOOL_CLASSES.some(c => b.startsWith(c))) } opacityChangeHandler(a) {
+            a.stopImmediatePropagation();
+            this.painter.setOpacity(a.target.value)
+        } thicknessesContainerClickHandler(a) {
+            a.stopPropagation();
+            a.target.classList.contains("thickness") &&
+                (a = +a.target.dataset.value, this.painter.setThickness(a), this.updateThickness(a))
+        } readyBtnClickHandler(a) {
+            a.stopPropagation();
+            this.painter.gpproxy.isGameTime(GPProxy_.GAME_TIME.HOSTS_DECISION) && this.painter.gpproxy.isHost() && this.s.readyConfirmation && !this.painter.isReadyWarningShown ? this.showReadyWarning() : (this.painter.timer && this.painter.gpproxy.isGameTime(GPProxy_.GAME_TIME.HOSTS_DECISION) && this.painter.gpproxy.isHost() && this.painter.timer.reset(), a = !this.painter.gpproxy.isReady(), this.updateReadyBtn(a),
+                this.toggleInterface(!a), this.painter.gpproxy.ready())
+        } showReadyWarning() {
+            this.readyWarning = document.createElement("div");
+            this.readyWarning.className = "ready-warning_";
+            var a = document.createElement("div");
+            a.className = "window_";
+            this.readyWarning.appendChild(a);
+            var b = document.createElement("div");
+            b.className = "label_";
+            b.textContent = this.l.READY_CONFIRMATION_LBL;
+            a.appendChild(b);
+            b = document.createElement("div");
+            b.className = "buttons_";
+            a.appendChild(b);
+            a = document.createElement("div");
+            a.className = "ok-btn_ btn_";
+
+            a.textContent = this.l.READY_CONFIRMATION_OK_BTN_LBL;
+            a.addEventListener("click", c => {
+                this.readyWarning.remove();
+                this.painter.isReadyWarningShown = !0;
+                this.readyBtn.click()
+            });
+            b.appendChild(a);
+            a = document.createElement("div");
+            a.className = "cancel-btn_ btn_";
+            a.textContent = this.l.READY_CONFIRMATION_CANCEL_BTN_LBL;
+            a.addEventListener("click", c => { this.readyWarning.remove() });
+            b.appendChild(a);
+            this.screen.appendChild(this.readyWarning)
+        } saveBtnClickHandler(a) {
+            a.stopPropagation();
+            this.painter.saveImage()
+        } settingsBtnHandler(a) {
+            this.painter.resetZoom();
+
+            a = this.settingsPane.classList.toggle("hidden");
+            this.screen.classList.toggle("gp-settings-shown_");
+            a || this.renderSettings()
+        } symmetryModesClickHandler(a) {
+            a = +a.target.dataset.modeId;
+            this.painter.setSymmetryMode(a);
+            this.updateSymmetryGuidesCount(a)
+        } updateSymmetryGuidesCount(a) {
+            switch (a) {
+                case GPPainter_.SYMMETRY_MODES.RADIAL: this.symmetryGuidesCount.dataset.count = this.s.symmetryRadialGuidesCount;
+                    break;
+                case GPPainter_.SYMMETRY_MODES.MANDALA: this.symmetryGuidesCount.dataset.count = this.s.symmetryMandalaGuidesCount
+            }
+        } renderSettings() {
+            this.settingsContent.innerHTML =
+                "";
+            this.settingsView ? (this.settingsContent.appendChild(this.settingsView), this.painter.updateSettingsView(this.settingsView)) : this.settingsView = this.painter.insertSettingsView(this.settingsContent)
+        } renderSettingsHandler(a) { this.renderSettings() } renderBindings(a, b) {
+            this.settingsContent.innerHTML = "";
+            const c = document.createElement("div");
+            c.className = "bindings_ gp-ui-scrollbar_";
+            c.addEventListener("scroll", g => {
+                this.bindingsScrollPos = g.target.scrollTop;
+                this.handleContentOverflow(g.target)
+            });
+            this.settingsContent.appendChild(c);
+
+            var d = document.createElement("div");
+            d.className = "buttons_";
+            this.settingsContent.appendChild(d);
+            var e = document.createElement("div");
+            e.className = "reset-btn_ btn_ gp-ui-btn_";
+            e.textContent = this.l.RESET_SETTINGS_BTN_LBL;
+            e.title = this.l.RESET_SETTINGS_BTN_TTL;
+            e.addEventListener("click", this.resetBindings);
+            d.appendChild(e);
+            d = document.createDocumentFragment();
+            for (let g in a) {
+                if (!this.painter.tools[g]) continue;
+                g in b && (e = document.createElement("div"), e.className = "label_", e.textContent = b[g], d.appendChild(e));
+
+                e = document.createElement("div");
+                e.className = "name_";
+                e.title = this.painter.tools[g].description;
+                e.textContent = g.split(/(?=[A-Z])/).join(" ");
+                d.appendChild(e);
+                e = document.createElement("div");
+                e.className = "keys-bindings_";
+                const k = document.createElement("div");
+                k.className = "keys-bindings-container_";
+                e.appendChild(k);
+                if (a[g].length) a[g].forEach((h, l) => {
+                    h = this.renderBindingKeys(g, l, h, k, c);
+                    k.appendChild(h)
+                });
+                else {
+                    var f = this.renderBindingKeys(g, -1, [], k, c);
+                    f.classList.add("empty_");
+                    k.appendChild(f)
+                } f = document.createElement("div");
+
+                f.className = "add-btn_ btn_ gp-ui-btn_";
+                f.addEventListener("click", h => {
+                    h = this.renderBindingKeys(g, -1, [], k, c);
+                    k.appendChild(h);
+                    this.toggleScrollbar(c);
+                    this.handleContentOverflow(c)
+                });
+                e.appendChild(f);
+                d.appendChild(e)
+            } c.appendChild(d);
+            c.scrollTop = this.bindingsScrollPos;
+            this.toggleScrollbar(c);
+            this.handleContentOverflow(c)
+        } renderBindingsHandler(a) { this.renderBindings(...this.painter.getBindings()) } handleContentOverflow(a) {
+            this.settingsContent.classList.toggle("of-top_", 0 < a.scrollTop);
+            this.settingsContent.classList.toggle("of-bottom_",
+                a.offsetHeight + a.scrollTop < a.scrollHeight)
+        } renderBindingKeys(a, b, c, d, e) {
+            c = this.formatKeys(c);
+            const f = document.createElement("div");
+            f.className = "keys-binding_";
+            d = document.createElement("div");
+            d.className = "keys_";
+            d.textContent = c;
+            d.dataset.name = a;
+            d.dataset.index = b;
+            d.dataset.initialValue = c;
+            d.addEventListener("click", this.setBindingHandler);
+            f.appendChild(d);
+            c = document.createElement("div");
+            c.className = "buttons_";
+            f.appendChild(c);
+            d = document.createElement("div");
+            d.className = "delete-btn_ btn_ gp-ui-btn_";
+
+            d.addEventListener("click", g => {
+                this.deleteBinding(a, b, f);
+                this.toggleScrollbar(e);
+                this.handleContentOverflow(e)
+            });
+            c.appendChild(d);
+            d = document.createElement("div");
+            d.className = "accept-btn_ btn_ gp-ui-btn_";
+            d.addEventListener("click", g => { this.isAcceptedBinding(this.currentKeys, this.pressedKeys) ? this.acceptBinding(this.currentBindingElem, this.pressedKeys) : this.cancelBinding(this.currentBindingElem) });
+            c.appendChild(d);
+            return f
+        } deleteBinding(a, b, c) {
+            if (~b) {
+                const [d, e] = this.painter.getBindings();
+                d[a].splice(b,
+                    1);
+                this.renderBindings(d, e);
+                this.dispatchEvent(new CustomEvent("bindings_updated", { detail: { bindings: d } }))
+            } else c.remove()
+        } setBindingHandler(a) {
+            this.currentBindingElem && this.cancelBinding(this.currentBindingElem);
+            this.painter.setKeysLockState(!0);
+            a.currentTarget.focus();
+            a = a.target;
+            this.currentKeys = this.painter.getBindingKeys(a.dataset.name, +a.dataset.index);
+            this.pressedKeys = new Set;
+            this.currentBindingElem = a;
+            a.parentElement.classList.add("process_");
+            a.textContent = this.getPlaceholderKeys();
+            document.addEventListener("keydown",
+                this.keyDownHandler, !0);
+            document.addEventListener("keyup", this.keyUpHandler, !0);
+            document.addEventListener("pointerdown", this.stopBinding, !0)
+        } stopBinding(a) { this.currentBindingElem ? this.currentBindingElem.parentElement.contains(a.target) || this.cancelBinding(this.currentBindingElem) : document.removeEventListener("pointerdown", this.stopBinding, !0) } keyDownHandler(a) {
+            a.preventDefault();
+            a.stopPropagation();
+            if (!a.repeat) {
+                var b = this.currentBindingElem;
+                switch (a.code) {
+                    case "Escape": this.cancelBinding(b);
+                        break;
+
+                    case "Enter": case "NumpadEnter": this.isAcceptedBinding(this.currentKeys, this.pressedKeys) ? this.acceptBinding(b, this.pressedKeys) : this.cancelBinding(b);
+                        break;
+                    default: this.pressedKeys.add(a.code), this.keyHandler(a)
+                }
+            }
+        } keyUpHandler(a) {
+            this.pressedKeys.delete(a.code);
+            this.keyHandler(a)
+        } keyHandler(a) {
+            a = this.currentBindingElem;
+            a.classList.remove("existed_");
+            this.pressedKeys.size ? (a.textContent = this.formatKeys(this.pressedKeys), a.classList.toggle("existed_", this.isSameBindingKeys(this.currentKeys, this.pressedKeys) ||
+                this.isBindingExists(this.pressedKeys))) : a.textContent = this.getPlaceholderKeys()
+        } isAcceptedBinding(a, b) { return !(0 === b.size || this.isSameBindingKeys(a, b) || this.isBindingExists(b)) } isBindingExists(a) { return this.painter.isBindingExisted(a) } isSameBindingKeys(a, b) { return this.painter.compareBindingsKeys(a, b) } acceptBinding(a, b) {
+            b = Array.from(b).map(this.formatKey).join(" + ");
+            a.textContent = b;
+            a.dataset.initialValue = b;
+            this.updateBindingsSettings(a.dataset.name, a.dataset.index);
+            this.endBinding(a)
+        } cancelBinding(a) {
+            a.textContent =
+                a.dataset.initialValue;
+            this.endBinding(a)
+        } endBinding(a) {
+            this.painter.setKeysLockState(!1);
+            a.parentElement.classList.remove("process_");
+            a.classList.remove("existed_");
+            document.removeEventListener("keydown", this.keyDownHandler, !0);
+            document.removeEventListener("keyup", this.keyUpHandler, !0);
+            document.removeEventListener("pointerdown", this.stopBinding, !0);
+            this.currentBindingElem = null
+        } resetBindings(a) {
+            const [b, c] = this.painter.getDefaultBindings();
+            this.renderBindings(b, c);
+            this.dispatchEvent(new CustomEvent("bindings_updated",
+                { detail: { bindings: b } }))
+        } updateBindingsSettings(a, b) {
+            const [c, d] = this.painter.getBindings();
+            b = ~b ? b : c[a].length;
+            c[a][b] = [...this.pressedKeys];
+            this.renderBindings(c, d);
+            this.dispatchEvent(new CustomEvent("bindings_updated", { detail: { bindings: c } }))
+        } getPlaceholderKeys() { return "\u00a0" } formatKeys(a) { return a ? Array.from(a).map(this.formatKey).join(" + ") : this.getPlaceholderKeys() } formatKey(a) {
+            return a.replace(/^(Key|Digit)?(.+?)((?:Left)|(?:Right))?$/, (b, c, d, e) => (GPDrawInterface_.KEY_ALIASES[d] ?? d) + ("Right" ===
+                e ? ` (${e})` : ""))
+        } toggleScrollbar(a) { a.classList.toggle("scrollbar_", a.scrollHeight > a.clientHeight) } toggleReference() { this.referenceBtn?.click() } updateToolbar(a) {
+            this.currentTool.classList.remove("sel");
+            this.currentTool = this.tools[GPDrawInterface_.TOOLS_IDS_CLASSES[a]];
+            this.currentTool.classList.add("sel")
+        } updateOpacity(a) { this.opacity.value = a } updateThickness(a) {
+            a = this.thicknesses[a];
+            this.currentThickness && (this.currentThickness.classList.remove("sel"), this.currentThickness = null);
+            a && (a.classList.add("sel"),
+                this.currentThickness = a)
+        } updateReadyBtn(a) { a ?? this.painter.gpproxy.isReady() ? (this.readyIcon.classList.replace("ready", "pencil"), this.readyLabel.textContent = this.painter.localization.edit) : (this.readyIcon.classList.replace("pencil", "ready"), this.readyLabel.textContent = this.painter.localization.ready) } updateColorPickerPanel(a) { this.colorPanel.updateColorPickerPanel(a) } updatePanelsBackground(a, b) {
+            const c = parseInt(a.substr(1, 2), 16), d = parseInt(a.substr(3, 2), 16), e = parseInt(a.substr(5, 2), 16);
+            this.style.setProperty("--gp-panels-bg-color",
+                `rgb(${c} ${d} ${e} / ${b}%)`);
+            const [f, g, k] = GPColorUtils_.rgbToHsv(c, d, e), [h, l, m] = GPColorUtils_.hsvToRgb(Math.max(f - .04246122552758713, 0), Math.max(g - .012523565849717255, 0), Math.max(k - .05882352941176472, 0));
+            this.style.setProperty("--gp-panels-elems2-color", `rgb(${h}, ${l}, ${m})`);
+            this.colorPanel?.updatePanelsBackground(a)
+        } updatePanelsElements(a, b) {
+            const c = parseInt(a.substr(1, 2), 16), d = parseInt(a.substr(3, 2), 16);
+            a = parseInt(a.substr(5, 2), 16);
+            this.style.setProperty("--gp-panels-elems-rgb", `${c} ${d} ${a}`);
+
+            this.style.setProperty("--gp-panels-elems-rgb-opacity", `${b}%`)
+        } updateControlsBackgroundBlurLevel(a) { this.style.setProperty("--gp-panels-controls-backdrop-filter", a ? `blur(${a}px)` : "unset") } updateHeaderColor(a) {
+            this.screen.classList.toggle("gp-colored-header_", a !== GPPainter_.DEFAULT_HEADER_COLOR);
+            let [b, c, d] = GPColorUtils_.hexToHsl(a);
+            b = Math.round(36E3 * b) / 100;
+            c = Math.round(1E4 * c) / 100;
+            d = Math.round(1E4 * d) / 100;
+            var e = (b - -5.36 + 92.59) % 360, f = this.calcHeaderFilterValue(66.86, 78.64, c), g = this.calcHeaderFilterValue(34.31,
+                20.2, d), k = (b - 5.72 + 103.67) % 360, h = this.calcHeaderFilterValue(66.86, 72.41, c), l = this.calcHeaderFilterValue(34.31, 60.2, d);
+            e = `hue-rotate(${e}deg) saturate(${f}) brightness(${g})`;
+            k = `hue-rotate(${k}deg) saturate(${h}) brightness(${l})`;
+            h = `hsl(${b}deg ${Math.max(c - 5.96, 0)}% ${Math.max(d - 8.23, 0)}%)`;
+            l = `hsl(${b}deg ${Math.max(c - 3.86, 0)}% ${Math.min(d + 21.18, 100)}%)`;
+            f = `hsl(${b - 5.38}deg ${Math.max(c - 6.86, 0)}% ${Math.max(d - 22.55, 0)}%)`;
+            g = `hsl(${b}deg ${Math.min(c + 8.52, 100)}% ${Math.max(d - 21.56, 0)}%)`;
+            const m =
+                this.screen.querySelector(":scope > .draw").style;
+            m.setProperty("--gp-header-color", a);
+            m.setProperty("--gp-book-color", h);
+            m.setProperty("--gp-book-top-border-color", l);
+            m.setProperty("--gp-book-rings-filter", k);
+            m.setProperty("--gp-book-sheets-bottom-color", f);
+            m.setProperty("--gp-header-shadow-color", l);
+            m.setProperty("--gp-header-bottom-border-color", g);
+            m.setProperty("--gp-header-logo-bg-filter", e);
+            m.setProperty("--gp-ready-btn-shadow-color", h)
+        } calcHeaderFilterValue(a, b, c) {
+            return Math.round(Math.min(Math.max(c -
+                (a - b), 0), 100) / b * 100) / 100
+        } updateHeaderPhraseColor(a) { this.style.setProperty("--gp-header-phrase-color", a) } updateActionQueueSize(a, b) { this.actionQueueSize.textContent = a ? this.formatActionQueueTimeleft(b) : "" } formatActionQueueTimeleft(a) { return `${Math.floor(a / 6E4) || ""}:${String(Math.floor(a / 1E3) % 60).padStart(2, "0")}` } setAutoHideHeaderState(a) { this.screen.classList.toggle("gp-auto-hide-header_", a) } setAutoHideHeaderDelay(a) { this.style.setProperty("--gp-header-auto-hide-delay", `${a}s`) } updateSymmetryPanel(a) {
+            this.screen.classList.toggle("gp-symmetry-panel_",
+                a)
+        }
+    } window.GPDrawInterface_ = GPDrawInterface_;
+    class GPExtendedPalette_ extends EventTarget {
+        static CUSTOM_COLOR_SET_STORAGE = "gp_custom-palettes";
+        static DEFAULT_COLOR_SET = "3A0505 590D0D 993333 ED1C24 E54C4C FF9999 FF0000 000000 251005 59270D 995633 FF5800 E5814C FFBC99 FFFF00 FFFFFF 2D1F06 593E0D 997533 FFA500 E5AF4C FFDB99 00FF00 FFFFFF 2D2D06 59590D 999933 FFF200 E4E54C FFFF99 00FFFF 0C0C0C 192D06 32590D 659933 7EFF00 97E54C CBFF99 0000FF 191919 062D0C 0D5919 339943 21E43F 4CE564 99FFA9 FF00FF 262626 062D25 0D5948 339982 00FFC7 4CE5C3 99FFE9 2A2C30 333333 061F2D 0D3E59 337599 00A5FF 4CAFE5 99DBFF 464B55 4C4C4C 06132D 0D2759 335699 0058FF 4C81E5 99BCFF 798BA8 666666 06062D 0D0D59 333399 0000FF 6060F0 9999FF A7B0C8 7F7F7F 13062D 260D59 543399 5200FF 7E4CE5 BA99FF C8CFE4 999999 1F062D 3E0D59 753399 A500FF AF4CE5 DB99FF 36322D B3B3B3 2D0626 590D4B 993387 EC008C E54CCA FF99ED 56493D CCCCCC 2D0614 590D29 993358 FF005D E54C84 FF99BE 6B5745 D9D9D9 F3BD9E FFCCAF FFDCC8 E5C9C3 F7E1DB FBE7E2 B58F7B E6E6E6 B27C5E CC9475 DCA98C ECC8B6 FFDFCF FEE6DB C0A292 F3F3F3".split(" ");
+        static CUSTOM_PALETTES = JSON.parse(localStorage.getItem(this.CUSTOM_COLOR_SET_STORAGE)) ??
+            {};
+        static PALETTE = { DEFAULT: "default", CUSTOM: "custom" };
+        static PALETTES = Object.assign({ [this.PALETTE.DEFAULT]: this.DEFAULT_COLOR_SET, [this.PALETTE.CUSTOM]: [] }, this.CUSTOM_PALETTES);
+        static MAX_PALETTE_SIZE = 128;
+        static TYPE_PALETTE = "application/vnd.gpmod.palette";
+        static TYPE_PALETTE_COLOR_ID = "application/vnd.gpmod.color-id";
+        static PALETTE_FILE_EXT = "gppal";
+        static PS_COLOR_SWATCH_EXT = "aco";
+        static PALETTE_KEY_STATES = { Shift: "add", Control: "delete", Alt: "move" };
+        static buildDragPaletteImage() {
+            const a = new Image;
+
+            a.src = 'data:image/svg+xml,%3Csvg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"%3E%3Cpath d="M12.78.28C6.567 1.492 1.561 6.486.336 12.68c-2.313 11.688 8.231 20.4 16.175 19.169 2.575-.4 3.838-3.413 2.656-5.732-1.444-2.837.62-6.15 3.807-6.15h4.981c2.238 0 4.05-1.85 4.056-4.081C31.98 6.036 23.017-1.714 12.78.28zM6.011 19.968c-1.106 0-2-.894-2-2 0-1.107.894-2 2-2 1.106 0 2 .893 2 2 0 1.106-.894 2-2 2zm2-8c-1.106 0-2-.894-2-2 0-1.107.894-2 2-2 1.106 0 2 .893 2 2 0 1.106-.894 2-2 2zm8-4c-1.106 0-2-.894-2-2 0-1.107.894-2 2-2s2 .893 2 2c0 1.106-.893 2-2 2zm8 4c-1.106 0-2-.894-2-2 0-1.107.894-2 2-2 1.107 0 2 .893 2 2 0 1.106-.893 2-2 2z" fill="%2343de99" stroke-width=".063"/%3E%3C/svg%3E';
+
+            return a
+        } static DRAG_PALETTE_IMAGE = this.buildDragPaletteImage();
+        static PALETTE_BACKGROUND_ICON = '<svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 512 512"><path d="M204.3 5C104.9 24.4 24.8 104.3 5.2 203.4c-37 187 131.7 326.4 258.8 306.7 41.2-6.4 61.4-54.6 42.5-91.7-23.1-45.4 9.9-98.4 60.9-98.4h79.7c35.8 0 64.8-29.6 64.9-65.3C511.5 97.1 368.1-26.9 204.3 5zM96 320c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm32-128c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm128-64c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32zm128 64c-17.7 0-32-14.3-32-32s14.3-32 32-32 32 14.3 32 32-14.3 32-32 32z"/></svg>';
+        static PALETTE_WHEEL_SWITCH = !1;
+        constructor(a,
+            b, c, d) {
+            super();
+            this.l = a;
+            this.paletteName = b;
+            this.getNickname = c;
+            this.getCurrentColor = d;
+            this.state = !1;
+            GPUtils_.bindMethods([this.paletteKeyHandler, this.resetKeys, this.onPaletteDragStart, this.onPaletteDragOver, this.onPaletteDragEnter, this.onPaletteDragLeave, this.onPaletteDrop], this);
+            this.init()
+        } getElement() { return this.palette } getState() { return this.state } init() {
+            document.addEventListener("keydown", this.paletteKeyHandler, !0);
+            document.addEventListener("keyup", this.paletteKeyHandler, !0);
+            window.addEventListener("blur",
+                this.resetKeys);
+            window.addEventListener("focus", this.resetKeys);
+            this.paletteKeys = new Set;
+            this.paletteFileInput = document.createElement("input");
+            this.paletteFileInput.type = "file";
+            this.paletteFileInput.accept = `.${GPExtendedPalette_.PALETTE_FILE_EXT}`;
+            this.paletteFileInput.addEventListener("change", a => { this.handlePaletteFile(a.target.files) });
+            this.palette = document.createElement("div");
+            this.palette.className = "gp-palette-set_";
+            this.palette.classList.toggle("custom_", this.isCustomPalette);
+            this.palette.dataset.id =
+                -1;
+            this.paletteBackground = document.createElement("div");
+            this.paletteBackground.className = "background_";
+            this.paletteBackground.title = this.l.PALETTE_FILE_DROP_AREA_TTL;
+            this.paletteBackground.innerHTML = GPExtendedPalette_.PALETTE_BACKGROUND_ICON;
+            this.palette.appendChild(this.paletteBackground);
+            this.paletteColors = document.createElement("div");
+            this.paletteColors.className = "colors_";
+            this.palette.appendChild(this.paletteColors);
+            this.isCustomPalette && (this.palette.draggable = !0, this.palette.addEventListener("dragstart",
+                this.onPaletteDragStart), this.palette.addEventListener("dragover", this.onPaletteDragOver), this.palette.addEventListener("dragenter", this.onPaletteDragEnter), this.palette.addEventListener("dragleave", this.onPaletteDragLeave), this.palette.addEventListener("drop", this.onPaletteDrop));
+            this.palette.addEventListener("auxclick", a => { this.isCustomPalette && 1 === a.button && (a.ctrlKey ? 0 < this.colorSet.length && this.downloadPalette() : this.paletteFileInput.click(), a.preventDefault()) });
+            this.palette.addEventListener("pointerdown",
+                a => {
+                    if (0 === a.button)
+                        if (this.isCustomPalette) {
+                            const b = a.target.classList.contains("color_"), c = this.colorSet, d = b ? this.getColorIndex(a.target) : -1;
+                            a.shiftKey ? (b ? (c.splice(d, 0, this.getCurrentColor()), c.length = Math.min(c.length, GPExtendedPalette_.MAX_PALETTE_SIZE)) : c.length < GPExtendedPalette_.MAX_PALETTE_SIZE && c.push(this.getCurrentColor()), this.renderPaletteColorSet(), this.saveCustomPalette()) : a.ctrlKey ? (b ? c.splice(d, 1) : c.length && c.pop(), this.renderPaletteColorSet(), this.saveCustomPalette()) : a.altKey ?
+                                b && this.renderPaletteColorSet() : b && this.selectPaletteColor(a.target)
+                        } else this.selectPaletteColor(a.target)
+                });
+            this.palette.addEventListener("click", a => { this.isCustomPalette && 0 === this.colorSet.length && void 0 === this.palette.dataset.state && this.paletteFileInput.click() });
+            GPExtendedPalette_.PALETTE_WHEEL_SWITCH && this.palette.addEventListener("wheel", a => {
+                this.changePalette(a.deltaY);
+                a.preventDefault()
+            });
+            this.setPalette(this.paletteName)
+        } terminate() {
+            this.palette.remove();
+            this.paletteKeys.clear();
+            document.removeEventListener("keydown",
+                this.paletteKeyHandler, !0);
+            document.removeEventListener("keyup", this.paletteKeyHandler, !0);
+            window.removeEventListener("blur", this.resetKeys);
+            window.removeEventListener("focus", this.resetKeys)
+        } changePalette(a) {
+            const b = Object.keys(GPExtendedPalette_.PALETTES), c = b.findIndex(d => d === this.paletteName);
+            if (~c) {
+                const d = b.length;
+                a = b[0 > a ? (c + d - 1) % d : (c + 1) % d]
+            } else a = GPExtendedPalette_.PALETTE.DEFAULT;
+            this.setPalette(a);
+            this.dispatchEvent(new CustomEvent("palette", { detail: { name: a } }))
+        } setPalette(a) {
+            this.palette ?
+                (this.paletteKeys.clear(), this.paletteName = a, this.colorSet = GPExtendedPalette_.PALETTES[this.paletteName], this.isCustomPalette = this.paletteName !== GPExtendedPalette_.PALETTE.DEFAULT, this.paletteDropTarget = null, this.palette.classList.toggle("custom_", this.isCustomPalette), this.renderPaletteColorSet(), this.isCustomPalette ? (this.palette.draggable = !0, this.palette.addEventListener("dragstart", this.onPaletteDragStart), this.palette.addEventListener("dragover", this.onPaletteDragOver), this.palette.addEventListener("dragenter",
+                    this.onPaletteDragEnter), this.palette.addEventListener("dragleave", this.onPaletteDragLeave), this.palette.addEventListener("drop", this.onPaletteDrop)) : (this.palette.draggable = !1, this.palette.removeEventListener("dragstart", this.onPaletteDragStart), this.palette.removeEventListener("dragover", this.onPaletteDragOver), this.palette.removeEventListener("dragenter", this.onPaletteDragEnter), this.palette.removeEventListener("dragleave", this.onPaletteDragLeave), this.palette.removeEventListener("drop", this.onPaletteDrop))) :
+                this.init()
+        } renderPaletteColorSet() {
+            const a = this.colorSet;
+            a.length = Math.min(a.length, GPExtendedPalette_.MAX_PALETTE_SIZE);
+            const [b, c, d] = this.calculateColorSize(a.length);
+            this.palette.classList.toggle("max-size_", c);
+            this.palette.classList.toggle("empty_", !a.length);
+            this.palette.style.setProperty("--gp-color-size", `${b}px`);
+            this.palette.style.setProperty("--gp-palette-columns-count", `${d}`);
+            this.paletteColors.innerHTML = "";
+            a.forEach((e, f) => {
+                const g = document.createElement("div");
+                g.className = "color_";
+
+                g.dataset.color = `#${e}`;
+                g.style.backgroundColor = `#${e}`;
+                this.isCustomPalette && (g.draggable = !0, g.dataset.id = f);
+                this.paletteColors.appendChild(g)
+            })
+        } saveCustomPalette() {
+            const { default: a, ...b } = GPExtendedPalette_.PALETTES;
+            localStorage.setItem(GPExtendedPalette_.CUSTOM_COLOR_SET_STORAGE, JSON.stringify(b))
+        } calculateColorSize(a) {
+            const b = [3, 4, 5, 6, 8];
+            var c = b.map((f, g) => Math.floor(292 / (148 / b[g])) * f).findIndex(f => a <= f), d = ~c ? c : b.length - 1;
+            c = Math.floor((148 - 3 * (b[d] - 1)) / b[d]);
+            const e = b[d] === b.at(-1);
+            d = ~d ? b[d] : b.at(-1);
+
+            return [c, e, d]
+        } getColorIndex(a) { return [].indexOf.call(this.palette.children, a) } selectPaletteColor(a) {
+            const b = a.dataset.color;
+            this.resetPaletteColor();
+            a.classList.add("selected_");
+            this.dispatchEvent(new CustomEvent("color", { detail: { color: b } }))
+        } resetPaletteColor() {
+            if (this.palette) {
+                var a = this.palette.querySelector(".color_.selected_");
+                a && a.classList.remove("selected_")
+            }
+        } paletteKeyHandler(a) {
+            if (this.palette && !a.repeat) {
+                var b = GPExtendedPalette_.PALETTE_KEY_STATES;
+                a.key in b && (a.getModifierState(a.key) ?
+                    this.paletteKeys.add(a.key) : this.paletteKeys.delete(a.key), (a = Object.keys(b).find(c => this.paletteKeys.has(c))) ? this.palette.dataset.state = b[a] : delete this.palette.dataset.state)
+            }
+        } resetKeys(a) { this.palette && (this.paletteKeys.clear(), delete this.palette.dataset.state) } serializePalette(a) { return a.join("\n") } downloadPalette() {
+            const { url: a, filename: b } = this.buildSerializedPalette(), c = document.createElement("a");
+            c.href = a;
+            c.download = b;
+            c.click();
+            URL.revokeObjectURL(this.paletteURL)
+        } buildSerializedPalette() {
+            const a =
+                `gp-palette by ${this.getNickname()} (${this.getPaletteHash()}).${GPExtendedPalette_.PALETTE_FILE_EXT}`, b = new Blob([this.serializePalette(this.colorSet)]);
+            URL.revokeObjectURL(this.paletteURL);
+            this.paletteURL = URL.createObjectURL(b);
+            return { url: this.paletteURL, filename: a }
+        } getPaletteHash() {
+            let a = 0;
+            this.colorSet.forEach(b => {
+                for (let c = 0;
+                    c < b.length;
+                    c++) {
+                    const d = b.charCodeAt(c);
+                    a = (a << 5) - a + d;
+                    a |= 0
+                }
+            });
+            return (a + 2147483648).toString(36)
+        } onPaletteDragStart(a) {
+            if (a.shiftKey || a.ctrlKey || a.altKey || !this.colorSet.length) a.altKey &&
+                a.target !== a.currentTarget ? (a.dataTransfer.setData(GPExtendedPalette_.TYPE_PALETTE_COLOR_ID, a.target.dataset.id), a.dataTransfer.effectAllowed = "move") : a.preventDefault();
+            else {
+                const { url: b, filename: c } = this.buildSerializedPalette();
+                a.dataTransfer.setData("DownloadURL", `${GPExtendedPalette_.TYPE_PALETTE}:${c}:${b}`);
+                a.dataTransfer.setDragImage(GPExtendedPalette_.DRAG_PALETTE_IMAGE, 0, 0)
+            }
+        } onPaletteDragOver(a) {
+            a.preventDefault();
+            a.dataTransfer.dropEffect = "move"
+        } onPaletteDragEnter(a) {
+            switch (a.dataTransfer.types[0]) {
+                case GPExtendedPalette_.TYPE_PALETTE_COLOR_ID: ~a.target.dataset.id &&
+                    a.target.classList.add("drag-over_");
+                    break;
+                case "Files": this.paletteDropTarget = a.target, a.currentTarget.classList.add("drag-over_")
+            }
+        } onPaletteDragLeave(a) { a.target.matches(".color_") ? a.target.classList.remove("drag-over_") : a.target === this.paletteDropTarget && (a.preventDefault(), a.currentTarget.classList.remove("drag-over_")) } onPaletteDrop(a) {
+            switch (a.dataTransfer.types[0]) {
+                case GPExtendedPalette_.TYPE_PALETTE_COLOR_ID: const b = a.dataTransfer.getData(GPExtendedPalette_.TYPE_PALETTE_COLOR_ID);
+                    if (b ===
+                        a.target.dataset.id) break;
+                    this.moveColor(b, a.target.dataset.id);
+                    this.saveCustomPalette();
+                    break;
+                case "Files": this.handlePaletteFile(a.dataTransfer.files)
+            }a.target.classList.remove("drag-over_");
+            a.currentTarget.classList.remove("drag-over_");
+            a.preventDefault()
+        } handlePaletteFile(a) {
+            if (a = Array.from(a).find(this.isPaletteFile)) {
+                const b = new FileReader;
+                this.isPSColorSwatchFile(a) ? (b.addEventListener("loadend", c => {
+                    try {
+                        const d = GPAcoDecoder_.decode(b.result);
+                        this.loadPaletteColors(d)
+                    } catch (d) { console.error(d) }
+                }),
+                    b.readAsArrayBuffer(a)) : (b.addEventListener("loadend", c => {
+                        try {
+                            const d = this.parsePaletteFile(b.result);
+                            this.loadPaletteColors(d)
+                        } catch (d) { console.error(d) }
+                    }), b.readAsText(a))
+            }
+        } loadPaletteColors(a) { a && (this.colorSet.length = 0, this.colorSet.push(...a), this.renderPaletteColorSet(), this.saveCustomPalette()) } parsePaletteFile(a) {
+            const b = [];
+            a = a.split(/\s+/);
+            for (let c = 0;
+                c < a.length;
+                c++) {
+                const d = (a[c].match(/^#?([0-9A-Fa-f]{6})$/) || [])[1];
+                if (d && (b.push(d), b.length === GPExtendedPalette_.MAX_PALETTE_SIZE)) break
+            } return b
+        } isPaletteFile(a) {
+            const b =
+                a.name.toLowerCase();
+            return [GPExtendedPalette_.PALETTE_FILE_EXT, GPExtendedPalette_.PS_COLOR_SWATCH_EXT].some(c => b.endsWith(`.${c}`))
+        } isPSColorSwatchFile(a) { return a.name.toLowerCase().endsWith(`.${GPExtendedPalette_.PS_COLOR_SWATCH_EXT}`) } moveColor(a, b) {
+            this.colorSet.splice(~b ? b : this.colorSet.length, 0, this.colorSet.splice(a, 1)[0]);
+            this.renderPaletteColorSet()
+        } enable() { this.palette.removeAttribute("disabled") } disable() { this.palette.setAttribute("disabled", "") } remove() { this.palette.remove() } get size() { return GPExtendedPalette_.PALETTES[this.paletteName].length }
+    }
+    ;
+    class GPReference_ extends EventTarget {
+        static CONTAINER_HEIGHT = 698;
+        static CONTAINER_MIN_WIDTH = 256;
+        static QUERY_INPUT_HEIGHT = 56;
+        static BORDER_SIZE = 4;
+        static PREVIEW_MAX_HEIGHT = 180;
+        static DEFAULT_COLUMNS_COUNT = 4;
+        static RESULTS_COLUMN_MIN_WIDTH = 125;
+        static MAX_ZOOM_SENSITIVITY = 20;
+        static ALIGNMENT_ICONS = {
+            center: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23dee0ed' viewBox='0 0 13 13'%3E%3Crect width='3' height='6' x='2' y='3.5' rx='1'/%3E%3Crect width='3' height='6' x='8' y='3.5' rx='1'/%3E%3Cpath d='M6 1h1v11H6z'/%3E%3C/svg%3E",
+            "flex-start": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23dee0ed' viewBox='0 0 13 13'%3E%3Crect width='3' height='6' x='6' y='3.5' rx='1'/%3E%3Crect width='3' height='6' x='2' y='3.5' rx='1'/%3E%3Cpath d='M1 1h1v11H1z'/%3E%3C/svg%3E", "flex-end": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23dee0ed' viewBox='0 0 13 13'%3E%3Crect width='3' height='6' transform='scale(-1,1)' rx='1' y='3.5' x='-7'/%3E%3Crect width='3' height='6' transform='scale(-1,1)' rx='1' y='3.5' x='-11'/%3E%3Cpath d='m12 1h-1v11h1z'/%3E%3C/svg%3E",
+            "space-between": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23dee0ed' viewBox='0 0 13 13'%3E%3Crect width='3' height='6' x='8' y='3.5' rx='1'/%3E%3Crect width='3' height='6' x='2' y='3.5' rx='1'/%3E%3Cpath d='M1 1h1v11H1zM11 1h1v11h-1z'/%3E%3C/svg%3E", "space-around": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23dee0ed' viewBox='0 0 13 13'%3E%3Crect width='3' height='6' x='7.25' y='3.5' rx='1'/%3E%3Crect width='3' height='6' x='2.75' y='3.5' rx='1'/%3E%3Cpath d='M1 1h1v11H1zM11 1h1v11h-1z'/%3E%3C/svg%3E",
+            "space-evenly": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%23dee0ed' viewBox='0 0 13 13'%3E%3Crect width='3' height='6' x='7' y='3.5' rx='1'/%3E%3Crect width='3' height='6' x='3' y='3.5' rx='1'/%3E%3Cpath d='M1 1h1v11H1zM11 1h1v11h-1z'/%3E%3C/svg%3E"
+        };
+        static URL_PATTERN = /^https?:\/\/\w/;
+        static IMAGE_TYPES = new Set("image/jpeg image/png image/gif image/webp image/svg+xml image/bmp image/avif".split(" "));
+        static SVG_TYPE = "image/svg+xml";
+        static SEARCH_ENGINES = {
+            GOOGLE: "google",
+            PINTEREST: "pinterest", UNSPLASH: "unsplash"
+        };
+        static INTERFACE_ALIGNMENT = { CENTER: "center", RIGHT: "flex-start", LEFT: "flex-end", SPACE_BETWEEN: "space-between", SPACE_AROUND: "space-around", SPACE_EVENLY: "space-evenly" };
+        static DEFAULT_SETTINGS = {
+            enabled: !1, searchEngine: this.SEARCH_ENGINES.GOOGLE, interfaceAlignment: this.INTERFACE_ALIGNMENT.CENTER, containerMaxWidth: "none", stretchImage: !1, minZoom: 1, maxZoom: 30, zoomSensitivity: 10, frameStickyEdges: !0, frameStickyEdgesDistance: 15, frameSeparateOpacity: !1, frameWidth: 284,
+            framePos: { x: 0, y: 0 }, frameOrien: "tl"
+        };
+        static SETTINGS_UI = {
+            interfaceAlignment: { type: "list-i", args: { icons: this.ALIGNMENT_ICONS }, description: "\u0412\u044b\u0440\u0430\u0432\u043d\u0438\u0432\u0430\u043d\u0438\u0435 \u043e\u043a\u043e\u043d \u043c\u043e\u0434\u0443\u043b\u0435\u0439 Reference \u0438 Painter \u043e\u0442\u043d\u043e\u0441\u0438\u0442\u0435\u043b\u044c\u043d\u043e \u043e\u043a\u043d\u0430 \u0431\u0440\u0430\u0443\u0437\u0435\u0440\u0430" }, _1: { text: "Reference" }, stretchImage: {
+                type: "switch",
+                description: "\u0420\u0430\u0441\u0442\u044f\u0433\u0438\u0432\u0430\u0442\u044c \u0440\u0430\u0437\u043c\u0435\u0440 \u043e\u0442\u043a\u0440\u044b\u0442\u043e\u0433\u043e \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f \u0434\u043e \u0440\u0430\u0437\u043c\u0435\u0440\u043e\u0432 \u043e\u043a\u043d\u0430 \u043f\u043e \u0443\u043c\u043e\u043b\u0447\u0430\u043d\u0438\u044e"
+            }, minZoom: { type: "slider", args: { min: .1, max: 1, step: .1 }, description: "\u041c\u0438\u043d\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0443\u0440\u043e\u0432\u0435\u043d\u044c \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f \u0440\u0435\u0444\u0435\u0440\u0435\u043d\u0441\u0430" },
+            maxZoom: { type: "slider", args: { min: 2, max: 60, step: 1 }, description: "\u041c\u0430\u043a\u0441\u0438\u043c\u0430\u043b\u044c\u043d\u044b\u0439 \u0443\u0440\u043e\u0432\u0435\u043d\u044c \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f \u0440\u0435\u0444\u0435\u0440\u0435\u043d\u0441\u0430" }, zoomSensitivity: { type: "slider", args: { min: 1, max: this.MAX_ZOOM_SENSITIVITY, step: 1, reverse: !0 }, formatter: this.zoomSensitivityFormatter.bind(this), description: "\u0427\u0443\u0432\u0441\u0442\u0432\u0438\u0442\u0435\u043b\u044c\u043d\u043e\u0441\u0442\u044c \u043f\u0440\u0438\u0431\u043b\u0438\u0436\u0435\u043d\u0438\u044f \u0440\u0435\u0444\u0435\u0440\u0435\u043d\u0441\u0430" },
+            _2: { text: "Frames" }, frameStickyEdges: { type: "switch", description: "\u041f\u0440\u0438\u0442\u044f\u0433\u0438\u0432\u0430\u0442\u044c\u0441\u044f \u043a \u043a\u0440\u0430\u044f\u043c \u0434\u0440\u0443\u0433\u0438\u0445 \u0444\u0440\u0435\u0439\u043c\u043e\u0432 \u043f\u0440\u0438 \u043f\u0435\u0440\u0435\u043c\u0435\u0449\u0435\u043d\u0438\u0438 \u0444\u0440\u0435\u0439\u043c\u0430" }, frameStickyEdgesDistance: { type: "slider", args: { min: 5, max: 40, step: 1 }, description: "\u0414\u0438\u0441\u0442\u0430\u043d\u0446\u0438\u044f \u043f\u0440\u0438\u0442\u044f\u0433\u0438\u0432\u0430\u043d\u0438\u044f \u043a \u0444\u0440\u0435\u0439\u043c\u0430\u043c" },
+            frameSeparateOpacity: { type: "switch", description: "\u0420\u0430\u0437\u0434\u0435\u043b\u044c\u043d\u044b\u0435 \u043d\u0430\u0441\u0442\u0440\u043e\u0439\u043a\u0438 \u043f\u0440\u043e\u0437\u0440\u0430\u0447\u043d\u043e\u0441\u0442\u0438 \u0434\u043b\u044f \u043a\u0430\u0436\u0434\u043e\u0433\u043e \u0444\u0440\u0435\u0439\u043c\u0430" }
+        };
+        static zoomSensitivityFormatter(a) { return this.MAX_ZOOM_SENSITIVITY - (a - 1) } static MODULE = {
+            title: "Reference", alias: "ref", settings: {
+                storage: "gp_reference", defaultSettings: this.DEFAULT_SETTINGS,
+                ui: this.SETTINGS_UI
+            }, useCSS: !0
+        };
+        constructor(a) {
+            super();
+            this.gpproxy = a.gpproxy;
+            this.s = a.sm.setSettings(this, this.updateSettings);
+            this.history = new Map;
+            this.searchData = this.pendingSearch = this.pendingImage = this.lastQuery = null;
+            this.isRefOpened = this.isLastPage = !1;
+            this.scrollPos = 0;
+            this.resizeStartX;
+            this.resizeInitialWidth;
+            this.resizeTimer;
+            this.isReRenderNeeded = this.isResizing = !1;
+            this.firstRenderTimer = null;
+            this.columns = [];
+            this.columnsCount = GPReference_.DEFAULT_COLUMNS_COUNT;
+            this.cropper = this.lastColumnsCount =
+                null;
+            this.isCropping = !1;
+            this.fm = new GPReferenceFrameManager_(document.getElementById("content"), this.s.frameStickyEdges, this.s.frameStickyEdgesDistance, GPReferenceFrameManager_.DEFAULT_STATIC_ORIENTATION, this.s.frameSeparateOpacity, GPReferenceFrame_.DEFAULT_OPACITY, this.s.frameWidth, this.s.framePos, this.s.frameOrien);
+            this.fm.addEventListener("size", ({ detail: { width: b } }) => { this.s.frameWidth = b });
+            this.fm.addEventListener("pos", ({ detail: { x: b, y: c } }) => { this.s.framePos = { x: b, y: c } });
+            this.fm.addEventListener("orien",
+                ({ detail: { orien: b } }) => { this.s.frameOrien = b });
+            this.downloadImage = this.downloadImage.bind(this);
+            this.onScroll = this.onScroll.bind(this);
+            this.openImage = this.openImage.bind(this);
+            this.closeImage = this.closeImage.bind(this);
+            this.onImageWheel = this.onImageWheel.bind(this);
+            this.onImageDown = this.onImageDown.bind(this);
+            this.onImageMDown = this.onImageMDown.bind(this);
+            this.onImageClick = this.onImageClick.bind(this);
+            this.onImageMove = this.onImageMove.bind(this);
+            this.onImageDblClick = this.onImageDblClick.bind(this);
+
+            this.resizeDown = this.resizeDown.bind(this);
+            this.resizeMove = this.resizeMove.bind(this);
+            this.resizeUp = this.resizeUp.bind(this);
+            this.resizeDblClick = this.resizeDblClick.bind(this);
+            this.handleResizeWindow = this.handleResizeWindow.bind(this);
+            this.onResize = this.onResize.bind(this);
+            document.addEventListener("_ref_progress", ({ detail: { percentage: b } }) => { this.updateProgress(b) });
+            document.addEventListener("_ref_results", ({ detail: { images: b, isLastPage: c, isFirstPage: d, searchEngine: e, query: f } }) => {
+                e === this.pendingSearch &&
+                    (this.searchData = d ? b : [...this.searchData, ...b], this.pendingSearch = null, this.isLastPage = c, this.renderImages({ images: b, isFirstPage: d, query: f }), this.hideProgress(), this.closeImage())
+            });
+            document.addEventListener("_ref_complete", ({ detail: { base64: b, width: c, height: d, url: e, query: f, type: g, isFromHistory: k, inFrame: h, openInBg: l } }) => {
+                if (h) this.base64ToBlob(b).then(m => { this.openFrame(m, l) });
+                else {
+                    if (e !== this.pendingImage) return;
+                    k || this.addToHistory(e, c, d, f);
+                    this.pendingImage = null;
+                    this.showPreview(b, c, d, {
+                        query: f,
+                        type: g, url: e
+                    })
+                } this.hideProgress()
+            });
+            document.addEventListener("_ref_complete", () => { this.historyBtn.removeAttribute("hidden") }, { once: !0 });
+            document.addEventListener("_ref_error", ({ detail: { type: b, previewURL: c, width: d, height: e, query: f, isFromHistory: g, inFrame: k, openInBg: h } }) => {
+                "image" === b && c ? this.downloadImage(c, d, e, f, null, g, k, h) : k || ("search" === b ? this.pendingSearch = null : this.pendingImage = null);
+                this.hideProgress()
+            });
+            this.gpproxy.addEventListener("turn_started", b => {
+                this.container && (this.container.classList.remove("no-animation-delay_"),
+                    this.isLastPage = this.isRefOpened = !1, this.lastQuery = this.lastColumnsCount = null, this.queryInput.value = "", this.scrollPos = 0, this.searchData = null, this.results.innerHTML = "", delete this.results.dataset.query, this.fm.clear())
+            });
+            this.gpproxy.addEventListener("turns_ended", b => { this.fm.clear() });
+            this.createPainterBtn()
+        } toggle(a) {
+            this.s.enabled = a ?? !document.getElementById("__next")?.classList.contains("gp-reference-rendered_");
+            this.s.enabled ? this.enable() : this.disable()
+        } enable() {
+            document.getElementById("__next").classList.add("gp-reference-rendered_");
+
+            clearTimeout(this.firstRenderTimer);
+            this.firstRenderTimer = setTimeout(() => {
+                const a = this.columnsCount;
+                this.calculateColumnsCount();
+                this.columnsCount !== a && this.renderImages({ images: this.searchData, isFirstPage: !0, query: this.results.dataset.query })
+            }, 400);
+            this.dispatchEvent(new CustomEvent("state_changed", { detail: { isEnabled: !0 } }))
+        } disable() {
+            document.getElementById("__next").classList.remove("gp-reference-rendered_");
+            clearTimeout(this.firstRenderTimer);
+            this.dispatchEvent(new CustomEvent("state_changed",
+                { detail: { isEnabled: !1 } }))
+        } init() {
+            this.container || this.render();
+            window.addEventListener("resize", this.handleResizeWindow);
+            this.screen = document.querySelector("#content > .screen");
+            this.screen.before(this.container);
+            this.s.enabled ? this.enable() : this.disable()
+        } terminate() {
+            this.container && (this.pendingSearch = this.pendingImage = null, this.isReRenderNeeded = this.isResizing = !1, this.container.remove(), this.container.classList.remove("image-opened_"), this.zoomer.reset(), window.removeEventListener("resize", this.handleResizeWindow),
+                this.disable())
+        } render() {
+            this.container = document.createElement("div");
+            this.container.className = "gp-reference_";
+            this.style = this.container.style;
+            this.style.setProperty("--gp-ref-max-width", `${this.s.containerMaxWidth}`);
+            this.style.setProperty("--gp-ref-column-flex", `${Math.floor(100 / this.columnsCount)}%`);
+            document.documentElement.style.setProperty("--gp-ref-alignment", `${this.s.interfaceAlignment}`);
+            var a = this.container;
+            a.addEventListener("drop", async c => {
+                c.preventDefault();
+                let d;
+                c.dataTransfer.items &&
+                    "file" === c.dataTransfer.items[0].kind ? d = c.dataTransfer.items[0].getAsFile() : c.dataTransfer.files.length && (d = c.dataTransfer.files[0]);
+                if (d && GPReference_.IMAGE_TYPES.has(d.type)) {
+                    const e = new FileReader;
+                    e.addEventListener("loadend", f => { this.showPreview(e.result, 0, 0, { query: "file", type: d.type }) });
+                    e.readAsDataURL(d)
+                }
+            }, !0);
+            a.addEventListener("dragover", c => {
+                c.preventDefault();
+                c.dataTransfer.dropEffect = "move"
+            }, !0);
+            a = document.createElement("div");
+            a.className = "wrapper_";
+            this.container.appendChild(a);
+            var b = document.createElement("div");
+
+            b.className = "header_";
+            b.addEventListener("animationend", c => { "gp-ref-fade-out_" === c.animationName && this.style.setProperty("--gp-ref-progress", "0%") });
+            b.addEventListener("pointerleave", c => { this.historyList.classList.remove("shown_") });
+            a.appendChild(b);
+            this.queryInput = document.createElement("input");
+            this.queryInput.className = "query_";
+            this.queryInput.setAttribute("spellcheck", "false");
+            this.queryInput.setAttribute("autocomplete", "off");
+            this.queryInput.addEventListener("keydown", c => {
+                if ("Enter" === c.key) {
+                    const d =
+                        c.target.value.trim();
+                    GPReference_.URL_PATTERN.test(d) ? this.openImageURL(d) : d && (this.lastQuery = d, this.searchImages(d, !1));
+                    c.target.blur()
+                } else "Escape" === c.key && c.target.blur()
+            });
+            GPUtils_.setInputFocusBlurHandler(this.queryInput);
+            b.appendChild(this.queryInput);
+            this.historyBtn = document.createElement("div");
+            this.historyBtn.className = "history-btn_";
+            this.historyBtn.setAttribute("hidden", "");
+            this.historyBtn.addEventListener("pointerdown", c => {
+                0 === c.button && this.history.size && (this.historyList.classList.toggle("shown_"),
+                    this.historyList.scrollTop = 0)
+            });
+            b.appendChild(this.historyBtn);
+            this.historyList = document.createElement("div");
+            this.historyList.className = "history-list_";
+            this.historyList.addEventListener("pointerup", c => {
+                if (c = c.target.closest(".history-item_")) {
+                    var { url: d, width: e, height: f, query: g } = c.dataset;
+                    this.downloadImage(d, e, f, g, null, !0);
+                    this.historyList.classList.remove("shown_")
+                }
+            });
+            b.appendChild(this.historyList);
+            this.searchEnginesMenu = document.createElement("div");
+            this.searchEnginesMenu.className = "search-engines-menu_";
+
+            b.appendChild(this.searchEnginesMenu);
+            this.searchEngines = document.createElement("div");
+            this.searchEngines.className = "search-engines_";
+            this.searchEngines.addEventListener("pointerdown", c => { 0 === c.button && (this.searchEngines.classList.contains("shown_") ? c.target === this.searchEngines && this.searchEngines.classList.remove("shown_") : this.searchEngines.classList.add("shown_")) });
+            this.searchEngines.addEventListener("click", c => { c.target.matches(".search-engine_.selected_") && this.searchEngines.classList.remove("shown_") });
+
+            this.searchEngines.addEventListener("pointerup", c => {
+                if (c.target.classList.contains("search-engine_")) {
+                    var d = c.target.dataset.searchEngine;
+                    if (d !== this.s.searchEngine) {
+                        this.s.searchEngine = d;
+                        const e = this.queryInput.value.trim();
+                        this.searchByEngine(e, d);
+                        Array.from(this.searchEngines.children).forEach(f => { f.style.order = +(f !== c.target) });
+                        this.searchEngines.classList.remove("shown_");
+                        this.searchEngines.title = c.target.title
+                    }
+                }
+            });
+            Object.values(GPReference_.SEARCH_ENGINES).forEach(c => {
+                const d = document.createElement("div");
+
+                d.className = `search-engine_ ${c}_`;
+                d.title = c[0].toUpperCase() + c.slice(1);
+                d.dataset.searchEngine = c;
+                this.searchEngines.appendChild(d)
+            });
+            b = this.searchEngines.querySelector(`[data-search-engine="${this.s.searchEngine}"]`);
+            b.classList.add("selected_");
+            this.searchEngines.title = b.title;
+            this.searchEnginesMenu.appendChild(this.searchEngines);
+            Array.from(this.searchEngines.children).forEach(c => { c.style.order = +(c.dataset.searchEngine !== this.s.searchEngine) });
+            this.results = document.createElement("div");
+            this.results.className =
+                "results_";
+            this.results.addEventListener("click", this.openImage);
+            this.results.addEventListener("scroll", this.onScroll);
+            this.results.addEventListener("contextmenu", this.blockContextMenu);
+            a.appendChild(this.results);
+            this.imageObserver = new IntersectionObserver(c => { c.forEach(d => { d.isIntersecting && (d = d.target, d.src = d.dataset.src, this.imageObserver.unobserve(d)) }) }, { root: this.results });
+            this.imageWrapper = document.createElement("div");
+            this.imageWrapper.className = "image-wrapper_";
+            this.imageWrapper.addEventListener("wheel",
+                this.onImageWheel);
+            this.imageWrapper.addEventListener("pointerdown", this.onImageDown);
+            this.imageWrapper.addEventListener("mousedown", this.onImageMDown);
+            this.imageWrapper.addEventListener("click", this.onImageClick);
+            this.imageWrapper.addEventListener("dblclick", this.onImageDblClick);
+            this.imageWrapper.addEventListener("contextmenu", this.blockContextMenu);
+            a.appendChild(this.imageWrapper);
+            this.image = document.createElement("img");
+            this.image.className = "image_";
+            this.image.addEventListener("load", c => { this.calculateOrientation() });
+
+            this.imageWrapper.appendChild(this.image);
+            b = document.createElement("div");
+            b.className = "close-btn_";
+            b.innerHTML = '<svg viewBox="0 0 98 98" stroke-linejoin="round"><path stroke-width="2" stroke="currentColor" fill="currentColor" filter="drop-shadow(2px 2px 0px rgb(32 33 36 / 60%))" d="M78.2 23.3 75 20.1 48.7 46.4 22.5 20.1l-3.3 3.2 26.3 26.3-27.2 27.2 3.2 3.3 27.2-27.3L76 80.1l3.2-3.3L52 49.6l26.2-26.3z"/></svg>';
+            b.addEventListener("click", c => { this.closeImage() });
+            this.imageWrapper.appendChild(b);
+            this.zoomer =
+                window.renderer({ minScale: this.s.minZoom, maxScale: this.s.maxZoom, element: this.image, defaultScaleSensitivity: this.s.zoomSensitivity });
+            b = document.createElement("div");
+            b.className = "resizer_ left_";
+            b.dataset.dir = "left";
+            b.addEventListener("pointerdown", this.resizeDown);
+            b.addEventListener("pointerup", this.resizeUp);
+            b.addEventListener("dblclick", this.resizeDblClick);
+            a.appendChild(b);
+            b = document.createElement("div");
+            b.className = "resizer_ right_";
+            b.dataset.dir = "right";
+            b.addEventListener("pointerdown", this.resizeDown);
+
+            b.addEventListener("pointerup", this.resizeUp);
+            b.addEventListener("dblclick", this.resizeDblClick);
+            a.appendChild(b)
+        } createPainterBtn() {
+            this.painterBtn = document.createElement("div");
+            this.painterBtn.className = "gp-reference-btn_";
+            this.painterBtn.addEventListener("click", () => {
+                this.container.classList.toggle("no-animation-delay_", !this.s.enabled);
+                this.toggle()
+            })
+        } searchByEngine(a, b) {
+            a && (this.lastQuery = a, this.searchImages(a, !1));
+            (a = this.searchEngines.querySelector(".selected_")) && a.classList.remove("selected_");
+
+            this.searchEngines.querySelector(`[data-search-engine=${b}]`).classList.add("selected_")
+        } searchImages(a, b) { a && (this.pendingImage = null, this.pendingSearch = this.s.searchEngine, document.dispatchEvent(new CustomEvent("_ref_search", { detail: { searchEngine: this.s.searchEngine, next: !!b, query: a } })), this.container.classList.remove("complete_")) } renderImages({ images: a, isFirstPage: b, query: c, scrollPos: d }) {
+            if (a?.length) {
+                var e = Array(this.columnsCount).fill(0), f = Array(this.columnsCount).fill().map(() => document.createDocumentFragment());
+
+                if (b) for (this.results.innerHTML = "", this.results.scrollTop = 0, this.results.dataset.query = c, this.columns = [], b = 0;
+                    b < this.columnsCount;
+                    b++) {
+                    const g = document.createElement("div");
+                    g.className = "column_";
+                    g.dataset.index = `${b}`;
+                    this.columns[b] = g;
+                    this.results.appendChild(g)
+                } else e.map((g, k) => +this.columns[k].dataset.height);
+                a.forEach(g => {
+                    var k = g.image.width / g.image.height;
+                    const h = document.createElement("div");
+                    h.className = "preview_";
+                    h.style.backgroundColor = g.dominantColor;
+                    h.dataset.url = g.image.url;
+                    h.dataset.previewURL =
+                        g.preview.url;
+                    h.dataset.width = g.image.width;
+                    h.dataset.height = g.image.height;
+                    h.dataset.aspectRatio = k;
+                    const l = new Image;
+                    l.width = k * GPReference_.PREVIEW_MAX_HEIGHT;
+                    l.height = GPReference_.PREVIEW_MAX_HEIGHT;
+                    l.dataset.src = g.preview.url;
+                    h.appendChild(l);
+                    this.imageObserver.observe(l);
+                    k = this.getMinHeightColumnIndex(e);
+                    f[k].appendChild(h);
+                    e[k] += g.image.height / g.image.width
+                });
+                this.columns.forEach((g, k) => {
+                    g.dataset.height = e[k];
+                    g.appendChild(f[k])
+                });
+                a = !!this.results.getBoundingClientRect().height;
+                void 0 !== d && setTimeout(() => { this.results.scrollTop = d }, a ? 0 : 500);
+                a && setTimeout(() => { this.isNextPageNeeded() && this.searchImages(c, !0) }, a ? 0 : 500)
+            }
+        } getMinHeightColumnIndex(a) { return a.reduce((b, c, d, e) => c < e[b] ? d : b, 0) } isNextPageNeeded() {
+            return !this.isLastPage && !this.pendingSearch && this.columns.some(a => {
+                const b = this.results.scrollTop, c = this.results.getBoundingClientRect().height;
+                a = a.getBoundingClientRect().height;
+                return b + c >= a
+            })
+        } calculateColumnsCount(a) {
+            a = a || this.results.getBoundingClientRect().width || this.imageWrapper.getBoundingClientRect().width;
+
+            this.columnsCount = Math.floor(a / GPReference_.RESULTS_COLUMN_MIN_WIDTH);
+            this.style.setProperty("--gp-ref-column-flex", `${Math.floor(100 / this.columnsCount)}%`)
+        } onScroll() {
+            !this.isResizing && this.isNextPageNeeded() && this.searchImages(this.lastQuery, !0);
+            this.scrollPos = this.results.scrollTop
+        } updateProgress(a) {
+            this.container.classList.toggle("progress_", !~a);
+            this.style.setProperty("--gp-ref-progress", `${a}%`)
+        } hideProgress() {
+            this.container.classList.remove("progress_");
+            this.container.classList.add("complete_")
+        } downloadImage(a,
+            b, c, d, e, f, g, k) {
+            this.pendingImage = a;
+            document.dispatchEvent(new CustomEvent("_ref_image", { detail: { searchEngine: this.s.searchEngine, url: a, width: b, height: c, query: d, previewURL: e, isFromHistory: f, inFrame: g, openInBg: k } }));
+            this.container.classList.add("progress_");
+            this.container.classList.remove("complete_")
+        } async showPreview(a, b, c, { query: d, type: e, url: f }) {
+            b && c || ([b, c] = await this.getImageDimensions(a));
+            this.image.metadata = { base64: a, query: d, type: e, url: f };
+            this.image.style.setProperty("--gp-ref-img-width", "100%");
+
+            this.image.style.setProperty("--gp-ref-img-height", "100%");
+            this.image.src = a;
+            this.container.classList.add("image-opened_");
+            this.imageWidth = b;
+            this.imageHeight = c;
+            (a = this.history.get(f)?.pos) ? this.zoomer.setState(a) : this.zoomer.reset();
+            this.isRefOpened = !0
+        } async getImageDimensions(a) {
+            return new Promise((b, c) => {
+                const d = new Image;
+                d.onload = () => { b([d.naturalWidth, d.naturalHeight]) };
+                d.onerror = c;
+                d.src = a
+            })
+        } onImageDown(a) {
+            switch (a.button) {
+                case 0: a.ctrlKey && !a.shiftKey ? this.saveImage() : a.shiftKey ? this.cropImage(a) :
+                    this.moveImage(a);
+                    break;
+                case 1: this.zoomer.reset(), this.updateHistoryState()
+            }
+        } onImageMDown(a) { 2 === a.button && (this.isCropping ? (this.isCropping = !1, this.cropper.remove()) : document.addEventListener("mouseup", b => { b.target === this.imageWrapper && this.closeImage() }, { once: !0 })) } onImageClick(a) { 0 === a.button && 2 === a.buttons && (this.base64ToBlob(this.image.metadata.base64).then(b => { this.openFrame(b, a.ctrlKey) }), document.addEventListener("contextmenu", b => { b.preventDefault() }, { once: !0 })) } moveImage(a) {
+            a.target.setPointerCapture(a.pointerId);
+
+            a.target.addEventListener("pointermove", this.onImageMove);
+            a.target.addEventListener("pointerup", b => {
+                b.target.removeEventListener("pointermove", this.onImageMove);
+                this.updateHistoryState()
+            }, { once: !0 })
+        } cropImage(a) {
+            if (a.target === this.imageWrapper && this.image.metadata.type !== GPReference_.SVG_TYPE) {
+                this.cropper = document.createElement("div");
+                this.cropper.className = "gp-ref-cropper_";
+                document.body.appendChild(this.cropper);
+                var b = a.pageX, c = a.pageY, [, d] = this.getContainedImageSize(this.image), e = this.image.getBoundingClientRect(),
+                    f = d === e.height ? e.height / this.image.naturalHeight : e.width / this.image.naturalWidth, g = Math.round(a.clientX - e.x) / f, k = Math.round(a.clientY - e.y) / f;
+                this.isCropping = !0;
+                var h = (l => {
+                    this.isCropping || this.image.removeEventListener("pointermove", h);
+                    const m = Math.min(b, l.pageX), n = Math.min(c, l.pageY), r = Math.max(b, l.pageX);
+                    l = Math.max(c, l.pageY);
+                    this.cropper.style.left = `${m}px`;
+                    this.cropper.style.top = `${n}px`;
+                    this.cropper.style.width = `${r - m}px`;
+                    this.cropper.style.height = `${l - n}px`
+                }).bind(this);
+                this.image.setPointerCapture(a.pointerId);
+
+                this.image.addEventListener("pointermove", h);
+                this.image.addEventListener("pointerup", l => {
+                    this.image.removeEventListener("pointermove", h);
+                    this.cropper.remove();
+                    this.cropper = null;
+                    this.isCropping && this.getCroppedImage(g, k, Math.round(l.clientX - e.x) / f, Math.round(l.clientY - e.y) / f).then(m => { this.openFrame(m, l.ctrlKey) });
+                    this.isCropping = !1
+                }, { once: !0 })
+            }
+        } calculateOrientation() {
+            const [, a] = this.getContainedImageSize(this.image), b = this.s.stretchImage ? "100%" : "unset";
+            a === this.image.height ? (this.image.style.setProperty("--gp-ref-img-width",
+                "unset"), this.image.style.setProperty("--gp-ref-img-height", b)) : (this.image.style.setProperty("--gp-ref-img-width", b), this.image.style.setProperty("--gp-ref-img-height", "unset"))
+        } getContainedImageSize(a) {
+            const b = a.naturalWidth / a.naturalHeight;
+            let c = a.height * b, d = a.height;
+            c > a.width && (c = a.width, d = a.width / b);
+            return [Math.ceil(c), Math.ceil(d)]
+        } getCroppedImage(a, b, c, d) {
+            return new Promise(e => {
+                var f = Math.min(a, c), g = Math.min(b, d);
+                const k = Math.max(a, c);
+                var h = Math.max(b, d);
+                const l = Math.min(f, 0), m = Math.min(g,
+                    0), n = f - l, r = g - m;
+                f = Math.abs(k - f) - (Math.max(k - this.image.naturalWidth, 0) - l);
+                g = Math.abs(h - g) - (Math.max(h - this.image.naturalHeight, 0) - m);
+                h = document.createElement("canvas");
+                h.width = f;
+                h.height = g;
+                h.getContext("2d").drawImage(this.image, n, r, f, g, 0, 0, f, g);
+                h.toBlob(e)
+            })
+        } onImageMove(a) { this.zoomer.panBy({ originX: a.movementX, originY: a.movementY }) } onImageDblClick(a) {
+            this.zoomer.reset();
+            this.updateHistoryState()
+        } onImageWheel(a) {
+            a.preventDefault();
+            this.zoomer.zoom({
+                deltaScale: -Math.sign(a.deltaY), x: a.pageX - window.scrollX,
+                y: a.pageY - window.scrollY, scaleSensitivity: this.s.zoomSensitivity
+            });
+            1 === this.zoomer.getMinScale() && 1 >= this.zoomer.getScale() && this.zoomer.reset();
+            this.updateHistoryState()
+        } openImageURL(a) { this.downloadImage(a, 0, 0, "url", null, null) } openImage(a) {
+            if (a.target.classList.contains("preview_")) {
+                var { url: b, width: c, height: d, previewURL: e } = a.target.dataset, f = 0 === a.button && (a.ctrlKey || 2 === a.buttons);
+                a = f && a.ctrlKey;
+                this.downloadImage(b, c, d, this.results.dataset.query, e, null, f, a);
+                f && !a && document.addEventListener("contextmenu",
+                    g => { g.preventDefault() }, { once: !0 })
+            }
+        } closeImage(a) { this.results.dataset.query && (this.isRefOpened = !1, this.zoomer.reset(), this.container.classList.remove("image-opened_"), this.isReRenderNeeded && (this.calculateColumnsCount(), this.renderImages({ images: this.searchData, isFirstPage: !0, query: this.results.dataset.query }))) } saveImage() {
+            const { base64: a, query: b, type: c } = this.image.metadata, d = c.split("/")[1].split("+")[0], e = document.createElement("a");
+            e.href = a;
+            e.download = `${b}.${d}`;
+            e.click()
+        } addToHistory(a, b, c,
+            d) {
+            this.history.delete(a);
+            this.history.set(a, { width: b, height: c, query: d });
+            this.renderHistory()
+        } updateHistoryState() {
+            const a = this.history.get(this.image.metadata.url);
+            a && (a.pos = this.zoomer.getState())
+        } renderHistory() {
+            this.historyList.innerHTML = "";
+            const a = document.createDocumentFragment();
+            Array.from(this.history).reverse().forEach(([b, { width: c, height: d, query: e }], f) => {
+                const g = document.createElement("div");
+                g.className = "history-item_";
+                g.dataset.url = b;
+                g.dataset.width = c;
+                g.dataset.height = d;
+                g.dataset.query =
+                    e;
+                b = document.createElement("div");
+                b.className = "index_";
+                b.textContent = `${this.history.size - f}.`;
+                g.appendChild(b);
+                f = document.createElement("div");
+                f.className = "label_";
+                f.textContent = e;
+                g.appendChild(f);
+                a.appendChild(g)
+            });
+            this.historyList.appendChild(a)
+        } blockContextMenu(a) { a.preventDefault() } resizeDown(a) {
+            a.target.setPointerCapture(a.pointerId);
+            this.resizeStartX = a.pageX;
+            this.resizeInitialWidth = this.getContainerWidth();
+            this.lastColumnsCount = this.columnsCount;
+            a.target.addEventListener("pointermove", this.resizeMove);
+
+            this.isResizing = !0
+        } resizeMove(a) {
+            const b = a.pageX - this.resizeStartX;
+            this.style.setProperty("--gp-ref-max-width", `${Math.max(this.resizeInitialWidth + 2 * ("left" === a.target.dataset.dir ? -b : b), GPReference_.CONTAINER_MIN_WIDTH)}px`);
+            this.isRefOpened ? this.isReRenderNeeded = !0 : this.calculateColumnsCount()
+        } resizeUp(a) {
+            var b = this.getContainerWidth();
+            if (b !== this.resizeInitialWidth) {
+                this.style.setProperty("--gp-ref-max-width", "none");
+                const c = this.getContainerWidth();
+                b = b < c ? `${b}px` : "none";
+                this.s.containerMaxWidth =
+                    b;
+                this.style.setProperty("--gp-ref-max-width", b)
+            } a.target.removeEventListener("pointermove", this.resizeMove);
+            this.isResizing = !1;
+            !this.isRefOpened && this.searchData && this.columnsCount !== this.lastColumnsCount && this.renderImages({ images: this.searchData, isFirstPage: !0, query: this.results.dataset.query })
+        } resizeDblClick(a) {
+            a = "none" === window.getComputedStyle(this.container).maxWidth ? `${GPReference_.CONTAINER_MIN_WIDTH}px` : "none";
+            this.s.containerMaxWidth = a;
+            this.style.setProperty("--gp-ref-max-width", a);
+            this.isRefOpened ?
+                this.isReRenderNeeded = !0 : (this.calculateColumnsCount(), this.renderImages({ images: this.searchData, isFirstPage: !0, query: this.results.dataset.query }))
+        } getContainerWidth() { return this.container.getBoundingClientRect().width - 2 * GPReference_.BORDER_SIZE } handleResizeWindow(a) {
+            clearTimeout(this.resizeTimer);
+            this.resizeTimer = setTimeout(this.onResize, 250)
+        } onResize() {
+            this.s.enabled && (this.isRefOpened ? this.isReRenderNeeded = !0 : (this.calculateColumnsCount(), this.renderImages({
+                images: this.searchData, isFirstPage: !0,
+                query: this.results.dataset.query
+            })))
+        } openFrame(a, b) {
+            this.fm.create(a, b);
+            b || this.toggle(!1)
+        } base64ToBlob(a) { return fetch(a).then(b => b.blob()) } isEnabled() { return this.s.enabled } getPainterButton() { return this.painterBtn } updateSettings({ detail: { settings: a } }) {
+            "interfaceAlignment" in a && document.documentElement.style.setProperty("--gp-ref-alignment", `${a.interfaceAlignment}`);
+            this.container && ("minZoom" in a && this.zoomer.setMinScale(a.minZoom), "maxZoom" in a && this.zoomer.setMaxScale(a.maxZoom), "stretchImage" in
+                a && this.isRefOpened && (this.calculateOrientation(), this.zoomer.reset(), this.updateHistoryState()), "frameStickyEdges" in a && this.fm.setStickyEdges(a.frameStickyEdges), "frameStickyEdgesDistance" in a && this.fm.setStickyEdgesDistance(a.frameStickyEdgesDistance), "frameSeparateOpacity" in a && this.fm.setSeparateOpacity(a.frameSeparateOpacity))
+        }
+    } window.GPReference_ = GPReference_;
+    class GPReferenceFrameManager_ extends EventTarget {
+        static DEFAULT_STICKY_EDGES = !0;
+        static DEFAULT_STICKY_EDGES_DISTANCE = 15;
+        static DEFAULT_STATIC_ORIENTATION = !0;
+        static DEFAULT_SEPARATE_OPACITY = !1;
+        static BASE_Z_INDEX = 100;
+        static Z_INDEX_POOL = 100;
+        static MIN_FRAME_DISPLAY_AREA_SIZE = 40;
+        constructor(a, b, c, d, e, f, g, k, h) {
+            super();
+            this.container = a;
+            this.stickyEdges = b;
+            this.stickyEdgesDistance = c;
+            this.staticOrientation = d;
+            this.separateOpacity = e;
+            this.opacity = f;
+            this.width = g;
+            this.x = k.x;
+            this.y = k.y;
+            this.orien = h;
+            this.frames =
+                [];
+            this.topFrame = null;
+            this.lastZIndex = GPReferenceFrameManager_.BASE_Z_INDEX
+        } create(a, b) {
+            a = new GPReferenceFrame_(a, b, this);
+            this.add(a)
+        } add(a) {
+            this.frames.push(a);
+            this.topFrame = a
+        } delete(a) {
+            a = this.frames.indexOf(a);
+            this.frames.splice(a, 1);
+            this.frames.length || this.reset()
+        } clear() {
+            this.frames.forEach(a => { a.remove() });
+            this.reset()
+        } reset() {
+            this.frames = [];
+            this.topFrame = null;
+            this.lastZIndex = GPReferenceFrameManager_.BASE_Z_INDEX
+        } toFront(a) {
+            this.topFrame !== a && (a.setZIndex(this.getNextZIndex()), this.topFrame =
+                a);
+            (this.frames.length > GPReferenceFrameManager_.Z_INDEX_POOL || this.lastZIndex > GPReferenceFrameManager_.BASE_Z_INDEX + GPReferenceFrameManager_.Z_INDEX_POOL) && this.optimizeZIndexes()
+        } getNextZIndex() { return this.lastZIndex++ } optimizeZIndexes() {
+            this.lastZIndex = GPReferenceFrameManager_.BASE_Z_INDEX;
+            Array.from(this.frames).sort((a, b) => a.zIndex - b.zIndex).forEach(a => {
+                a.setZIndex(this.getNextZIndex());
+                this.topFrame = a
+            })
+        } setTopFrame(a) { this.topFrame = a } getAlignedCoords(a) {
+            const b = GPReferenceFrame_.BORDER_WIDTH;
+
+            var c = GPReferenceFrame_.DEFAULT_WIDTH;
+            if (1 === this.frames.length) return [b, b];
+            const d = 2 * b;
+            var e = Math.trunc(document.documentElement.clientWidth / (c + 2 * b));
+            const f = new Map([[b, []]]);
+            for (var g = 0;
+                g < e;
+                g++)f.set((c + 2 * b) * g + b, [[-b, -b]]);
+            let k = b;
+            this.frames.forEach(h => {
+                if (h !== a && !h.isSeparated && !h.isChanged) {
+                    const l = [h.offsetY, h.offsetY + h.height], m = f.get(h.offsetX);
+                    m ? m.push(l) : f.set(h.offsetX, [[b, b], l]);
+                    h.offsetX > k && (k = h.offsetX)
+                }
+            });
+            for (let [h, l] of f) for (l.sort((m, n) => m[0] - n[0]), c = 0;
+                c < l.length;
+                c++)if ([, e] = l[c],
+                    [g] = c !== l.length - 1 ? l[c + 1] : [document.documentElement.clientHeight, document.documentElement.clientHeight], g - (e + d) >= a.height) return [h, e + d];
+            return [k + GPReferenceFrame_.DEFAULT_WIDTH + d, b]
+        } setOpacity(a) { this.frames.forEach(b => { b.setOpacity(a) }) } getFrames() { return this.frames } hasFrames() { return 0 < this.frames.length } isSingleFrame() { return 1 === this.frames.length } getContainer() { return this.container } setStickyEdges(a) { this.stickyEdges = a } setStickyEdgesDistance(a) { this.stickyEdgesDistance = a } setSeparateOpacity(a) {
+            this.separateOpacity =
+                a
+        } setStaticOrientation(a) { this.staticOrientation = a }
+    }
+    class GPReferenceFrame_ {
+        static DEFAULT_WIDTH = 284;
+        static MAX_WIDTH = window.screen.width / 3;
+        static MIN_WIDTH = 180;
+        static WIDTH_STEP = 10;
+        static BORDER_WIDTH = 2;
+        static DEFAULT_ORIENTATION = "tl";
+        static DEFAULT_OPACITY = 1;
+        static MIN_OPACITY = .1;
+        static OPACITY_STEP = .1;
+        static ORIENTATION_PROPS = { t: "top", b: "bottom", l: "left", r: "right" };
+        static ORIENTATION = { TOP: "t", BOTTOM: "b", LEFT: "l", RIGHT: "r" };
+        constructor(a, b = !1, c) {
+            this.fm = c;
+            this.opacity = this.fm.opacity ?? GPReferenceFrame_.DEFAULT_OPACITY;
+            this.isChanged = !1;
+            this.openedInBg =
+                b;
+            this.isSeparated = !this.fm.hasFrames() && !this.openedInBg;
+            this.suppressEvent = this.suppressEvent.bind(this);
+            this.opacityPreviewHandler = this.opacityPreviewHandler.bind(this);
+            this.render();
+            this.load(a);
+            this.fm.setTopFrame(this)
+        } render() {
+            this.frame = document.createElement("div");
+            this.frame.className = "frame_ gp-ref-frame_";
+            this.frame.classList.toggle("static-orien_", this.fm.staticOrientation);
+            this.frame.style.zIndex = this.fm.getNextZIndex();
+            this.frame.style.setProperty("--gp-ref-frame-opacity", `${this.opacity}`);
+
+            this.frame.addEventListener("wheel", this.wheelHandler.bind(this));
+            this.frame.addEventListener("pointerdown", this.toFront.bind(this));
+            this.frame.addEventListener("pointerdown", this.moveHandler.bind(this));
+            this.frame.addEventListener("pointerdown", this.resizeHandler.bind(this));
+            this.frame.addEventListener("pointerdown", this.closeHandler.bind(this));
+            this.frame.addEventListener("mousedown", b => { b.stopPropagation() });
+            const a = document.createElement("div");
+            a.className = "wrapper_";
+            this.frame.appendChild(a);
+
+            this.image = document.createElement("img");
+            this.image.className = "image_";
+            a.appendChild(this.image);
+            this.fm.getContainer().appendChild(this.frame)
+        } wheelHandler(a) {
+            a.ctrlKey ? this.changeOpacity(a) : this.changeSize(a);
+            a.preventDefault()
+        } changeOpacity(a) {
+            a = Math.max(Math.min(this.opacity + (0 < a.deltaY ? -GPReferenceFrame_.OPACITY_STEP : GPReferenceFrame_.OPACITY_STEP), 1), GPReferenceFrame_.MIN_OPACITY);
+            this.setOpacity(a);
+            this.fm.separateOpacity ? this.setOpacity(a) : this.fm.setOpacity(a);
+            this.frame.classList.add("opacity-preview_");
+
+            this.frame.addEventListener("pointerleave", this.opacityPreviewHandler, { once: !0 })
+        } opacityPreviewHandler(a) { this.frame.classList.remove("opacity-preview_") } setOpacity(a) {
+            this.opacity = a;
+            this.frame.style.setProperty("--gp-ref-frame-opacity", `${a}`)
+        } changeSize(a) {
+            a = 0 < a.deltaY ? Math.max(this.width - GPReferenceFrame_.WIDTH_STEP, this.minWidth) : Math.min(this.width + GPReferenceFrame_.WIDTH_STEP, GPReferenceFrame_.MAX_WIDTH);
+            this.setSize(a);
+            this.toFront();
+            this.isChanged || this.handleChange();
+            this.fm.isSingleFrame() &&
+                (this.fm.width = a, this.dispatchSize(a))
+        } toFront() { this.fm.toFront(this) } moveHandler(a) {
+            if (0 === a.button) {
+                var b = this.frame.dataset.orien, c = this.offsetX, d = this.offsetY, [e, f, g, k] = this.getCoords(a), h = (l => {
+                    const [m, n, r] = this.getStickyCoords(l, l.pageX - e, l.pageY - f, g, k);
+                    this.setPosition(m, n, g, k, r)
+                }).bind(this);
+                this.frame.setPointerCapture(a.pointerId);
+                this.frame.addEventListener("pointermove", h);
+                this.frame.addEventListener("pointerup", () => {
+                    this.frame.removeEventListener("pointermove", h);
+                    this.isChanged || this.offsetX ===
+                        c && this.offsetY === d || this.handleChange();
+                    this.fm.isSingleFrame() && (this.fm.x = this.offsetX, this.fm.y = this.offsetY, this.dispatchPos(this.offsetX, this.offsetY), this.staticOrientation || this.frame.dataset.orien === b || (this.fm.orien = this.frame.dataset.orien, this.dispatchOrien(this.frame.dataset.orien)))
+                }, { once: !0 });
+                (this.fm.stickyEdges && a.ctrlKey || !this.fm.stickyEdges && !a.ctrlKey) && h(a)
+            }
+        } getStickyCoords(a, b, c, d, e) {
+            if (this.fm.stickyEdges && a.ctrlKey || !this.fm.stickyEdges && !a.ctrlKey || !this.fm.hasFrames()) return [b,
+                c, null];
+            const f = this.fm.stickyEdgesDistance;
+            let g, k, h, l, m = null, n, r;
+            this.fm.getFrames().forEach(p => {
+                if (p !== this) {
+                    var q = p.frame.getBoundingClientRect();
+                    var t = Math.abs(q.y - (c + e));
+                    t < f && (void 0 === h || t < h) && q.x + q.width >= b && q.x <= b + d && (!r || r[0] === p.frame.dataset.orien[0]) && (h = t, c = q.y - e, m = r = p.frame.dataset.orien);
+                    t = Math.abs(q.y + q.height - c);
+                    t < f && (void 0 === l || t < l) && q.x + q.width >= b && q.x <= b + d && (!r || r[0] === p.frame.dataset.orien[0]) && (l = t, c = q.y + q.height, m = r = p.frame.dataset.orien);
+                    t = Math.abs(q.x - (b + d));
+                    t < f && (void 0 ===
+                        g || t < g) && q.y + q.height >= c && q.y <= c + e && (!n || n[1] === p.frame.dataset.orien[1]) && (g = t, b = q.x - d, m = n = p.frame.dataset.orien);
+                    t = Math.abs(q.x + q.width - b);
+                    t < f && (void 0 === k || t < k) && q.y + q.height >= c && q.y <= c + e && (!n || n[1] === p.frame.dataset.orien[1]) && (k = t, b = q.x + q.width, m = n = p.frame.dataset.orien)
+                }
+            });
+            return [b, c, m]
+        } resizeHandler(a) {
+            if (2 === a.button) {
+                var b = this.width, c = a.pageX, d = this.image.getBoundingClientRect().width, e = this.frame.dataset.orien, f = (g => {
+                    g = g.pageX - c;
+                    this.setSize(Math.min(Math.max(d + (e[1] === GPReferenceFrame_.ORIENTATION.LEFT ?
+                        g : -g), this.minWidth), GPReferenceFrame_.MAX_WIDTH))
+                }).bind(this);
+                this.frame.setPointerCapture(a.pointerId);
+                this.frame.addEventListener("pointermove", f);
+                this.frame.addEventListener("pointerup", g => {
+                    document.addEventListener("contextmenu", this.suppressEvent, { once: !0 });
+                    this.frame.removeEventListener("pointermove", f);
+                    this.frame.classList.remove("resizing_");
+                    this.isChanged || this.handleChange();
+                    this.fm.isSingleFrame() && this.width !== b && (this.fm.width = this.width, this.dispatchSize(this.width))
+                }, { once: !0 });
+                this.frame.classList.add("resizing_")
+            }
+        } closeHandler(a) {
+            1 ===
+                a.button && (this.close(), a.preventDefault())
+        } suppressEvent(a) { a.preventDefault() } setSize(a) {
+            this.width = a;
+            this.height = Math.round(a / this.aspectRatio);
+            this.frame.style.setProperty("--gp-ref-frame-width", `${a}px`)
+        } updatePosition() {
+            const a = Math.max(Math.min(this.offsetX, document.documentElement.clientWidth - (this.width + GPReferenceFrame_.BORDER_WIDTH)), GPReferenceFrame_.BORDER_WIDTH), b = Math.max(Math.min(this.offsetY, document.documentElement.clientHeight - (this.height + GPReferenceFrame_.BORDER_WIDTH)), GPReferenceFrame_.BORDER_WIDTH);
+
+            this.frame.style.inset = "unset";
+            Array.from(this.frame.dataset.orien).forEach(c => {
+                const d = GPReferenceFrame_.ORIENTATION_PROPS[c];
+                switch (c) {
+                    case GPReferenceFrame_.ORIENTATION.TOP: case GPReferenceFrame_.ORIENTATION.BOTTOM: this.frame.style[d] = `${b}px`;
+                        break;
+                    case GPReferenceFrame_.ORIENTATION.LEFT: case GPReferenceFrame_.ORIENTATION.RIGHT: this.frame.style[d] = `${a}px`
+                }
+            })
+        } setPosition(a, b, c, d, e) {
+            if (!c || !d) {
+                const [l, m] = this.frame.getBoundingClientRect();
+                c = l;
+                d = m
+            } const f = document.documentElement.clientWidth, g =
+                document.documentElement.clientHeight;
+            var k;
+            if (this.fm.staticOrientation) var h = k = GPReferenceFrameManager_.MIN_FRAME_DISPLAY_AREA_SIZE;
+            else k = c, h = d;
+            k = Math.max(Math.min(a, f - (k + GPReferenceFrame_.BORDER_WIDTH)), GPReferenceFrame_.BORDER_WIDTH);
+            h = Math.max(Math.min(b, g - (h + GPReferenceFrame_.BORDER_WIDTH)), GPReferenceFrame_.BORDER_WIDTH);
+            a = e ?? (this.fm.staticOrientation ? GPReferenceFrame_.DEFAULT_ORIENTATION : (b + d / 2 > g / 2 ? GPReferenceFrame_.ORIENTATION.BOTTOM : GPReferenceFrame_.ORIENTATION.TOP) + (a + c / 2 > f / 2 ? GPReferenceFrame_.ORIENTATION.RIGHT :
+                GPReferenceFrame_.ORIENTATION.LEFT));
+            this.frame.dataset.orien = a;
+            this.frame.style.inset = "unset";
+            a[0] === GPReferenceFrame_.ORIENTATION.TOP ? (this.offsetY = Math.round(h), this.frame.style.top = `${this.offsetY}px`) : (this.offsetY = Math.round(g - (h + d)), this.frame.style.bottom = `${this.offsetY}px`);
+            a[1] === GPReferenceFrame_.ORIENTATION.LEFT ? (this.offsetX = Math.round(k), this.frame.style.left = `${this.offsetX}px`) : (this.offsetX = Math.round(f - (k + c)), this.frame.style.right = `${this.offsetX}px`)
+        } getCoords(a) {
+            const [b, c] =
+                a.touches ? [a.touches[0].clientX, a.touches[0].clientY] : [a.clientX, a.clientY];
+            a = a.currentTarget.getBoundingClientRect();
+            return [Math.round(b - a.left), Math.round(c - a.top), a.width, a.height]
+        } handleChange() { this.isChanged = !0 } dispatchSize(a) { this.fm.dispatchEvent(new CustomEvent("size", { detail: { width: a } })) } dispatchPos(a, b) { this.fm.dispatchEvent(new CustomEvent("pos", { detail: { x: a, y: b } })) } dispatchOrien(a) { this.fm.dispatchEvent(new CustomEvent("orien", { detail: { orien: a } })) } load(a) {
+            const b = URL.createObjectURL(a);
+
+            this.image.src = b;
+            this.image.onload = c => {
+                const { naturalWidth: d, naturalHeight: e } = this.image;
+                this.aspectRatio = d / e;
+                this.image.style.setProperty("--aspect-ratio", this.aspectRatio);
+                this.minWidth = Math.min(GPReferenceFrame_.MIN_WIDTH, d);
+                this.setSize(Math.min(this.isSeparated ? this.fm.width : GPReferenceFrame_.DEFAULT_WIDTH, d));
+                if (this.isSeparated) this.offsetX = this.fm.x, this.offsetY = this.fm.y, this.frame.dataset.orien = this.fm.orien;
+                else {
+                    const [f, g] = this.fm.getAlignedCoords(this);
+                    this.offsetX = f;
+                    this.offsetY = g;
+                    this.frame.dataset.orien =
+                        GPReferenceFrame_.DEFAULT_ORIENTATION
+                } this.updatePosition();
+                URL.revokeObjectURL(b)
+            }
+        } close() {
+            this.remove();
+            this.fm.delete(this)
+        } remove() { this.frame.remove() } setZIndex(a) { this.zIndex = this.frame.style.zIndex = a }
+    };
+    class GPPlayersManager_ extends EventTarget {
+        static DISPLAY_MODE = { NORMAL: "normal", EXPANDED: "expanded", FULLSCREEN: "fullscreen" };
+        static PREVIEW_PANEL_PATHS = ["write", "memory"];
+        static DEFAULT_SETTINGS = { autoplay: !0, openPlayerWithDoubleClick: !1, defaultDisplayMode: this.DISPLAY_MODE.NORMAL };
+        static SETTINGS_UI = {
+            autoplay: { type: "switch", description: "\u0410\u0432\u0442\u043e\u0432\u043e\u0441\u043f\u0440\u043e\u0438\u0437\u0432\u0435\u0434\u0435\u043d\u0438\u0435 \u043f\u0440\u043e\u0446\u0435\u0441\u0441\u0430 \u0440\u0438\u0441\u043e\u0432\u0430\u043d\u0438\u044f \u0441\u0440\u0430\u0437\u0443 \u043f\u043e\u0441\u043b\u0435 \u043e\u0442\u043a\u0440\u044b\u0442\u0438\u044f \u043f\u043b\u0435\u0435\u0440\u0430 \u0432 \u0430\u043b\u044c\u0431\u043e\u043c\u0435" },
+            openPlayerWithDoubleClick: { type: "switch", description: "\u041e\u0442\u043a\u0440\u044b\u0432\u0430\u0442\u044c \u043f\u043b\u0435\u0435\u0440 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u0434\u0432\u043e\u0439\u043d\u043e\u0433\u043e \u043a\u043b\u0438\u043a\u0430 \u043f\u043e \u0440\u0438\u0441\u0443\u043d\u043a\u0443 \u0432 \u0430\u043b\u044c\u0431\u043e\u043c\u0435" }, defaultDisplayMode: { type: "dropdown", args: { items: Object.values(this.DISPLAY_MODE) }, description: "\u0420\u0435\u0436\u0438\u043c \u043e\u0442\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u044f \u043e\u043a\u043d\u0430 \u043f\u043b\u0435\u0435\u0440\u0430 \u043f\u0440\u0438 \u043e\u0442\u043a\u0440\u044b\u0442\u0438\u0438 \u0432 \u0430\u043b\u044c\u0431\u043e\u043c\u0435" }
+        };
+        static MODULE = {
+            title: "Timelapse Player",
+            alias: "pl", dependencies: ["GPTimelapsePlayer_"], settings: { storage: "gp_timelapse-player", defaultSettings: this.DEFAULT_SETTINGS, ui: this.SETTINGS_UI }, useCSS: !0
+        };
+        constructor(a) {
+            super();
+            this.gpproxy = a.gpproxy;
+            this.s = a.sm.setSettings(this);
+            this.currentPath = null;
+            this.onAlbumMiddleClick = this.onAlbumMiddleClick.bind(this);
+            this.onAlbumDoubleClick = this.onAlbumDoubleClick.bind(this);
+            this.onPreviewMiddleClick = this.onPreviewMiddleClick.bind(this);
+            this.onPreviewDoubleClick = this.onPreviewDoubleClick.bind(this);
+            document.addEventListener("_url_changed",
+                ({ detail: { path: b } }) => { this.currentPath = b.slice(1) });
+            this.gpproxy.addEventListener("data", ({ detail: { event: b } }) => {
+                b === GPProxy_.EVENT.TURN_STARTED ? this.closePlayers() : b === GPProxy_.EVENT.GAME_STARTED ? (document.addEventListener("pointerdown", this.onPreviewMiddleClick), document.addEventListener("dblclick", this.onPreviewDoubleClick)) : [GPProxy_.EVENT.ALBUM_INFO, GPProxy_.EVENT.NEW_GAME, GPProxy_.EVENT.ALBUM_SCORE, GPProxy_.EVENT.GAME_QUIT].includes(b) ? (this.closePlayers(), b !== GPProxy_.EVENT.ALBUM_INFO && (document.removeEventListener("pointerdown",
+                    this.onAlbumMiddleClick), document.removeEventListener("dblclick", this.onAlbumDoubleClick))) : b === GPProxy_.EVENT.GALLERY_SETTINGS && (document.addEventListener("pointerdown", this.onAlbumMiddleClick), document.addEventListener("dblclick", this.onAlbumDoubleClick), document.removeEventListener("pointerdown", this.onPreviewMiddleClick), document.removeEventListener("dblclick", this.onPreviewDoubleClick))
+            });
+            this.gpproxy.addEventListener("rejoin", ({ detail: { stage: b } }) => {
+                switch (b) {
+                    case GPProxy_.STAGE.GAME: document.addEventListener("pointerdown",
+                        this.onPreviewMiddleClick);
+                        document.addEventListener("dblclick", this.onPreviewDoubleClick);
+                        break;
+                    case GPProxy_.STAGE.ALBUM: document.addEventListener("pointerdown", this.onAlbumMiddleClick), document.addEventListener("dblclick", this.onAlbumDoubleClick)
+                }
+            })
+        } onPreviewMiddleClick(a) { 1 === a.button && this.handleImageClick(a) } onPreviewDoubleClick(a) { 0 === a.button && this.s.openPlayerWithDoubleClick && this.handleImageClick(a) } handleImageClick(a) {
+            if (this.isPreviewPanelShown() && "CANVAS" === a.target.tagName && a.target.parentElement.parentElement.classList.contains("core")) {
+                const b =
+                    { data: this.gpproxy.getPrevImageData(), meta: { author: "", title: "", date: Date.now() } };
+                a = a.target.parentElement.parentElement;
+                const c = document.querySelector(".screen");
+                a.isPlayerRendered || this.renderPlayer(b, a, c, GPTimelapsePlayer_.DISPLAY_MODE.NORMAL, !1, !0)
+            }
+        } isPreviewPanelShown() { return GPPlayersManager_.PREVIEW_PANEL_PATHS.includes(this.currentPath) } onAlbumMiddleClick(a) { 1 === a.button && this.handleAlbumClick(a) } onAlbumDoubleClick(a) { 0 === a.button && this.s.openPlayerWithDoubleClick && this.handleAlbumClick(a) } handleAlbumClick(a) {
+            if ("CANVAS" ===
+                a.target.tagName && !a.target.parentElement.classList.contains("animation")) {
+                var b = a.target.closest(".item");
+                if (b) {
+                    a = [...b.parentElement.children].filter(d => d.classList.contains("item")).indexOf(b);
+                    a = this.gpproxy.getAlbumItem(a);
+                    b = b.querySelector(".balloon");
+                    var c = document.querySelector(".screen");
+                    b.isPlayerRendered || this.renderPlayer(a, b, c)
+                }
+            }
+        } renderPlayer(a, b, c, d, e, f) {
+            const g = new GPTimelapsePlayer_({ image: a, container: b, mainContainer: c }, d || this.s.defaultDisplayMode, f);
+            (e ?? this.s.autoplay) && g.addEventListener("data-loaded",
+                () => { g.play() })
+        } closePlayers() { GPTimelapsePlayer_.closeAll() }
+    } window.GPPlayersManager_ = GPPlayersManager_;
+    class GPTimelapsePlayer_ extends EventTarget {
+        static players = new Set;
+        static CACHE_ENABLED = !0;
+        static CACHE_INTERVAL = 1E3;
+        static ORIGINAL_WIDTH = 758;
+        static ORIGINAL_HEIGHT = 424;
+        static DENSITY = 1;
+        static WIDTH = this.ORIGINAL_WIDTH * this.DENSITY;
+        static HEIGHT = this.ORIGINAL_HEIGHT * this.DENSITY;
+        static BACKGROUND_COLOR = "#FFFFFF";
+        static STROKE_OFFSET = 3;
+        static SPEEDS = [[1, 1], [5, 1], [15, 1], [30, 1], [50, 1], [0, 1], [0, 2], [0, 4], [0, 8], [0, 16], [0, 32]];
+        static SPEED = 0;
+        static SPEED_SLIDER_WIDTH = 130;
+        static SPEED_SLIDER_HEIGHT = 16;
+        static SPEED_SLIDER_THUMB_WIDTH = 14;
+        static M_STROKE_OFFSET = 67;
+        static DISPLAY_MODE = {
+            NORMAL: "normal",
+            EXPANDED: "expanded", FULLSCREEN: "fullscreen"
+        };
+        static DEFAULT_DISPLAY_MODE = GPTimelapsePlayer_.DISPLAY_MODE.NORMAL;
+        static FV2_DATE = 1681366233E3;
+        static GARTICPHONE_HOSTNAME_PATTERN = /(^|\.)garticphone\.com$/;
+        constructor({ image: { data: a, background: b, auth: c, meta: { author: d, title: e, date: f } }, container: g, mainContainer: k }, h = GPTimelapsePlayer_.DEFAULT_DISPLAY_MODE, l = !1) {
+            super();
+            GPTimelapsePlayer_.players.add(this);
+            this.density = GPTimelapsePlayer_.DENSITY;
+            this.width = GPTimelapsePlayer_.WIDTH;
+            this.height = GPTimelapsePlayer_.HEIGHT;
+
+            this.originalData = a.slice();
+            const [m, n, r] = this.handleDelimiters(a, b);
+            this.data = m;
+            this.background = n;
+            this.auth = c;
+            this.author = d;
+            this.title = e;
+            this.date = new Date(f);
+            this.eraserAlpha = !r;
+            this.fi = f && this.date.getTime() > GPTimelapsePlayer_.FV2_DATE ? 5 : 4;
+            this.container = g;
+            this.container.isPlayerRendered = !0;
+            this.mainContainer = k;
+            this.defaultDisplayMode = h;
+            this.defaultDisplayModeDensity = this.getModeDensity(h);
+            this.cache;
+            this.canvas;
+            this.ctx;
+            this.isPlaying = !1;
+            this.currentSpeed = JSON.parse(localStorage.getItem("gp-timelapse-player-speed")) ||
+                GPTimelapsePlayer_.SPEED;
+            this.speed = GPTimelapsePlayer_.SPEEDS[this.currentSpeed];
+            this.sPos = this.pos = 0;
+            this.lastContainerDimension = { width: 0, height: 0 };
+            this.isContextLayoutShown = this.expandStateBeforeFullscreen = this.isFullscreen = this.isExpanded = !1;
+            this.isContextMenuDisabled = l;
+            this.isStandalone = !GPTimelapsePlayer_.GARTICPHONE_HOSTNAME_PATTERN.test(location.hostname);
+            this.progressBarPointerMoveHandler = this.progressBarPointerMoveHandler.bind(this);
+            this.resizeHandler = this.resizeHandler.bind(this);
+            this.toggleFullscreen =
+                this.toggleFullscreen.bind(this);
+            this.playPause = this.playPause.bind(this);
+            this.drawing = this.drawing.bind(this);
+            this.expand = this.expand.bind(this);
+            this.terminate = this.terminate.bind(this);
+            this.toggleContextLayout = this.toggleContextLayout.bind(this);
+            this.saveImage = this.saveImage.bind(this);
+            this.speedViewPointerMoveHandler = this.speedViewPointerMoveHandler.bind(this);
+            window.addEventListener("resize", this.resizeHandler);
+            this.addEventListener("cache-updated", this.updateCacheHandler);
+            this.initData();
+            this.initCacheWorker()
+        } static closeAll() {
+            GPTimelapsePlayer_.players.forEach(a => { a.terminate() })
+        } updateCacheHandler({ detail: { density: a } }) {
+            if (a === this.defaultDisplayModeDensity) {
+                this.render();
+                switch (this.defaultDisplayMode) {
+                    case GPTimelapsePlayer_.DISPLAY_MODE.EXPANDED: this.expand(!0);
+                        break;
+                    case GPTimelapsePlayer_.DISPLAY_MODE.FULLSCREEN: this.player.requestFullscreen()
+                }this.seek(this.data.length);
+                this.dispatchEvent(new Event("image-rendered"));
+                this.dispatchEvent(new CustomEvent("data-loaded", { detail: { author: this.author, title: this.title, date: this.date.toISOString() } }));
+                this.removeEventListener("cache-updated",
+                    this.updateCacheHandler)
+            }
+        } getModeDensity(a) {
+            switch (a) {
+                case GPTimelapsePlayer_.DISPLAY_MODE.NORMAL: const { width: b, height: c } = getComputedStyle(this.container);
+                    return this.getDensityByDimensions(parseInt(b), parseInt(c)).density;
+                case GPTimelapsePlayer_.DISPLAY_MODE.EXPANDED: const { width: d, height: e } = getComputedStyle(this.mainContainer);
+                    return this.getDensityByDimensions(parseInt(d), parseInt(e)).density;
+                case GPTimelapsePlayer_.DISPLAY_MODE.FULLSCREEN: return this.getDensityByDimensions(window.screen.width,
+                    window.screen.height).density
+            }
+        } terminate() {
+            document.fullscreenElement === this.player && this.mainContainer.classList.remove("gp-tp-fullscreen_");
+            this.pause();
+            this.worker.terminate();
+            this.cache = this.originalData = this.data = null;
+            this.player.remove();
+            this.container.isPlayerRendered = !1;
+            this.container = null;
+            this.speedInput && this.speedInput.remove();
+            window.removeEventListener("resize", this.resizeHandler);
+            GPTimelapsePlayer_.players.delete(this);
+            this.dispatchEvent(new Event("terminated"))
+        } initData() {
+            const a = [];
+
+            for (let b = 0;
+                b < this.data.length;
+                b++)this.data[b].index = b, this.isMStroke(this.data[b]) && a.push(b);
+            a.reverse().forEach(b => { this.data.splice(b, 1) })
+        } isMStroke(a) { return !(1 === a[0] && a[3][0] > GPTimelapsePlayer_.ORIGINAL_WIDTH && a[3][1] > GPTimelapsePlayer_.ORIGINAL_HEIGHT) || a[3][0] - GPTimelapsePlayer_.ORIGINAL_WIDTH - GPTimelapsePlayer_.M_STROKE_OFFSET || a.at(-1)[1] - GPTimelapsePlayer_.ORIGINAL_HEIGHT - GPTimelapsePlayer_.M_STROKE_OFFSET ? !1 : !0 } render() {
+            this.player = document.createElement("div");
+            this.player.className =
+                "timelapse-player_";
+            this.player.addEventListener("click", e => { e.stopPropagation() });
+            this.player.addEventListener("pointerdown", e => { e.stopPropagation() });
+            this.player.addEventListener("pointerup", e => { e.stopPropagation() });
+            this.player.addEventListener("mouseup", e => { e.stopPropagation() });
+            this.player.addEventListener("mousedown", e => {
+                e.preventDefault();
+                e.stopPropagation();
+                1 === e.button && (this.isFullscreen ? this.toggleFullscreen() : this.expand())
+            }, !0);
+            this.player.addEventListener("contextmenu", e => {
+                e.stopPropagation();
+
+                e.preventDefault();
+                this.toggleContextLayout()
+            });
+            this.player.addEventListener("fullscreenchange", e => {
+                this.isFullscreen = !!document.fullscreenElement;
+                this.player.classList.toggle("fullscreen_", this.isFullscreen);
+                this.mainContainer.classList.toggle("gp-tp-fullscreen_", this.isFullscreen);
+                this.isStandalone && !this.isFullscreen ? this.expand(this.expandStateBeforeFullscreen) : this.resizeHandler()
+            });
+            this.bgCanvas = document.createElement("canvas");
+            this.bgCanvas.className = "background-canvas_";
+            this.bgCanvas.width =
+                this.width;
+            this.bgCanvas.height = this.height;
+            this.player.appendChild(this.bgCanvas);
+            this.bgCtx = this.bgCanvas.getContext("2d");
+            this.bgCtx.fillStyle = GPTimelapsePlayer_.BACKGROUND_COLOR;
+            this.bgCtx.fillRect(0, 0, this.bgCanvas.width, this.bgCanvas.height);
+            this.background && this.drawFunction(this.bgCtx, this.background, this.density, !1);
+            this.canvas = document.createElement("canvas");
+            this.canvas.className = "canvas_";
+            this.canvas.width = this.width;
+            this.canvas.height = this.height;
+            this.player.appendChild(this.canvas);
+
+            this.ctx = this.canvas.getContext("2d", { willReadFrequently: !0 });
+            this.strokeCanvas = document.createElement("canvas");
+            this.strokeCanvas.className = "stroke-canvas_";
+            this.strokeCanvas.width = this.width;
+            this.strokeCanvas.height = this.height;
+            this.player.appendChild(this.strokeCanvas);
+            this.strokeCtx = this.strokeCanvas.getContext("2d");
+            var a = document.createElement("div");
+            a.className = "event-catcher_";
+            a.addEventListener("click", this.playPause);
+            a.addEventListener("dblclick", this.toggleFullscreen);
+            this.player.appendChild(a);
+
+            a = document.createElement("div");
+            a.className = "controls_";
+            a.style.cssText = "";
+            this.player.appendChild(a);
+            const b = document.createElement("div");
+            b.className = "progress-bar_";
+            b.addEventListener("pointermove", e => {
+                const [f, , g] = this.getCoords(e);
+                d.style.width = `${100 * Math.max(0, Math.min(1, f / g))}%`
+            }, !0);
+            b.addEventListener("pointerdown", e => {
+                if (0 === e.button) {
+                    var f = this.isPlaying;
+                    this.progress.classList.remove("smooth_");
+                    this.player.classList.toggle("finished_", this.pos === this.data.length - 1);
+                    this.progressBarPointerMoveHandler(e);
+
+                    b.setPointerCapture(e.pointerId);
+                    b.addEventListener("pointermove", this.progressBarPointerMoveHandler);
+                    b.addEventListener("pointerup", g => {
+                        b.removeEventListener("pointermove", this.progressBarPointerMoveHandler);
+                        this.progress.classList.add("smooth_");
+                        this.player.classList.toggle("finished_", this.pos === this.data.length);
+                        f && this.pos < this.data.length && this.play()
+                    }, { once: !0 })
+                }
+            });
+            a.appendChild(b);
+            var c = document.createElement("div");
+            c.className = "progress-bar-bg_";
+            b.appendChild(c);
+            const d = document.createElement("div");
+
+            d.className = "progress-hover_";
+            b.appendChild(d);
+            this.progress = document.createElement("div");
+            this.progress.className = "progress_ smooth_";
+            this.updateProgress();
+            b.appendChild(this.progress);
+            c = document.createElement("div");
+            c.className = "play-btn_ btn_";
+            c.title = "\u0417\u0430\u043f\u0443\u0441\u0442\u0438\u0442\u044c/\u041e\u0441\u0442\u0430\u043d\u043e\u0432\u0438\u0442\u044c \u043f\u0440\u043e\u0438\u0433\u0440\u044b\u0432\u0430\u043d\u0438\u0435";
+            a.appendChild(c);
+            c.addEventListener("click", e => { this.playPause() });
+
+            c = document.createElement("div");
+            c.className = "first-frame-btn_ btn_";
+            c.title = "\u041a \u043f\u0435\u0440\u0432\u043e\u043c\u0443 \u0448\u0442\u0440\u0438\u0445\u0443";
+            c.addEventListener("click", e => {
+                this.seek(0);
+                this.updateProgress();
+                this.player.classList.remove("finished_")
+            });
+            a.appendChild(c);
+            c = document.createElement("div");
+            c.className = "speed-down-btn_ btn_";
+            c.title = "\u0423\u043c\u0435\u043d\u044c\u0448\u0438\u0442\u044c \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c";
+            c.addEventListener("click", e => { this.changeSpeed(-1) });
+            a.appendChild(c);
+            c = document.createElement("div");
+            c.className = "speed-up-btn_ btn_";
+            c.title = "\u0423\u0432\u0435\u043b\u0438\u0447\u0438\u0442\u044c \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c";
+            c.addEventListener("click", e => { this.changeSpeed(1) });
+            a.appendChild(c);
+            c = document.createElement("div");
+            c.className = "last-frame-btn_ btn_";
+            c.title = "\u041a \u043f\u043e\u0441\u043b\u0435\u0434\u043d\u0435\u043c\u0443 \u0448\u0442\u0440\u0438\u0445\u0443";
+            c.addEventListener("click", e => {
+                this.seek(this.data.length);
+                this.updateProgress();
+                this.player.classList.add("finished_")
+            });
+            a.appendChild(c);
+            this.speedView = document.createElement("div");
+            this.speedView.className = "speed_";
+            this.speedView.title = "\u0422\u0435\u043a\u0443\u0449\u0430\u044f \u0441\u043a\u043e\u0440\u043e\u0441\u0442\u044c";
+            this.speedView.textContent = " ";
+            this.updateSpeedView();
+            a.appendChild(this.speedView);
+            this.speedView.addEventListener("pointerdown", e => {
+                const { x: f, y: g } = this.player.getBoundingClientRect(), k = (e.clientY -
+                    g - (e.clientY - e.target.getBoundingClientRect().y)) / this.scaleY;
+                this.renderSpeedInput((e.clientX - f) / this.scaleX, k);
+                this.speedView.setPointerCapture(e.pointerId);
+                this.speedView.addEventListener("pointermove", this.speedViewPointerMoveHandler);
+                this.speedView.addEventListener("pointerup", h => {
+                    this.speedView.removeEventListener("pointermove", this.speedViewPointerMoveHandler);
+                    this.speedInput?.remove()
+                }, { once: !0 })
+            });
+            this.strokeNumView = document.createElement("div");
+            this.strokeNumView.className = "stroke_";
+            this.strokeNumView.title =
+                "\u0422\u0435\u043a\u0443\u0449\u0438\u0439 \u0448\u0442\u0440\u0438\u0445";
+            this.strokeNumView.textContent = " ";
+            this.updateStrokeView();
+            a.appendChild(this.strokeNumView);
+            a.appendChild(document.createElement("span"));
+            c = document.createElement("div");
+            c.className = "expand-btn_ btn_";
+            c.title = "\u0420\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c/\u0421\u0432\u0435\u0440\u043d\u0443\u0442\u044c";
+            c.addEventListener("click", e => { this.expand() });
+            a.appendChild(c);
+            c = document.createElement("div");
+            c.className =
+                "fullscreen-btn_ btn_";
+            c.title = "\u0420\u0430\u0437\u0432\u0435\u0440\u043d\u0443\u0442\u044c \u043d\u0430 \u0432\u0435\u0441\u044c \u044d\u043a\u0440\u0430\u043d";
+            c.addEventListener("click", this.toggleFullscreen);
+            a.appendChild(c);
+            a = document.createElement("div");
+            a.className = "close-btn_";
+            a.title = "\u0417\u0430\u043a\u0440\u044b\u0442\u044c \u043f\u0440\u043e\u0438\u0433\u0440\u044b\u0432\u0430\u0442\u0435\u043b\u044c";
+            a.addEventListener("click", this.terminate);
+            this.player.appendChild(a);
+            this.contextLayout =
+                document.createElement("div");
+            this.contextLayout.className = "context-layout_";
+            this.contextLayout.addEventListener("click", this.toggleContextLayout);
+            a = document.createElement("div");
+            a.className = "save-img-data-btn_ btn_";
+            a.title = "\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u0438\u0441\u0445\u043e\u0434\u043d\u0438\u043a";
+            a.addEventListener("click", e => {
+                e.stopPropagation();
+                this.saveImageData()
+            });
+            this.contextLayout.appendChild(a);
+            a = document.createElement("div");
+            a.className = "save-img-btn_ btn_";
+
+            a.title = "\u0421\u043e\u0445\u0440\u0430\u043d\u0438\u0442\u044c \u0438\u0437\u043e\u0431\u0440\u0430\u0436\u0435\u043d\u0438\u0435";
+            a.addEventListener("click", e => {
+                e.stopPropagation();
+                this.saveImage()
+            });
+            this.contextLayout.appendChild(a);
+            this.player.appendChild(this.contextLayout);
+            this.container.firstElementChild.before(this.player);
+            this.resizeHandler()
+        } toggleContextLayout() {
+            this.isContextMenuDisabled || (this.pause(), this.isContextLayoutShown = !this.isContextLayoutShown, this.player.classList.toggle("context-menu_",
+                this.isContextLayoutShown))
+        } updateSpeedView() {
+            let a = Number(!this.speed[0]);
+            this.speedView.firstChild.nodeValue = `x${a ? 100 * this.speed[a] : this.speed[a]}`
+        } updateStrokeView() { this.strokeNumView.firstChild.nodeValue = `${this.pos} / ${this.data.length}` } resizeHandler() {
+            const a = this.isPlaying;
+            this.pause();
+            if (document.fullscreenElement === this.player) this.setSize(document.documentElement.clientWidth, document.documentElement.clientHeight);
+            else {
+                const d = this.isExpanded ? this.mainContainer : this.container;
+                let { width: e,
+                    height: f } = getComputedStyle(d);
+                e = parseInt(e);
+                f = parseInt(f);
+                const { width: g, height: k } = this.lastContainerDimension;
+                if (d !== this.mainContainer || e !== g || f !== k) this.setSize(e, f), this.lastContainerDimension = { width: e, height: f }
+            } a && this.play();
+            const { width: b, height: c } = this.mainContainer.getBoundingClientRect();
+            this.scaleX = b / this.mainContainer.offsetWidth;
+            this.scaleY = c / this.mainContainer.offsetHeight
+        } getDensityByDimensions(a, b) {
+            a = Math.min(Math.ceil(a / GPTimelapsePlayer_.ORIGINAL_WIDTH), Math.ceil(b / GPTimelapsePlayer_.ORIGINAL_HEIGHT));
+
+            return { density: a, canvasWidth: GPTimelapsePlayer_.ORIGINAL_WIDTH * a, canvasHeight: GPTimelapsePlayer_.ORIGINAL_HEIGHT * a }
+        } setSize(a, b) {
+            const { density: c, canvasWidth: d, canvasHeight: e } = this.getDensityByDimensions(a, b), { width: f, height: g } = this.calculateAspectRatioFit(GPTimelapsePlayer_.ORIGINAL_WIDTH, GPTimelapsePlayer_.ORIGINAL_HEIGHT, a, b);
+            a = document.documentElement.style;
+            a.setProperty("--timelapse-player-width", `${Math.round(f)}px`);
+            a.setProperty("--timelapse-player-height", `${Math.round(g)}px`);
+            this.density =
+                c;
+            this.width = d;
+            this.height = e;
+            this.bgCanvas.width = d;
+            this.bgCanvas.height = e;
+            this.canvas.width = d;
+            this.canvas.height = e;
+            this.strokeCanvas.width = d;
+            this.strokeCanvas.height = e;
+            this.redraw()
+        } redraw() {
+            this.pause();
+            if (this.background) {
+                this.clearBackground();
+                var a = this.getCache();
+                this.cache[this.density] ? (a = a.at(-1), this.bgCtx.putImageData(a, 0, 0)) : this.drawFunction(this.bgCtx, this.background, this.density, !1)
+            } else this.bgCtx.fillStyle = GPTimelapsePlayer_.BACKGROUND_COLOR, this.bgCtx.fillRect(0, 0, this.bgCanvas.width,
+                this.bgCanvas.height);
+            this.clearCanvas();
+            a = this.data.slice(0, this.pos);
+            this.draw(this.ctx, a);
+            this.clearStroke();
+            this.stroke && (a = this.stroke.slice(0, GPTimelapsePlayer_.STROKE_OFFSET + this.sPos + 1), this.draw(this.strokeCtx, [a], this.density, !1))
+        } calculateAspectRatioFit(a, b, c, d) {
+            c = Math.min(c / a, d / b);
+            return { width: a * c, height: b * c }
+        } expand(a) {
+            this.isExpanded = a ?? !this.isExpanded;
+            this.player.classList.toggle("expanded_", this.isExpanded);
+            this.isExpanded ? this.mainContainer.appendChild(this.player) : this.container.firstElementChild.before(this.player);
+
+            this.resizeHandler();
+            this.isStandalone && document.dispatchEvent(new CustomEvent("gp:player.display_mode_changed", { detail: { displayMode: this.isExpanded ? GPTimelapsePlayer_.DISPLAY_MODE.EXPANDED : GPTimelapsePlayer_.DISPLAY_MODE.NORMAL } }))
+        } playPause() { this.isPlaying ? this.pause() : this.play() } play(a = this.pos) {
+            a || this.clearCanvas();
+            this.isPlaying = !0;
+            this.updateProgress();
+            this.player.classList.add("playing_");
+            setTimeout(() => { this.player.classList.remove("finished_") }, 24);
+            this.timer = requestAnimationFrame(this.drawing)
+        } pause() {
+            this.isPlaying =
+                !1;
+            cancelAnimationFrame(this.timer);
+            this.player.classList.remove("playing_")
+        } stop() {
+            this.pause();
+            this.pos = 0;
+            this.updateProgress()
+        } seek(a) {
+            this.pause();
+            a = Math.max(0, Math.min(this.data.length, a));
+            if (a !== this.pos || !a) {
+                this.clearStroke();
+                if (a < this.pos || !this.pos) {
+                    this.clearCanvas();
+                    var b = this.data.slice(0, a)
+                } else b = this.data.slice(this.pos, a);
+                this.draw(this.ctx, b);
+                this.pos = a;
+                this.sPos = 0;
+                this.stroke = null;
+                this.updateStrokeView()
+            }
+        } drawing() {
+            if (this.stroke) this.drawingStroke(this.stroke);
+            else if (this.pos <
+                this.data.length) {
+                const a = this.data.slice(this.pos, this.pos + this.speed[1]), b = a.at(-1);
+                this.speed[0] && [1, 2].includes(b[0]) ? (this.sPos = 0, this.stroke = b, this.drawingStroke(b)) : (this.draw(this.ctx, a), this.pos = Math.min(this.data.length, this.pos + this.speed[1]), this.pos < this.data.length ? this.timer = requestAnimationFrame(this.drawing) : (this.player.classList.add("finished_"), this.pause()), this.updateProgress(), this.updateStrokeView())
+            } else this.pos = 0, this.updateProgress(), this.play()
+        } drawingStroke(a) {
+            if (this.speed[0] &&
+                this.sPos < a.length - GPTimelapsePlayer_.STROKE_OFFSET) {
+                const b = a.slice(0, GPTimelapsePlayer_.STROKE_OFFSET + this.sPos + 1);
+                this.sPos += this.speed[0];
+                this.clearStroke();
+                this.draw(this.strokeCtx, [b], this.density, !1);
+                this.timer = requestAnimationFrame(() => { this.drawingStroke(a) })
+            } else this.sPos = 0, this.pos = Math.min(this.data.length, this.pos + this.speed[1]), this.clearStroke(), this.draw(this.ctx, [a]), this.updateProgress(), this.updateStrokeView(), this.stroke = null, this.pos < this.data.length ? this.timer = requestAnimationFrame(this.drawing) :
+                (this.player.classList.add("finished_"), this.pause())
+        } changeSpeed(a, b) {
+            this.currentSpeed = Math.max(0, Math.min(GPTimelapsePlayer_.SPEEDS.length - 1, b ?? this.currentSpeed + a));
+            this.speed = GPTimelapsePlayer_.SPEEDS[this.currentSpeed];
+            localStorage.setItem("gp-timelapse-player-speed", JSON.stringify(this.currentSpeed));
+            this.updateSpeedView()
+        } speedViewPointerMoveHandler(a) {
+            a = (a.clientX - this.player.getBoundingClientRect().x) / this.scaleX;
+            a = Math.round(Math.max(0, Math.min(GPTimelapsePlayer_.SPEED_SLIDER_WIDTH - GPTimelapsePlayer_.SPEED_SLIDER_THUMB_WIDTH,
+                a - this.speedInput.currentX)) / ((GPTimelapsePlayer_.SPEED_SLIDER_WIDTH - GPTimelapsePlayer_.SPEED_SLIDER_THUMB_WIDTH) / (GPTimelapsePlayer_.SPEEDS.length - 1)));
+            this.speedInput.value = a;
+            this.changeSpeed(null, a)
+        } renderSpeedInput(a, b) {
+            if (!this.speedInput) {
+                this.speedInput = document.createElement("input");
+                this.speedInput.className = "speed-slider_";
+                this.speedInput.type = "range";
+                this.speedInput.min = 0;
+                this.speedInput.max = GPTimelapsePlayer_.SPEEDS.length - 1;
+                this.speedInput.style.width = `${GPTimelapsePlayer_.SPEED_SLIDER_WIDTH}px`;
+
+                this.speedInput.style.height = `${GPTimelapsePlayer_.SPEED_SLIDER_HEIGHT}px`;
+                var c = GPTimelapsePlayer_.SPEEDS.findIndex(([d]) => !d);
+                this.speedInput.style.setProperty("--bg-separator", `${Math.round(c / GPTimelapsePlayer_.SPEEDS.length * 100) + Math.round(GPTimelapsePlayer_.SPEED_SLIDER_THUMB_WIDTH / GPTimelapsePlayer_.SPEED_SLIDER_WIDTH * 100) / 2}%`)
+            } this.speedInput.value = this.currentSpeed;
+            c = (GPTimelapsePlayer_.SPEED_SLIDER_WIDTH - GPTimelapsePlayer_.SPEED_SLIDER_THUMB_WIDTH) / (GPTimelapsePlayer_.SPEEDS.length - 1) * Number(this.speedInput.value);
+
+            this.speedInput.style.top = `${b - GPTimelapsePlayer_.SPEED_SLIDER_HEIGHT - 10}px`;
+            this.speedInput.style.left = `${a - c - GPTimelapsePlayer_.SPEED_SLIDER_THUMB_WIDTH / 2}px`;
+            this.player.appendChild(this.speedInput);
+            this.speedInput.currentX = a - c
+        } clearBackground() {
+            this.bgCtx.fillStyle = GPTimelapsePlayer_.BACKGROUND_COLOR;
+            this.bgCtx.fillRect(0, 0, this.width, this.height)
+        } clearCanvas() { this.ctx.clearRect(0, 0, this.width, this.height) } clearStroke() { this.strokeCtx.clearRect(0, 0, this.width, this.height) } updateProgress(a = this.pos) {
+            this.progress.style.width =
+                `${Math.round(a / this.data.length * 100)}%`
+        } splitStroke(a) {
+            const [b, c, d, ...e] = a;
+            if (1 === b || 2 === b) {
+                a = [];
+                for (let f = 1;
+                    f <= e.length;
+                    f++)a.push([b, c, d, ...e.slice(0, f)]);
+                return a
+            } return [a]
+        } getCoords(a, b) {
+            b = (b || a.target).getBoundingClientRect();
+            const [c, d] = a.touches ? [a.touches[0].clientX, a.touches[0].clientY] : [a.clientX, a.clientY], [e, f] = [c - b.left, d - b.top];
+            return [Math.round(e), Math.round(f), b.width, b.height]
+        } progressBarPointerMoveHandler(a) {
+            const [b, , c] = this.getCoords(a);
+            a = Math.max(0, Math.min(1, b / c));
+            const d =
+                Math.round(this.data.length * a);
+            this.progress.style.width = `${100 * a}%`;
+            this.seek(d)
+        } toggleFullscreen() { document.fullscreenElement ? document.exitFullscreen() : (this.expandStateBeforeFullscreen = this.isExpanded, this.expand(!1), this.player.requestFullscreen()) } saveImage() {
+            var a = document.createElement("canvas");
+            a.width = this.width;
+            a.height = this.height;
+            var b = a.getContext("2d");
+            this.draw(b, this.data, this.density, this.eraserAlpha);
+            b = document.createElement("canvas");
+            b.width = this.width;
+            b.height = this.height;
+            var c =
+                b.getContext("2d");
+            c.fillStyle = GPTimelapsePlayer_.BACKGROUND_COLOR;
+            c.fillRect(0, 0, this.width, this.height);
+            if (this.background) {
+                var d = this.getCache();
+                this.cache[this.density] ? (d = d.at(-1), c.putImageData(d, 0, 0)) : this.drawFunction(c, this.background, this.density, !1)
+            } c = document.createElement("canvas");
+            c.width = this.width;
+            c.height = this.height;
+            d = c.getContext("2d");
+            d.drawImage(b, 0, 0, this.width, this.height);
+            d.drawImage(a, 0, 0, this.width, this.height);
+            a = this.date.toLocaleDateString("ru-RU");
+            a = `${this.author} - ${this.title} (${a}).png`;
+
+            b = document.createElement("a");
+            b.href = c.toDataURL();
+            b.download = a;
+            b.click()
+        } async saveImageData() {
+            var a = this.date.toLocaleDateString("ru-RU");
+            a = `${this.author} - ${this.title} (${a}).gpimg`;
+            var b = { m: { a: this.author, t: this.title, d: this.date.toISOString() }, d: this.originalData };
+            this.background && (b.b = this.background);
+            this.auth && (b.a = this.auth);
+            b = await GPUtils_.wCompressData(b);
+            GPUtils_.saveBlob(b, a)
+        } getCache() {
+            this.cache?.[this.density] || this.updateCache();
+            return this.cache[this.density]
+        } updateCache() {
+            const a =
+                this.cache || {};
+            a[this.density] || this.worker.postMessage({ type: "get-cache", density: this.density });
+            this.cache = a
+        } draw(a, b, c, d, e = !0) {
+            if (b) {
+                var f = GPTimelapsePlayer_.CACHE_INTERVAL;
+                if (GPTimelapsePlayer_.CACHE_ENABLED && e && b.length > f) if (e = this.getCache(), !this.cache[this.density] && b.at(-1).index + 1 < f) this.drawFunction(a, b, c, d);
+                else {
+                    const g = Math.floor((b.at(-1).index + 1) / f) - 1;
+                    a.putImageData(e[g], 0, 0);
+                    b = b.slice(-(b.at(-1).index + 1 - (g + 1) * f));
+                    this.drawFunction(a, b, c, d)
+                } else this.drawFunction(a, b, c, d)
+            }
+        } drawFunction(a,
+            b, c = this.density, d = this.eraserAlpha, e = !1) { GPUtils_.drawFunction(a, b, c, d, e) } handleDelimiters(a, b) {
+            const c = a.findLastIndex(d => 11 === d[0]);
+            if (~c) {
+                const d = a.slice(c + 1);
+                a = (b ?? []).concat(a.slice(0, c).filter(e => 11 !== e[0]));
+                return [d, a, !0]
+            } return [a, b, !1]
+        } initCacheWorker() {
+            let { width: a, height: b } = getComputedStyle(this.container);
+            a = parseInt(a);
+            b = parseInt(b);
+            var { density: c } = this.getDensityByDimensions(a, b);
+            let { width: d, height: e } = getComputedStyle(this.mainContainer);
+            d = parseInt(d);
+            e = parseInt(e);
+            const { density: f } =
+                this.getDensityByDimensions(d, e), { density: g } = this.getDensityByDimensions(window.screen.width, window.screen.height), k = [...(new Set([c, f, g]))];
+            this.worker || (c = URL.createObjectURL(new Blob([this.getFuncBody(this.cacheWorkerBody)])), this.worker = new Worker(c), URL.revokeObjectURL(c), this.worker.addEventListener("message", ({ data: h }) => {
+                "worker-ready" === h.type ? k.forEach(l => { this.worker.postMessage({ type: "get-cache", density: l }) }) : "cache-updated" === h.type && (this.cache = h.cache, this.dispatchEvent(new CustomEvent("cache-updated",
+                    { detail: { density: h.density } })))
+            }));
+            this.worker.postMessage({ type: "init", data: this.data, background: this.background, eraserAlpha: this.eraserAlpha, drawFunctionString: GPUtils_.drawFunctionString, fi: this.fi, CACHE_INTERVAL: GPTimelapsePlayer_.CACHE_INTERVAL, ORIGINAL_WIDTH: GPTimelapsePlayer_.ORIGINAL_WIDTH, ORIGINAL_HEIGHT: GPTimelapsePlayer_.ORIGINAL_HEIGHT, BACKGROUND_COLOR: GPTimelapsePlayer_.BACKGROUND_COLOR })
+        } cacheWorkerBody() {
+            function a(f) {
+                var g = b * f, k = c * f;
+                if (!this.cache[f]) {
+                    this.cache[f] = [];
+                    const l = e, m =
+                        Math.floor(self.data.length / l);
+                    g = new OffscreenCanvas(g, k);
+                    k = g.getContext("2d", { willReadFrequently: !0 });
+                    let n;
+                    self.background && (k.fillStyle = d, k.fillRect(0, 0, g.width, g.height), self.draw(k, this.background, f, !1), n = k.getImageData(0, 0, g.width, g.height), k.clearRect(0, 0, g.width, g.height));
+                    for (let r = 0;
+                        r < m;
+                        r++) {
+                        var h = r * l;
+                        h = self.data.slice(h, h + l);
+                        self.draw(k, h, f, self.eraserAlpha);
+                        h = k.getImageData(0, 0, g.width, g.height);
+                        this.cache[f].push(h)
+                    } self.background && this.cache[f].push(n)
+                }
+            } let b, c, d, e;
+            self.data;
+            self.draw;
+
+            self.cache = [];
+            self.addEventListener("message", ({ data: f }) => { "init" === f.type ? (self.data = f.data, self.background = f.background, self.eraserAlpha = f.eraserAlpha, self.fi = f.fi, self.draw = (new Function(`return ${f.drawFunctionString}`))(), e = f.CACHE_INTERVAL, b = f.ORIGINAL_WIDTH, c = f.ORIGINAL_HEIGHT, d = f.BACKGROUND_COLOR, self.postMessage({ type: "worker-ready" })) : "get-cache" === f.type && (self.cache[f.density] || a(f.density), self.postMessage({ type: "cache-updated", cache: self.cache, density: f.density })) })
+        } getFuncBody(a) {
+            a =
+                a.toString();
+            return a.substring(a.indexOf("{") + 1, a.lastIndexOf("}"))
+        }
+    } window.GPTimelapsePlayer_ = GPTimelapsePlayer_;
+
+}).call(this)
+
+
+
+
