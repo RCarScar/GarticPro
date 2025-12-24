@@ -109,14 +109,33 @@
         static PATH = "https://RCarScar.github.io/localization";
         constructor() {
             super();
-            this.loadHashes().then(a => {
-                let { lang: b, hash: c, entries: d } = this.getCache();
-                b = b in a ? b : this.getDefaultLanguage(a);
-                c && d && a[b] === c ? this.setLocalization(b, d) : this.load(b).then(e => {
-                    this.setCache(b, a[b], e);
-                    this.setLocalization(b, e)
-                })
-            })
+            this.loadHashes().then(hashes => {
+                // Get cached values for language, hash, and localization entries
+                let cache = this.getCache();
+                let lang = cache.lang;
+                let hash = cache.hash;
+                let entries = cache.entries;
+
+                // Ensure the cached language exists in the loaded hashes
+                if (!(lang in hashes)) {
+                    lang = this.getDefaultLanguage(hashes); // fallback to default language
+                }
+
+                // Check if we have a valid cache and if the hash matches
+                if (hash && entries && hashes[lang] === hash) {
+                    // Use the cached localization entries
+                    this.setLocalization(lang, entries);
+                } else {
+                    // Cache is missing or outdated: load the localization for the selected language
+                    this.load(lang).then(localizationData => {
+                        // Update the cache with the new data
+                        this.setCache(lang, hashes[lang], localizationData);
+                        
+                        // Apply the new localization
+                        this.setLocalization(lang, localizationData);
+                    });
+                }
+            });
         } getDefaultLanguage(a) {
             const b = window.navigator.language.split("-")[0].toLowerCase();
             return b in a ? b : LocalizationController.DEFAULT_LANGUAGE
