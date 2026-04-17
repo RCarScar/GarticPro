@@ -1,0 +1,19 @@
+{
+  "manifest_version": 3,
+  "name": "GP Hook Injector",
+  "version": "1.0",
+  "description": "Main world script injection for dynamic analysis.",
+  "content_scripts": [
+    {
+      "matches": ["*://garticphone.com/*"],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["inject.js"],
+      "matches": ["*://garticphone.com/*"]
+    }
+  ]
+}
